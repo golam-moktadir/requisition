@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+
+<html
+  lang="en"
+  class="light-style layout-menu-fixed layout-compact"
+  dir="ltr"
+  data-theme="theme-default"
+  data-assets-path="../assets/"
+  data-template="vertical-menu-template-free">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+
+    <title>Tables - Basic Tables | Sneat - Bootstrap 5 HTML Admin Template - Pro</title>
+
+    <meta name="description" content="" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="../assets/img/favicon/favicon.ico" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+      rel="stylesheet" />
+
+    <link rel="stylesheet" href="../assets/vendor/fonts/boxicons.css" />
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="../assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="../assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="../assets/css/demo.css" />
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+
+    <!-- Page CSS -->
+
+    <!-- Datatable -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+
+    <!-- Helpers -->
+    <script src="../assets/vendor/js/helpers.js"></script>
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="../assets/js/config.js"></script>
+  </head>
+
+  <body>
+    <!-- Layout wrapper -->
+    <div class="layout-wrapper layout-content-navbar">
+      <div class="layout-container">
+        <!-- Menu -->
+
+        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+          <div class="app-brand demo">
+            <a href="index.html" class="app-brand-link">
+              <span class="app-brand-logo demo">
+                <svg
+                  width="25"
+                  viewBox="0 0 25 42"
+                  version="1.1"
+                  xmlns="http://www.w3.org/2000/svg"
+                  xmlns:xlink="http://www.w3.org/1999/xlink">
+                  <defs>
+                    <path
+                      d="M13.7918663,0.358365126 L3.39788168,7.44174259 C0.566865006,9.69408886 -0.379795268,12.4788597 0.557900856,15.7960551 C0.68998853,16.2305145 1.09562888,17.7872135 3.12357076,19.2293357 C3.8146334,19.7207684 5.32369333,20.3834223 7.65075054,21.2172976 L7.59773219,21.2525164 L2.63468769,24.5493413 C0.445452254,26.3002124 0.0884951797,28.5083815 1.56381646,31.1738486 C2.83770406,32.8170431 5.20850219,33.2640127 7.09180128,32.5391577 C8.347334,32.0559211 11.4559176,30.0011079 16.4175519,26.3747182 C18.0338572,24.4997857 18.6973423,22.4544883 18.4080071,20.2388261 C17.963753,17.5346866 16.1776345,15.5799961 13.0496516,14.3747546 L10.9194936,13.4715819 L18.6192054,7.984237 L13.7918663,0.358365126 Z"
+                      id="path-1"></path>
+                    <path
+                      d="M5.47320593,6.00457225 C4.05321814,8.216144 4.36334763,10.0722806 6.40359441,11.5729822 C8.61520715,12.571656 10.0999176,13.2171421 10.8577257,13.5094407 L15.5088241,14.433041 L18.6192054,7.984237 C15.5364148,3.11535317 13.9273018,0.573395879 13.7918663,0.358365126 C13.5790555,0.511491653 10.8061687,2.3935607 5.47320593,6.00457225 Z"
+                      id="path-3"></path>
+                    <path
+                      d="M7.50063644,21.2294429 L12.3234468,23.3159332 C14.1688022,24.7579751 14.397098,26.4880487 13.008334,28.506154 C11.6195701,30.5242593 10.3099883,31.790241 9.07958868,32.3040991 C5.78142938,33.4346997 4.13234973,34 4.13234973,34 C4.13234973,34 2.75489982,33.0538207 2.37032616e-14,31.1614621 C-0.55822714,27.8186216 -0.55822714,26.0572515 -4.05231404e-15,25.8773518 C0.83734071,25.6075023 2.77988457,22.8248993 3.3049379,22.52991 C3.65497346,22.3332504 5.05353963,21.8997614 7.50063644,21.2294429 Z"
+                      id="path-4"></path>
+                    <path
+                      d="M20.6,7.13333333 L25.6,13.8 C26.2627417,14.6836556 26.0836556,15.9372583 25.2,16.6 C24.8538077,16.8596443 24.4327404,17 24,17 L14,17 C12.8954305,17 12,16.1045695 12,15 C12,14.5672596 12.1403557,14.1461923 12.4,13.8 L17.4,7.13333333 C18.0627417,6.24967773 19.3163444,6.07059163 20.2,6.73333333 C20.3516113,6.84704183 20.4862915,6.981722 20.6,7.13333333 Z"
+                      id="path-5"></path>
+                  </defs>
+                  <g id="g-app-brand" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                    <g id="Brand-Logo" transform="translate(-27.000000, -15.000000)">
+                      <g id="Icon" transform="translate(27.000000, 15.000000)">
+                        <g id="Mask" transform="translate(0.000000, 8.000000)">
+                          <mask id="mask-2" fill="white">
+                            <use xlink:href="#path-1"></use>
+                          </mask>
+                          <use fill="#696cff" xlink:href="#path-1"></use>
+                          <g id="Path-3" mask="url(#mask-2)">
+                            <use fill="#696cff" xlink:href="#path-3"></use>
+                            <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-3"></use>
+                          </g>
+                          <g id="Path-4" mask="url(#mask-2)">
+                            <use fill="#696cff" xlink:href="#path-4"></use>
+                            <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-4"></use>
+                          </g>
+                        </g>
+                        <g
+                          id="Triangle"
+                          transform="translate(19.000000, 11.000000) rotate(-300.000000) translate(-19.000000, -11.000000) ">
+                          <use fill="#696cff" xlink:href="#path-5"></use>
+                          <use fill-opacity="0.2" fill="#FFFFFF" xlink:href="#path-5"></use>
+                        </g>
+                      </g>
+                    </g>
+                  </g>
+                </svg>
+              </span>
+              <span class="app-brand-text demo menu-text fw-bold ms-2">Sneat</span>
+            </a>
+
+            <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+              <i class="bx bx-chevron-left bx-sm align-middle"></i>
+            </a>
+          </div>
+
+          <div class="menu-inner-shadow"></div>
+
+          <ul class="menu-inner py-1">
+            <!-- Dashboards -->
+            <li class="menu-item">
+              <a href="javascript:void(0);" class="menu-link menu-toggle">
+                <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                <div data-i18n="Dashboards">Dashboards</div>
+                <div class="badge bg-danger rounded-pill ms-auto">5</div>
+              </a>
+
+              <ul class="menu-sub">
+
+                <li class="menu-item">
+                  <a href="index.html" class="menu-link">
+                    <div data-i18n="Analytics">Analytics</div>
+                  </a>
+                </li>
+
+              </ul>
+            </li>
+
+            
+            <!-- Tables -->
+            <li class="menu-item active">
+              <a href="tables-basic.html" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Tables">Tables</div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a
+                href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/documentation/"
+                target="_blank"
+                class="menu-link">
+                <i class="menu-icon tf-icons bx bx-file"></i>
+                <div data-i18n="Documentation">Documentation</div>
+              </a>
+            </li>
+          </ul>
+        </aside>
+        <!-- / Menu -->
+
+        <!-- Layout container -->
+        <div class="layout-page">
+          <!-- Navbar -->
+
+          <nav
+            class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+            id="layout-navbar">
+            <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+              <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                <i class="bx bx-menu bx-sm"></i>
+              </a>
+            </div>
+
+            <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+              <!-- Search -->
+              <div class="navbar-nav align-items-center">
+                <div class="nav-item d-flex align-items-center">
+                  <i class="bx bx-search fs-4 lh-0"></i>
+                  <input
+                    type="text"
+                    class="form-control border-0 shadow-none ps-1 ps-sm-2"
+                    placeholder="Search..."
+                    aria-label="Search..." />
+                </div>
+              </div>
+              <!-- /Search -->
+
+              <ul class="navbar-nav flex-row align-items-center ms-auto">
+                <!-- Place this tag where you want the button to render. -->
+                <li class="nav-item lh-1 me-3">
+                  <a
+                    class="github-button"
+                    href="https://github.com/themeselection/sneat-html-admin-template-free"
+                    data-icon="octicon-star"
+                    data-size="large"
+                    data-show-count="true"
+                    aria-label="Star themeselection/sneat-html-admin-template-free on GitHub"
+                    >Star</a
+                  >
+                </li>
+
+                <!-- User -->
+                <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                  <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
+                    <div class="avatar avatar-online">
+                      <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                    </div>
+                  </a>
+                  <ul class="dropdown-menu dropdown-menu-end">
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <div class="d-flex">
+                          <div class="flex-shrink-0 me-3">
+                            <div class="avatar avatar-online">
+                              <img src="../assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                            </div>
+                          </div>
+                          <div class="flex-grow-1">
+                            <span class="fw-medium d-block">John Doe</span>
+                            <small class="text-muted">Admin</small>
+                          </div>
+                        </div>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <i class="bx bx-user me-2"></i>
+                        <span class="align-middle">My Profile</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <i class="bx bx-cog me-2"></i>
+                        <span class="align-middle">Settings</span>
+                      </a>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="#">
+                        <span class="d-flex align-items-center align-middle">
+                          <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
+                          <span class="flex-grow-1 align-middle ms-1">Billing</span>
+                          <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
+                        </span>
+                      </a>
+                    </li>
+                    <li>
+                      <div class="dropdown-divider"></div>
+                    </li>
+                    <li>
+                      <a class="dropdown-item" href="javascript:void(0);">
+                        <i class="bx bx-power-off me-2"></i>
+                        <span class="align-middle">Log Out</span>
+                      </a>
+                    </li>
+                  </ul>
+                </li>
+                <!--/ User -->
+              </ul>
+            </div>
+          </nav>
+
+          <!-- / Navbar -->
+
+          <!-- Content wrapper -->
+          <div class="content-wrapper">
+            <!-- Content -->
+
+            <div class="container-xxl flex-grow-1 container-p-y">
+              <h4 class="py-3 mb-4"><span class="text-muted fw-light">Tables /</span> Basic Tables</h4>
+
+              <!-- Basic Bootstrap Table -->
+              <div class="card">
+                <h5 class="card-header">Table Basic</h5>
+                <div class="table-responsive text-nowrap">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th>Project</th>
+                        <th>Client</th>
+                        <th>Users</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody class="table-border-bottom-0">
+                      <tr>
+                        <td>
+                          <i class="bx bxl-angular bx-sm text-danger me-3"></i>
+                          <span class="fw-medium">Angular Project</span>
+                        </td>
+                        <td>Albert Cook</td>
+                        <td>
+                          <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+                            <li
+                              data-bs-toggle="tooltip"
+                              data-popup="tooltip-custom"
+                              data-bs-placement="top"
+                              class="avatar avatar-xs pull-up"
+                              title="Lilian Fuller">
+                              <img src="../assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" />
+                            </li>
+                            <li
+                              data-bs-toggle="tooltip"
+                              data-popup="tooltip-custom"
+                              data-bs-placement="top"
+                              class="avatar avatar-xs pull-up"
+                              title="Sophia Wilkerson">
+                              <img src="../assets/img/avatars/6.png" alt="Avatar" class="rounded-circle" />
+                            </li>
+                            <li
+                              data-bs-toggle="tooltip"
+                              data-popup="tooltip-custom"
+                              data-bs-placement="top"
+                              class="avatar avatar-xs pull-up"
+                              title="Christina Parker">
+                              <img src="../assets/img/avatars/7.png" alt="Avatar" class="rounded-circle" />
+                            </li>
+                          </ul>
+                        </td>
+                        <td><span class="badge bg-label-primary me-1">Active</span></td>
+                        <td>
+                          <div class="dropdown">
+                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                              <i class="bx bx-dots-vertical-rounded"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                              <a class="dropdown-item" href="javascript:void(0);"
+                                ><i class="bx bx-edit-alt me-1"></i> Edit</a
+                              >
+                              <a class="dropdown-item" href="javascript:void(0);"
+                                ><i class="bx bx-trash me-1"></i> Delete</a
+                              >
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <i class="bx bxl-react bx-sm text-info me-3"></i> <span class="fw-medium">React Project</span>
+                        </td>
+                        <td>Barry Hunter</td>
+                        <td>
+                          <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+                            <li
+                              data-bs-toggle="tooltip"
+                              data-popup="tooltip-custom"
+                              data-bs-placement="top"
+                              class="avatar avatar-xs pull-up"
+                              title="Lilian Fuller">
+                              <img src="../assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" />
+                            </li>
+                            <li
+                              data-bs-toggle="tooltip"
+                              data-popup="tooltip-custom"
+                              data-bs-placement="top"
+                              class="avatar avatar-xs pull-up"
+                              title="Sophia Wilkerson">
+                              <img src="../assets/img/avatars/6.png" alt="Avatar" class="rounded-circle" />
+                            </li>
+                            <li
+                              data-bs-toggle="tooltip"
+                              data-popup="tooltip-custom"
+                              data-bs-placement="top"
+                              class="avatar avatar-xs pull-up"
+                              title="Christina Parker">
+                              <img src="../assets/img/avatars/7.png" alt="Avatar" class="rounded-circle" />
+                            </li>
+                          </ul>
+                        </td>
+                        <td><span class="badge bg-label-success me-1">Completed</span></td>
+                        <td>
+                          <div class="dropdown">
+                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                              <i class="bx bx-dots-vertical-rounded"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                              <a class="dropdown-item" href="javascript:void(0);"
+                                ><i class="bx bx-edit-alt me-2"></i> Edit</a
+                              >
+                              <a class="dropdown-item" href="javascript:void(0);"
+                                ><i class="bx bx-trash me-2"></i> Delete</a
+                              >
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <i class="bx bxl-vuejs bx-sm text-success me-3"></i>
+                          <span class="fw-medium">VueJs Project</span>
+                        </td>
+                        <td>Trevor Baker</td>
+                        <td>
+                          <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+                            <li
+                              data-bs-toggle="tooltip"
+                              data-popup="tooltip-custom"
+                              data-bs-placement="top"
+                              class="avatar avatar-xs pull-up"
+                              title="Lilian Fuller">
+                              <img src="../assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" />
+                            </li>
+                            <li
+                              data-bs-toggle="tooltip"
+                              data-popup="tooltip-custom"
+                              data-bs-placement="top"
+                              class="avatar avatar-xs pull-up"
+                              title="Sophia Wilkerson">
+                              <img src="../assets/img/avatars/6.png" alt="Avatar" class="rounded-circle" />
+                            </li>
+                            <li
+                              data-bs-toggle="tooltip"
+                              data-popup="tooltip-custom"
+                              data-bs-placement="top"
+                              class="avatar avatar-xs pull-up"
+                              title="Christina Parker">
+                              <img src="../assets/img/avatars/7.png" alt="Avatar" class="rounded-circle" />
+                            </li>
+                          </ul>
+                        </td>
+                        <td><span class="badge bg-label-info me-1">Scheduled</span></td>
+                        <td>
+                          <div class="dropdown">
+                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                              <i class="bx bx-dots-vertical-rounded"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                              <a class="dropdown-item" href="javascript:void(0);"
+                                ><i class="bx bx-edit-alt me-2"></i> Edit</a
+                              >
+                              <a class="dropdown-item" href="javascript:void(0);"
+                                ><i class="bx bx-trash me-2"></i> Delete</a
+                              >
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <i class="bx bxl-bootstrap bx-sm text-primary me-3"></i>
+                          <span class="fw-medium">Bootstrap Project</span>
+                        </td>
+                        <td>Jerry Milton</td>
+                        <td>
+                          <ul class="list-unstyled users-list m-0 avatar-group d-flex align-items-center">
+                            <li
+                              data-bs-toggle="tooltip"
+                              data-popup="tooltip-custom"
+                              data-bs-placement="top"
+                              class="avatar avatar-xs pull-up"
+                              title="Lilian Fuller">
+                              <img src="../assets/img/avatars/5.png" alt="Avatar" class="rounded-circle" />
+                            </li>
+                            <li
+                              data-bs-toggle="tooltip"
+                              data-popup="tooltip-custom"
+                              data-bs-placement="top"
+                              class="avatar avatar-xs pull-up"
+                              title="Sophia Wilkerson">
+                              <img src="../assets/img/avatars/6.png" alt="Avatar" class="rounded-circle" />
+                            </li>
+                            <li
+                              data-bs-toggle="tooltip"
+                              data-popup="tooltip-custom"
+                              data-bs-placement="top"
+                              class="avatar avatar-xs pull-up"
+                              title="Christina Parker">
+                              <img src="../assets/img/avatars/7.png" alt="Avatar" class="rounded-circle" />
+                            </li>
+                          </ul>
+                        </td>
+                        <td><span class="badge bg-label-warning me-1">Pending</span></td>
+                        <td>
+                          <div class="dropdown">
+                            <button type="button" class="btn p-0 dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                              <i class="bx bx-dots-vertical-rounded"></i>
+                            </button>
+                            <div class="dropdown-menu">
+                              <a class="dropdown-item" href="javascript:void(0);"
+                                ><i class="bx bx-edit-alt me-2"></i> Edit</a
+                              >
+                              <a class="dropdown-item" href="javascript:void(0);"
+                                ><i class="bx bx-trash me-2"></i> Delete</a
+                              >
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <!--/ Basic Bootstrap Table -->
+
+              <div class="card">
+                <h5 class="card-header">Paribahan Sample</h5>
+                <div class="table-responsive text-nowrap">
+                   <table id="datatable-sample"
+                      class="display table table-striped table-bordered table-hover" rules="all"
+                      cellpadding="3">
+                      <thead>
+                         <!-- <tr id="print_image" class="noBorder">
+                            <td class="print_td" name="print_td" align="center"
+                               style="text-align:center;white-space:nowrap" colspan="15">
+                               <img alt="Paribahan"
+                                  src="https://paribahan.com/assets/public_access/images/logo.png"
+                                  width="120">
+                            </td>
+                         </tr> -->
+                         <tr>
+                            <th>Tran. No.</th>
+                            <th>Type</th>
+                            <th>T.name</th>
+                            <th>Sell By</th>
+                            <th>Booking<br/>Time</th>
+                            <th>Ticket No.</th>
+                            <th>Route</th>
+                            <th>Coach No.</th>
+                            <th>Seats</th>
+                            <th>Ticket<br/>Price</th>
+                            <th>Agn Comm</th>
+                            <th>Pri Comm</th>
+                            <th>Status</th>
+                            <th>Journey<br/>Time</th>
+                            <th>P.Name</th>
+                            <th>P.Mobile</th>
+                            <th>P.Email</th>
+                            <th>Bkash Tran. No.</th>
+                            <th>Bkash Reference</th>
+                            <th>Payment By</th>
+                            <th class="hide">Comm.</th>
+                            <th class="hide">P.Name</th>
+                            <th class="hide">Sell By</th>
+                            <th> Payment Gateway Charge</th>
+                            <th> Payment Gateway Cost</th>
+                            <th> Income By Payment Gateway</th>
+                            <th> Convenience Fee</th>
+                            <th>
+                               Action
+                            </th>
+                            <th> PGW Trans. ID</th>
+                            <th>
+                               Partial Cancel Time
+                            </th>
+                         </tr>
+                      </thead>
+                      <tbody>
+                      </tbody>
+                      <tr class="header_top" id="header_top">
+                         <td colspan="17" class="append">
+                            <br/><b>Total Transaction Amount : # BDT </b>
+                            <div id="agent"><b>Total Agent Transaction Amount : #
+                               BDT </b>
+                            </div>
+                            <div id="tickets"><b>Total Tickets No : # </b></div>
+                            <div id="printable"><b>Paribahan.com Charge: 0</b><br/>
+                               <b>Total Payable in BDT:0</b>
+                            </div>
+                            <br>
+                            <div id="agent">
+                               <b>Total # of tickets sold by agent:  0</b>
+                            </div>
+                            <div id="agent">
+                               <b>Total Agn Comm: BDT  0</b>
+                            </div>
+                            <div id="agent">
+                               <b>Total Pri Comm: BDT  0</b>
+                            </div>
+                            <div id="agent">
+                               <b>Total Web Commission: BDT  0</b>
+                            </div>
+                            <div id="agent">
+                               <b>Total Commission Earned: BDT  0</b>
+                            </div>
+                            <div id="agent">
+                               <b>Total Payment Gateway Cost: BDT  0</b>
+                            </div>
+                            <div id="agent">
+                               <b>Total Payment Gateway Earned: BDT  0</b>
+                            </div>
+                            <div id="agent">
+                               <b>Total convenience fee: BDT  0</b>
+                            </div>
+                            <!-- ################ 2020-09-21 ###################### -->
+                            <!-- ###################################### -->
+                         </td>
+                      </tr>
+                   </table>                  
+                </div>
+              </div>
+
+            </div>
+            <!-- / Content -->
+
+            <!-- Footer -->
+            <footer class="content-footer footer bg-footer-theme">
+              <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                <div class="mb-2 mb-md-0">
+                  ©
+                  <script>
+                    document.write(new Date().getFullYear());
+                  </script>
+                  , made with ❤️ by
+                  <a href="https://themeselection.com" target="_blank" class="footer-link fw-medium">ThemeSelection</a>
+                </div>
+                <div class="d-none d-lg-inline-block">
+                  <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
+                  <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More Themes</a>
+
+                  <a
+                    href="https://demos.themeselection.com/sneat-bootstrap-html-admin-template/documentation/"
+                    target="_blank"
+                    class="footer-link me-4"
+                    >Documentation</a
+                  >
+
+                  <a
+                    href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
+                    target="_blank"
+                    class="footer-link"
+                    >Support</a
+                  >
+                </div>
+              </div>
+            </footer>
+            <!-- / Footer -->
+
+            <div class="content-backdrop fade"></div>
+          </div>
+          <!-- Content wrapper -->
+        </div>
+        <!-- / Layout page -->
+      </div>
+
+      <!-- Overlay -->
+      <div class="layout-overlay layout-menu-toggle"></div>
+    </div>
+    <!-- / Layout wrapper -->
+
+    <div class="buy-now">
+      <a
+        href="https://themeselection.com/item/sneat-bootstrap-html-admin-template/"
+        target="_blank"
+        class="btn btn-danger btn-buy-now"
+        >Upgrade to Pro</a
+      >
+    </div>
+
+    <!-- Core JS -->
+    <!-- build:js assets/vendor/js/core.js -->
+
+    <!-- <script src="../assets/vendor/libs/jquery/jquery.js"></script> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <script src="../assets/vendor/libs/popper/popper.js"></script>
+    <script src="../assets/vendor/js/bootstrap.js"></script>
+    <script src="../assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
+    <script src="../assets/vendor/js/menu.js"></script>
+
+    <!-- endbuild -->
+
+    <!-- Vendors JS -->
+
+    <!-- Main JS -->
+    <script src="../assets/js/main.js"></script>
+
+    <!-- Page JS -->
+
+    <!-- Datatable JS -->
+    <script type="text/javascript" src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js" defer></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js" defer></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js" defer></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.flash.min.js" defer></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js" defer></script>
+
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.72/pdfmake.min.js" defer></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.72/vfs_fonts.js" defer></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.6.1/jszip.min.js" defer></script>
+    <script type="text/javascript">         
+       $(function () {    
+          $(document).ready(function () {
+               $('#datatable-sample').DataTable({
+                   dom: 'Blfrtip',
+                   buttons: [
+                       'copy', 'csv', 'excel',
+                       {
+                           extend: 'pdfHtml5',
+                           orientation: 'landscape',
+                           pageSize: 'A4',
+                           title: 'Billing Period : ' + $('.search-date').val(),
+                           customize: function (doc) {
+                               doc.styles.tableHeader.alignment = 'left';
+                               doc.styles.tableHeader.fontSize = 8;
+                               doc.defaultStyle.noWrap = true;
+       
+                               var obj = '';
+                               var adminReportsNewItems = [];
+                               for (var i = 0; i < adminReportsNewItems.length; i++) {
+                                   obj = adminReportsNewItems[i];
+                                   doc.content.splice(2, 0, {
+                                       text: [{
+                                           text: obj.text + '' + obj.value,
+                                           bold: true,
+                                           fontSize: 11
+                                       }],
+                                       margin: [0, 0, 0, 0],
+                                       alignment: 'left'
+                                   });
+                               }
+                               doc.content.splice(2, 0, {
+                                   text: [{
+                                       text: '',
+                                       bold: true,
+                                       fontSize: 10
+                                   }],
+                                   margin: [0, 3, 3, 3],
+                                   alignment: 'left'
+                               });
+       
+                               doc.content.splice(2, 0, {
+                                   text: [{
+                                       text: 'Total Payable in BDT: #0',
+                                       bold: true,
+                                       fontSize: 10
+                                   }],
+                                   margin: [0, 0, 0, 0],
+                                   alignment: 'left'
+                               });
+                               doc.content.splice(2, 0, {
+                                   text: [{
+                                       text: 'Paribahan.com Charge: # ',
+                                       bold: true,
+                                       fontSize: 10
+                                   }],
+                                   margin: [0, 0, 0, 0],
+                                   alignment: 'left'
+                               });
+                               doc.content.splice(2, 0, {
+                                   text: [{
+                                       text: 'Total Tickets No : # ',
+                                       bold: true,
+                                       fontSize: 10
+                                   }],
+                                   margin: [0, 0, 0, 0],
+                                   alignment: 'left'
+                               });
+       
+                               doc.content.splice(2, 0, {
+                                   text: [{
+                                       text: 'Total Transaction Amount : # BDT ',
+                                       bold: true,
+                                       fontSize: 10
+                                   }],
+                                   margin: [0, 0, 0, 0],
+                                   alignment: 'left'
+                               });
+                               doc.content.splice(2, 0, {
+                                   text: [{
+                                       text: 'Summary :',
+                                       bold: true,
+                                       fontSize: 11
+                                   }],
+                                   margin: [0, 10, 10, 10],
+                                   alignment: 'left'
+                               });
+                               doc.styles.tableHeader.alignment = 'left';
+                               doc.styles.tableHeader.fontSize = 8;
+                               doc.defaultStyle.noWrap = true;
+                               doc.content.splice(0, 0, {
+                                   margin: [0, 0, 0, 12],
+                                   alignment: 'center',
+                                   image: 'data:image/png;base64,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',
+                                   width: 110,
+                                   height: 40
+                               });
+                               doc.pageMargins = [5, 5, 5, 5];
+                               doc.defaultStyle.family = 'arial';
+                               doc.defaultStyle.fontSize = 8;
+                           },
+                           exportOptions: {
+                               columns: [0, 1, 14, 4, 5, 6, 7, 8, 9, 20, 22]
+                           }
+                       }
+                   ]
+               });
+           });
+       });                  
+    </script>
+    
+  </body>
+</html>

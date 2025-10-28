@@ -1,0 +1,1 @@
+<a href="{{ route('income_expense.edit_accounts_head', $id) }}" class="btn btn-md btn-info">Edit</a>

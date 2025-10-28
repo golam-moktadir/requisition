@@ -1,0 +1,142 @@
+{
+    "name": "laravel/laravel",
+    "type": "project",
+    "description": "The skeleton application for the Laravel framework.",
+    "keywords": ["laravel", "framework"],
+    "license": "MIT",
+    "require": {
+        "php": "^8.2",
+        "barryvdh/laravel-snappy": "^1.0",
+        "carlos-meneses/laravel-mpdf": "^2.1",
+        "davejamesmiller/laravel-breadcrumbs": "^5.3",
+        "doctrine/dbal": "^4.3",
+        "doctrine/orm": "^3.3",
+        "firebase/php-jwt": "^6.10",
+        "gedmo/doctrine-extensions": "^3.17",
+        "guzzlehttp/guzzle": "^7.2",
+        "intervention/image": "*",
+        "laravel-doctrine/extensions": "^2.0",
+        "laravel-doctrine/orm": "^3.0",
+        "laravel/framework": "^11.9",
+        "laravel/horizon": "^5.24",
+        "laravel/socialite": "^5.14",
+        "laravel/tinker": "^2.9",
+        "lorisleiva/laravel-actions": "^2.7",
+        "maatwebsite/excel": "^3.1",
+        "nwidart/laravel-modules": "^11.1",
+        "owen-it/laravel-auditing": "^13.6",
+        "paragonie/sodium_compat": "^2.0",
+        "proengsoft/laravel-jsvalidation": "^4.9",
+        "santigarcor/laratrust": "^8.2",
+        "spatie/laravel-backup": "^8.8",
+        "spatie/laravel-html": "^3.9",
+        "spatie/laravel-query-builder": "^5.6",
+        "yajra/laravel-datatables": "^11.0",
+        "yajra/laravel-datatables-buttons": "^11.0"
+    },
+    "require-dev": {
+        "appointer/swaggervel": "*",
+        "barryvdh/laravel-debugbar": "^3.13",
+        "fakerphp/faker": "^1.23",
+        "itsgoingd/clockwork": "^5.2",
+        "laravel/dusk": "^8.2",
+        "laravel/pint": "^1.13",
+        "laravel/sail": "^1.26",
+        "laravel/telescope": "^5.1",
+        "laravel/ui": "^4.5",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.0",
+        "phpunit/phpunit": "^11.0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/",
+            "Database\\Factories\\": "database/factories/",
+            "Database\\Seeders\\": "database/seeders/"
+        },
+        "classmap": [
+        ],
+        "files": [
+            "app/helpers.php" 
+        ]                
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "safe-update": [
+            "composer update --ignore-platform-req=ext-curl --ignore-platform-req=ext-gd --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-zip --ignore-platform-req=ext-posix"
+        ],
+        "safe-install": [
+            "composer install --ignore-platform-req=ext-curl --ignore-platform-req=ext-gd --ignore-platform-req=ext-pcntl --ignore-platform-req=ext-zip --ignore-platform-req=ext-posix --ignore-platform-req=ext-dom --ignore-platform-req=ext-xml"
+        ],
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover --ansi"
+        ],
+        "post-update-cmd": [
+            "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
+        ],
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate --ansi",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi"
+        ],
+        "app-ready":[
+            "php artisan key:generate",
+            "@php artisan key:generate --ansi",
+            "php artisan cache:clear",
+            "php artisan view:clear",
+            "php artisan route:clear",
+            "php artisan config:clear",
+            "php artisan config:cache",            
+            "php artisan clear-compiled",
+            "php artisan optimize:clear",
+            "php artisan optimize",
+            "php artisan route:clear",
+            "php artisan session:table"
+        ],
+        "app-ready-2":[
+            "php artisan cache:clear",
+            "php artisan view:clear",
+            "php artisan route:clear",
+            "php artisan config:clear",
+            "php artisan config:cache",
+            "php artisan optimize:clear"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "dont-discover": []
+        },
+        "merge-plugin": {
+            "include": [
+                "Modules/*/composer.json"
+            ]
+        }        
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true,
+            "php-http/discovery": true,
+            "wikimedia/composer-merge-plugin": true
+        },
+        "platform": {
+            "php": "8.2.12",
+            "ext-bcmath": "8.2",
+            "ext-pcntl": "8.2",
+            "ext-posix": "8.2",            
+            "ext-gd": "8.2"            
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

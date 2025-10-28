@@ -1,0 +1,235 @@
+{% extends 'admin_access/layout/master.html.twig' %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css" />
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.2.2/css/buttons.dataTables.min.css">
+<!-- Select 2 -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/2.1.0/select2.css" integrity="sha256-zSgYI2aHEbMCee4S37rdg4CwHfgv3jtZ6VUGrbFu4xk=" crossorigin="anonymous" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2-bootstrap-css/1.4.6/select2-bootstrap.min.css" integrity="sha256-4hblV1uSaPQqT+NtIEL4/IKzKE42/3DbJ6yfxWba24k=" crossorigin="anonymous" />    
+<style type="text/css">
+table tbody tr td span.role_name{
+    background-color: gray;
+    padding: 3px;
+    margin-right: 2px;
+    font-size: 12px;
+    color: #FFFFFF;
+}
+table thead tr th {
+    text-align: center;
+}
+table tbody tr td {
+    text-align: center;
+}
+#sample_2 {
+    margin: 0 -4px;
+    clear: both;
+    width: auto;
+    table-layout: fixed;
+    font-size: 12px;
+}
+.table-responsive {
+    min-height: 0.01%;
+    overflow-x: auto;
+}
+</style>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript" src="https://code.jquery.com/ui/1.12.0/jquery-ui.min.js" defer></script>    
+<script type="text/javascript" src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/dataTables.buttons.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.flash.min.js" defer></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/pdfmake.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.27/build/vfs_fonts.js" defer></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.3.1/js/buttons.html5.min.js" defer></script>
+<script type="text/javascript" src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/2.1.0/select2.min.js" defer></script>
+<script type="text/javascript">
+jQuery(document).ready(function() {
+    jQuery( '.depositeSearchformSelect2' ).select2();
+    jQuery('.depositeSearchformDateField').datepicker({
+        dateFormat: 'dd-mm-yy',
+        // inline: true,
+        //nextText: '&rarr;',
+        //prevText: '&larr;',
+        showOtherMonths: true,
+        //dateFormat: 'dd MM yy',
+        dayNamesMin: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+        //showOn: "button",
+        //buttonImage: "img/calendar-blue.png",
+        //buttonImageOnly: true,
+    });            
+});
+jQuery(document).ready(function($) {    
+    jQuery('#depositeHistoryTable').DataTable({
+        "data": {{depositeHistoryJsonData|raw}},
+        autoWidth: false,
+        "columns": [
+            { "data": "sl" },
+            { "data": "agent_name" },
+            { "data": "transection_type" },
+            { "data": "transport" },
+            { "data": "ticket_no" },
+            { "data": "booking_date" },
+            { "data": "journey_time" },
+            { "data": "ticket_status" },
+            { "data": "total_seat" },
+            { "data": "total_price" },
+            { "data": "pari_commission" },
+            { "data": "agn_commission" },
+            { "data": "existing_balance" },
+            { "data": "new_balance" }
+        ],
+        columnDefs: [
+            { "width": "20%", "targets": [0] }
+          ],
+        dom: 'Blfrtip',
+        buttons: [
+            'copy', 'csv', 'excel',
+            {
+                extend: 'pdfHtml5',
+                orientation: 'landscape',
+                pageSize: 'A4',
+                title: "Agent Deposites Report of {{reportDate}}",
+                customize: function(doc) {
+                    doc.styles.tableHeader.alignment = 'left';
+                    doc.styles.tableHeader.fontSize = 8;
+                    doc.defaultStyle.noWrap = true;
+                    doc.content.splice(2, 0, {
+                        text: [{
+                            text: "Last Deposite Amount: #{{lastDepositeAmount}}/=",
+                            bold: true,
+                            fontSize: 10
+                        }],
+                        margin: [0, 0, 0, 0],
+                        alignment: 'left'
+                    });
+                    doc.content.splice(2, 0, {
+                        text: [{
+                            text: "Total Deposite in BDT: #{{totalDeposit}}/=",
+                            bold: true,
+                            fontSize: 10
+                        }],
+                        margin: [0, 0, 0, 0],
+                        alignment: 'left'
+                    });
+                    doc.content.splice(2, 0, {
+                        text: [{
+                            text: "Total Number of  Deposite: {{totalDepositNumber}} time\'s",
+                            bold: true,
+                            fontSize: 10
+                        }],
+                        margin: [0, 0, 0, 0],
+                        alignment: 'left'
+                    });
+                    doc.content.splice(2, 0, {
+                        text: [{
+                            text: 'Summary :',
+                            bold: true,
+                            fontSize: 11
+                        }],
+                        margin: [0, 10, 10, 10],
+                        alignment: 'left'
+                    });
+                    doc.styles.tableHeader.alignment = 'left';
+                    doc.styles.tableHeader.fontSize = 8;
+                    doc.defaultStyle.noWrap = true;
+                    doc.content.splice( 0, 0, {
+                        margin: [ 0, 0, 0, 12 ],
+                        alignment: 'center',
+                        image: 'data:image/png;base64,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', width: 110, height: 40
+                    } );
+                    doc.pageMargins = [5, 5, 5,5];
+                    doc.defaultStyle.family = 'arial';
+                    doc.defaultStyle.fontSize = 8;
+                },
+                exportOptions: {
+                    columns: [1,2,3,4,5,7,8],
+                    
+                }
+            }
+        ]
+    });
+});
+</script>
+{% endblock %}
+
+{% block content %}
+    
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">{{pageTitle}} </h1>
+        </div>
+    </div>
+
+    <div class="row well">
+        <div class="col-lg-12">            
+            {{ form_start(depositeSearchform, {action:path('admin_agent_trans_report'), 'attr': {'id': 'depositeHistoryForm', 'class':'form-horizontal'} }) }}                
+            <div class="col-md-3">
+                {{ form_label(depositeSearchform.start_date, 'Start Date') }}
+                {{ form_errors(depositeSearchform.start_date) }}
+                {{ form_widget(depositeSearchform.start_date) }}                    
+            </div>
+            <div class="col-md-3">
+                {{ form_label(depositeSearchform.end_date, 'End Date') }}
+                {{ form_errors(depositeSearchform.end_date) }}
+                {{ form_widget(depositeSearchform.end_date) }}                    
+            </div>
+            <div class="col-md-4">
+                {{ form_label(depositeSearchform.organization, 'Organization') }}
+                {{ form_errors(depositeSearchform.organization) }}
+                {{ form_widget(depositeSearchform.organization) }}                    
+            </div>
+            <div class="col-md-4">
+                {{ form_label(depositeSearchform.pos_status, 'Status') }}
+                {{ form_errors(depositeSearchform.pos_status) }}
+                {{ form_widget(depositeSearchform.pos_status) }}                    
+            </div>
+            <div class="col-md-4">
+                {{ form_label(depositeSearchform.pos_trans_type, 'Trans. Type') }}
+                {{ form_errors(depositeSearchform.pos_trans_type) }}
+                {{ form_widget(depositeSearchform.pos_trans_type) }}                    
+            </div>
+            <div class="col-md-2">
+                <br>
+                {{ form_widget(depositeSearchform.search, {'label': 'Search'}) }}
+            </div>
+            {{ form_end(depositeSearchform) }}
+        </div>
+    </div>            
+            
+    <div class="row">
+        <div class="portlet box purple">
+            <div class="portlet-title">
+                <div class="caption"><i class="fa fa-reorder"></i> {{pageTitle}} of {{reportDate}}</div>
+            </div>
+            <div class="portlet-body table-responsive" id="show_list">
+                <table class="display table table-striped table-bordered table-hover" id="depositeHistoryTable">
+                    <thead>
+                        <tr>
+                            <th>S.L.</th>
+                            <th>Agent</th>
+                            <th>Trans. Type</th>
+                            <th>Transport</th>
+                            <th>Ticket No</th>
+                            <th>Booking Date</th>
+                            <th>Journey Date</th>
+                            <th>Status</th>
+                            <th>Total Seat</th>
+                            <th>Total Price</th>
+                            <th>Pari Commission</th>
+                            <th>Agn Commission</th>
+                            <th>Old Balance</th>
+                            <th>New Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+                <hr/>
+                <p>Total Number of tickets are: {{ total_number_tickets }}<p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

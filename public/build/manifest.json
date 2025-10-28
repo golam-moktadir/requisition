@@ -1,0 +1,42 @@
+{
+  "_bootstrap.esm-CNm37Kvn.js": {
+    "file": "assets/bootstrap.esm-CNm37Kvn.js",
+    "name": "bootstrap.esm"
+  },
+  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff": {
+    "file": "assets/bootstrap-icons-BOrJxbIo.woff",
+    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff"
+  },
+  "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2": {
+    "file": "assets/bootstrap-icons-BtvjY1KL.woff2",
+    "src": "node_modules/bootstrap-icons/font/fonts/bootstrap-icons.woff2"
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-Cr_zIMkp.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "imports": [
+      "_bootstrap.esm-CNm37Kvn.js"
+    ]
+  },
+  "resources/js/datatable.js": {
+    "file": "assets/datatable-eJClJGIO.js",
+    "name": "datatable",
+    "src": "resources/js/datatable.js",
+    "isEntry": true,
+    "imports": [
+      "_bootstrap.esm-CNm37Kvn.js"
+    ]
+  },
+  "resources/sass/app.scss": {
+    "file": "assets/app-Lkbm8zIe.css",
+    "src": "resources/sass/app.scss",
+    "isEntry": true
+  },
+  "resources/sass/datatable.scss": {
+    "file": "assets/datatable-McSxrTrn.css",
+    "src": "resources/sass/datatable.scss",
+    "isEntry": true
+  }
+}

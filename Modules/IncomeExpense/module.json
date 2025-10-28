@@ -1,0 +1,11 @@
+{
+    "name": "IncomeExpense",
+    "alias": "incomeexpense",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\IncomeExpense\\Providers\\IncomeExpenseServiceProvider"
+    ],
+    "files": []
+}

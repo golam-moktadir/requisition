@@ -1,0 +1,12 @@
+/vendor
+/coverage
+composer.phar
+composer.lock
+.DS_Store
+.php_cs.cache
+.phpunit.result.cache
+.idea
+laravel-doctrine-orm.iml
+.phpcs-cache
+.phpunit.cache
+
