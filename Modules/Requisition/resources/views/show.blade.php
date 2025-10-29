@@ -12,92 +12,114 @@
 @section('content-body')
     <div class="mt-1 p-2 card">
         @include('admin.layouts.message')   
+        <div class="row">
+            <h3 class="text-center">REQUISITION - {{ $single->id }}</h3>                    
+            <h3 class="text-center">{{ $single->company_name }}</h3>                    
 
-            <div class="row">
-
-                <div class="mb-3 col-4">
-                    <label for="title" class="form-label">Title</label>
-                    <input type="text" class="form-control" id="title" value="{{ old('title', $requisition->title) }}" required placeholder="Title" tabindex="1" disabled>
-                    @error('title') <div class="text-danger">{{ $message }}</div> @enderror
+            <div class="text-center">A/C Name - Software Shop Limited</div>
+            <div class="text-center">A/C No - 107-250-8652</div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-4">
+                Date: {{ $single->created_at }}
+            </div>
+            <div class="col-4 text-center">
+                Paribahan.com
+            </div>
+            <div class="col-4">
+                Status:
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-4">
+                Cheque no: 
+            </div>
+            <div class="col-4 text-center">
+                Cheque Amount:
+            </div>
+            <div class="col-4">
+                Received:
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-12">
+                <table class="table table-sm table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th colspan="4" class="text-center">Office Expense</th>
+                        </tr>
+                        <tr>
+                            <th class="text-center">SL No.</th>
+                            <th class="text-center">Date</th>
+                            <th class="text-center">Details</th>
+                            <th class="text-center">Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="text-center">1</td>
+                            <td class="text-center">{{ $single->created_at }}</td>
+                            <td class="">{{ $single->purpose_name }}</td>
+                            <td class="text-end">{{ $single->amount }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-center">&nbsp;</td>
+                            <td class="text-center">&nbsp;</td>
+                            <td class="text-end">Total=</td>
+                            <td class="text-end">{{ $single->amount }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div>
+                    {{ \App\Helpers\CommonHelper::get_NumberInWord($single->amount) }} Taka Only
                 </div>
-
-                <div class="mb-3  col-8">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" id="description" required placeholder="Description" tabindex="2" disabled>{{ old('description', $requisition->description )  }}</textarea>
-                    @error('description') <div class="text-danger">{{ $message }}</div> @enderror
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-6">Prepared By</div>
+            <div class="col-6 text-center">Approved By</div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-6">Verified By</div>
+        </div>
+        @if(in_array($single->status, ['pending', 'rejected']))
+        <form action="{{ route('requisition.store_approval', ['id' => $single->id]) }}" method="POST">
+            @csrf
+            <div class="row mt-3">
+                <div class="col-6">
+                    <div class="btn-group" role="group">
+                        <button type="submit" class="btn btn-primary" name="status" value="approved">Approve</button>
+                        <button type="submit" class="btn btn-warning" name="status" value="rejected">Reject</button>
+                        <button type="submit" class="btn btn-info" name="status" value="pending">Return</button>
+                    </div> 
                 </div>
-
-                <div class="mb-3 col-4">
-                    <label for="amount" class="form-label">Amount</label>
-                    <input type="number" class="form-control" id="amount" value="{{ old('amount', $requisition->amount) }}" required placeholder="Amount" tabindex="3" step="0.01" disabled>
-                    @error('amount') <div class="text-danger">{{ $message }}</div> @enderror
+            </div>
+            <div class="row mt-3">
+                <div class="col-3">
+                    <label for="remarks" class="form-label">Remarks</label>
+                    <input type="text" class="form-control" id="remarks" name="remarks" value="{{ old('remarks') }}">
+                    @error('remarks') 
+                        <div class="text-danger">
+                            {{ $message }}
+                        </div> 
+                    @enderror
                 </div>
-
-                <div class="mb-3 col-4">
-                    <label for="requested_to" class="form-label">Requested To</label>
-
-                    <select class="form-control" id="requested_to" value="{{ old('requested_to') }}" required tabindex="4" disabled>
-                        <option value="">Select Requested To</option>
-                        <option value="ceo"{{old('', $requisition->requested_to)=='ceo'?' selected':'' }}>CEO</option>
-                        <option value="managing_director"{{old('', $requisition->requested_to)=='managing_director'?' selected':'' }}>Managing Director</option>
-                        <option value="manager"{{old('', $requisition->requested_to)=='manager'?' selected':'' }}>Manager</option>
-                        <option value="accountant"{{old('', $requisition->requested_to)=='accountant'?' selected':'' }}>Accountant</option>
-                    </select>
-                    @error('requested_to') <div class="text-danger">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="mb-3 col-4">
-                    <label for="transaction_mode" class="form-label">Transaction Mode</label>
-
-                    <select class="form-control" id="transaction_mode" value="{{ old('transaction_mode') }}" required tabindex="5" disabled>
-                        <option value="">Select Transaction Mode</option>
-                        <option value="cash"{{old('', $requisition->transaction_mode)=='cash'?' selected':'' }}>Cash</option>
-                        <option value="bank"{{old('', $requisition->transaction_mode)=='bank'?' selected':'' }}>Bank</option>
-                        <option value="due"{{old('', $requisition->transaction_mode)=='due'?' selected':'' }}>Due</option>
-                    </select>
-                    @error('transaction_mode') <div class="text-danger">{{ $message }}</div> @enderror
-                </div>
-
-                <div class="mb-3 col-4">
-                    <label for="bank_check_info" class="form-label">Bank Check Info</label>
-
-                    <select class="form-control" id="bank_check_info" value="{{ old('bank_check_info') }}" tabindex="6" disabled>
-                        <option value="">Select Bank Check Info</option>
-                    </select>
-                    @error('bank_check_info') <div class="text-danger">{{ $message }}</div> @enderror
-                </div> 
-
-                <div class="col-12">
-                    <h3>Approval Status</h3>
-                    <table class="table table-bordered table-hover table-sm">
-                        <thead>
-                            <tr class="table-info">
-                                <th style="width: 60px;">#</th>
-                                <th style="width: 140px;">Status</th>
-                                <th>Remarks</th>
-                                <th style="width: 225px;">Updated By</th>
-                                <th style="width: 200px;">Action Time</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($approvals AS $approval)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ ucwords($approval->status) }}</td>
-                                <td>{{ $approval->remarks }}</td>
-                                <td>{{ $approval->user->name }}</td>
-                                <td>{{ $approval->created_at }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>  
+            </div>
+        </form>
+        @endif
     </div>
 
 @endsection
 
 @section('footerjs')
-
+<script type="text/javascript">
+    $(document).ready(function(){
+        flatpickr("#activity_date", {
+            dateFormat: "Y-m-d",
+            defaultDate: "today",
+            // maxDate: "today"    
+        });
+    });
+</script>
 
 @endsection

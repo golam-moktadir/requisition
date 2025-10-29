@@ -9,12 +9,26 @@ use Illuminate\Support\Facades\Storage;
 
 class RequisitionService
 {
-    public function getDataList()
+    public function getDataList(Request $request)
     {
         return DB::table('requisitions as r')
                 ->leftJoin('companies as c', 'c.id', '=', 'r.company_id')
                 ->leftJoin('purposes as p', 'p.id', '=', 'r.purpose_id')
                 ->select(['r.id', 'r.description', 'r.requested_to', 'r.amount', 'r.status', 'c.company_name', 'p.purpose_name'])
+                ->when($request->filled('requisition_no'), function ($query) use ($request) {
+                    $query->where('r.id', $request->input('requisition_no'));
+                })                
+                ->when($request->filled('from_date') && $request->filled('to_date'), function ($query) use ($request) {
+                    $query->whereBetween(DB::raw('DATE(r.created_at)'), [$request->input('from_date'), $request->input('to_date')]);
+                })
+                ->when($request->has('status'), function ($query) use ($request) {
+                    $status = $request->input('status');
+                    if ($status) {
+                        $query->where('r.status', $status);
+                    }
+                }, function ($query) {
+                    $query->where('r.status', 'pending');
+                })
                 ->orderBy('id', 'desc')
                 ->get();
     }
@@ -52,7 +66,12 @@ class RequisitionService
     }
 
     public function getSingleData($id){
-        return Requisition::find($id);
+        return DB::table('requisitions as r')
+                ->leftJoin('companies as c', 'c.id', '=', 'r.company_id')
+                ->leftJoin('purposes as p', 'p.id', '=', 'r.purpose_id')
+                ->select(['r.*', 'c.company_name', 'p.purpose_name', DB::raw("DATE_FORMAT(r.created_at, '%d/%m/%Y') as created_at")])
+                ->where('r.id', $id)
+                ->first();
     }
 
     public function getFiles($id){

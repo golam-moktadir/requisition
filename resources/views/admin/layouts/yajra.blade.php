@@ -31,6 +31,7 @@
     <!-- Core CSS -->
     <link rel="stylesheet" href="{{ URL('/') }}/sneat-bootstrap5-theme/assets/vendor/css/core.css" class="template-customizer-core-css" />
     <link rel="stylesheet" href="{{ URL('/') }}/sneat-bootstrap5-theme/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="{{ URL('/') }}/sneat-bootstrap5-theme/assets/vendor/datapicker/flatpickr.min.css">
     <link rel="stylesheet" href="{{ URL('/') }}/sneat-bootstrap5-theme/assets/css/demo.css" />
 
     <!-- Vendors CSS -->
@@ -127,6 +128,7 @@
     <script src="{{ URL('/') }}/sneat-bootstrap5-theme/assets/vendor/js/bootstrap.js"></script>
     <script src="{{ URL('/') }}/sneat-bootstrap5-theme/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
     <script src="{{ URL('/') }}/sneat-bootstrap5-theme/assets/vendor/js/menu.js"></script>
+    <script src="{{ URL('/') }}/sneat-bootstrap5-theme/assets/vendor/datapicker/flatpickr.min.js"></script>
 
     <!-- endbuild -->
 

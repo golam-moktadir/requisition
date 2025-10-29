@@ -13,35 +13,40 @@
     <div class="mt-1 p-2 card">
         @include('admin.layouts.message')
         <p>
-            <a href="{{ route('requisition.create') }}" class="btn btn-sm btn-primary">
-                Add New
+            <a href="{{ route('requisition.create') }}" class="btn btn-md btn-primary">
+                Make new requisition
             </a>
         </p>
         <form method="GET" action="{{ route('requisition.index') }}">            
-            <div class="row mt-1 p-1 align-items-end">
-                <div class="col-md-2 mb-2">
-                    <label for="requisition_no" class="form-label">Requisition No.</label>
-                    <input type="text" class="form-control" id="requisition_no" name="requisition_no" value="{{ old('requisition_no') }}" tabindex="1" autocomplete="off">
+            <div class="row mt-1 p-1">
+                <div class="mb-2 col-md-4">
+                    <label for="date" class="form-label">Date</label>
+                    <input value="{{ old('date') }}" type="date" class="form-control" id="date" aria-describedby="dateHelp" name="date" autofocus tabindex="1" autocomplete="off">
                 </div>
-                <div class="col-md-2 mb-2">
-                    <label for="from_date" class="form-label">From Date</label>
-                    <input type="text" class="form-control" id="from_date" name="from_date" value="{{ old('from_date') }}" tabindex="2" autocomplete="off">
+                <div class="mb-2 col-md-4">
+                    <label for="transaction_mode" class="form-label">Transaction Mode</label>
+                    <select class="form-control" id="transaction_mode" name="transaction_mode" value="{{ old('transaction_mode') }}" tabindex="2">
+                        <option value="">Select Transaction Mode</option>
+                        <option value="cash">Cash</option>
+                        <option value="bank">Bank</option>
+                        <option value="due">Due</option>
+                    </select>
+                    @error('transaction_mode') <div class="text-danger">{{ $message }}</div> @enderror
                 </div>
-                <div class="col-md-2 mb-2">
-                    <label for="to_date" class="form-label">To Date</label>
-                    <input type="text" class="form-control" id="to_date" name="to_date" value="{{ old('to_date') }}" tabindex="3" autocomplete="off">
-                </div>
-                <div class="col-md-2 mb-2">
+                <div class="mb-2 col-md-4">
                     <label for="status" class="form-label">Status</label>
-                    <select class="form-control" id="status" name="status" tabindex="4">
-                        <option value="">All Status</option>
-                        <option value="pending" selected>Pending</option>
+                    <select class="form-control" id="status" name="status" value="{{ old('status') }}" tabindex="3">
+                        <option value="">Select Transaction Mode</option>
+                        <option value="pending">Pending</option>
                         <option value="approved">Approved</option>
                         <option value="rejected">Rejected</option>
                     </select>
+                    @error('status') <div class="text-danger">{{ $message }}</div> @enderror
                 </div>
-                <div class="col-md-2 mb-2">
-                    <button type="submit" name="search" value="search" class="btn btn-primary ms-auto w-50">Search</button>
+                <div class="mb-2 col-md-4">
+                    <button type="submit" name="search" value="search" class="btn btn-primary">
+                        Search
+                    </button>
                 </div>
             </div>
         </form>
@@ -115,12 +120,15 @@
 @endsection
 
 @section('footerjs')
-<script type="text/javascript">
+<script>
     $(document).ready(function(){
-        flatpickr("#from_date, #to_date", {
-            dateFormat: "Y-m-d",
-            //defaultDate: "today",
-            // maxDate: "today"    
+        $.ajax({
+            url:
+            type: 'post',
+            data:{status: 'approve'},
+            success: function(response){
+                
+            }
         });
     });
 </script>

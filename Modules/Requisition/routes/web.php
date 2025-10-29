@@ -5,7 +5,7 @@ use Modules\Requisition\Http\Controllers\RequisitionController;
 use Modules\Requisition\Http\Controllers\BankController;
 use Modules\Requisition\Http\Controllers\CompanyController;
 use Modules\Requisition\Http\Controllers\PurposeController;
-
+use Modules\Requisition\Http\Controllers\PayeeController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -33,6 +33,13 @@ Route::group(['middleware' => ['auth']], function () {
      Route::get('requisition/purpose/edit/{id}', [PurposeController::class, 'edit'])->name('purpose.edit');
      Route::put('requisition/purpose/edit/{id}', [PurposeController::class, 'update'])->name('purpose.update');
      Route::delete('requisition/purpose/delete/{id}', [PurposeController::class, 'destroy'])->name('purpose.destroy');
+
+     Route::get('requisition/payee', [PayeeController::class, 'index'])->name('payee.index');
+     Route::get('requisition/payee/create', [PayeeController::class, 'create'])->name('payee.create');
+     Route::post('requisition/payee/store', [PayeeController::class, 'store'])->name('payee.store');
+     Route::get('requisition/payee/edit/{id}', [PayeeController::class, 'edit'])->name('payee.edit');
+     Route::put('requisition/payee/edit/{id}', [PayeeController::class, 'update'])->name('payee.update');
+     Route::delete('requisition/payee/delete/{id}', [PayeeController::class, 'destroy'])->name('payee.destroy');
      
      Route::get('requisition/index', [RequisitionController::class, 'index'])->name('requisition.index');
 

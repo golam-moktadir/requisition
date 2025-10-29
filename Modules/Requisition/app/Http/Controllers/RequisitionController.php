@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Modules\Requisition\Models\Requisition;
 use Modules\Requisition\Models\Approval;
 use Modules\Requisition\Models\Company;
@@ -15,7 +16,6 @@ use Illuminate\Support\Facades\Storage;
 
 class RequisitionController extends Controller
 {
-
     protected $service;
 
     public function __construct(RequisitionService $service)
@@ -29,7 +29,7 @@ class RequisitionController extends Controller
     public function index(Request $request)
     {
         $data['title'] = 'Requisitions';
-        $data['requisitions'] = $this->service->getDataList();
+        $data['requisitions'] = $this->service->getDataList($request);
         return view('requisition::index', $data);
     }
 
@@ -72,11 +72,11 @@ class RequisitionController extends Controller
      */
     public function show(int $requisition_id)
     {
-        return view('requisition::show', [
-            'title' => 'Show Requisition',
-            'requisition' => Requisition::findOrFail($requisition_id),
-            'approvals' => Approval::where('requisition_id', $requisition_id)->with('user')->get(),
-        ]);        
+        $data['title']      = 'Requisitions';
+        $data['single']     = $this->service->getSingleData($requisition_id); 
+        $data['files']      = $this->service->getFiles($requisition_id);
+        $data['approvals']  = Approval::where('requisition_id', $requisition_id)->with('user')->get();
+        return view('requisition::show', $data);        
     }
 
     /**
@@ -87,7 +87,7 @@ class RequisitionController extends Controller
         $data['title'] = 'Requisitions';
         $data['companies'] = Company::all();
         $data['purposes']  = Purpose::all();
-        $data['single'] = $this->service->getSingleData($id);// Requisition::whereIn('status', ['pending','rejected'])->findOrFail($id);
+        $data['single'] = $this->service->getSingleData($id); 
         $data['files']  = $this->service->getFiles($id);
         return view('requisition::edit', $data);
     }
@@ -131,14 +131,15 @@ class RequisitionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function approval($id)
+    public function approval($requisition_id)
     {  
         // if( ! in_array(Auth::user()->id, [1])){
         //     abort(404);
         // }
-        $data['title']  = 'Requisitions';
-        $data['single'] = $this->service->getSingleData($id);
-        return view('requisition::approval', $data);
+        return view('requisition::approval', [
+            'title' => 'Approve Requisition',
+            'requisition' => Requisition::whereIn('status', ['pending','rejected'])->findOrFail($requisition_id),
+        ]);
     }
 
     /**
@@ -146,44 +147,34 @@ class RequisitionController extends Controller
      */
     public function storeAapproval(int $requisition_id, Request $request)
     {    
+        // dd($request->all());
         // if( ! in_array(Auth::user()->id, [1])) {
         //     abort(404);
         // }
 
-        $requisition = Requisition::whereIn('status', ['pending','rejected'])->findOrFail($requisition_id);
+        DB::beginTransaction();
 
-        if($request->has('status') && in_array($request->status, ['rejected', 'approved'])) {
+        try {
+            $requisition = Requisition::findOrFail($requisition_id);
+            //dd($request->input('status'));
+            $requisition->status = $request->input('status');
+            $requisition->save();
 
-            DB::beginTransaction();
+            $approval                   = new Approval();
+            $approval->requisition_id   = $requisition_id;
+            //$approval->status           = $request->status;
+            $approval->remarks          = $request->input('remarks');
+            $approval->user_id          = Auth::id();
+            $approval->save();
 
-            try {
-                $approval                   = new Approval();
-                $approval->requisition_id   = $requisition_id;
-                $approval->status           = $request->status;
-                $approval->remarks          = $request->remarks;
-                $approval->user_id          = Auth::id();
-                $approval->save();
+            DB::commit();
 
-                if($approval->id>0) {
-                    $requisition->status = $approval->status;
-                    $requisition->save();
-                }
-                else{
-                    throw new Exception("Approval update failed.", 500);                    
-                }
-                
-                DB::commit();
-
-            } catch (\Exception $e) {                 
-                DB::rollBack();
-                about(500);
-            }
-
-            return redirect()->route('requisition.show', $requisition_id)
-                            ->with('Requisition update successfully!');
+        } catch (\Exception $e) {                 
+            DB::rollBack();
+            Log::error($e->getMessage());
         }
-        else{
-            abort(404);
-        }
+
+        return redirect()->route('requisition.show', $requisition_id)
+                        ->with('Requisition update successfully!');
     }
 }
