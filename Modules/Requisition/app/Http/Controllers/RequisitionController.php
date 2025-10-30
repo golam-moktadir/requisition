@@ -11,6 +11,7 @@ use Modules\Requisition\Models\Requisition;
 use Modules\Requisition\Models\Approval;
 use Modules\Requisition\Models\Company;
 use Modules\Requisition\Models\Purpose;
+use Modules\Requisition\Models\Payee;
 use Modules\Requisition\Services\RequisitionService;
 use Illuminate\Support\Facades\Storage;
 
@@ -41,6 +42,7 @@ class RequisitionController extends Controller
         $data['title'] = 'Requisitions';
         $data['companies'] = Company::all();
         $data['purposes']  = Purpose::all();
+        $data['payees']  = Payee::all();
         return view('requisition::create', $data);
     }
 
@@ -52,13 +54,13 @@ class RequisitionController extends Controller
         $validated = $request->validate([
             'company_id'        => 'required',
             'purpose_id'        => 'required|integer',
-            'description'       => 'required',
+            'payee_id'          => 'nullable|integer',
+            'description'       => 'required|string',
             'amount'            => 'required',
             'requested_to'      => 'required'
         ]);
 
         $result = $this->service->saveData($validated, $request);
-        //dd($result);
 
         if ($result) {
             return redirect()->route('requisition.index')->with('success', 'Created Successfully');
@@ -76,6 +78,7 @@ class RequisitionController extends Controller
         $data['single']     = $this->service->getSingleData($requisition_id); 
         $data['files']      = $this->service->getFiles($requisition_id);
         $data['approvals']  = Approval::where('requisition_id', $requisition_id)->with('user')->get();
+        //dd($data['approvals']);
         return view('requisition::show', $data);        
     }
 
@@ -87,6 +90,7 @@ class RequisitionController extends Controller
         $data['title'] = 'Requisitions';
         $data['companies'] = Company::all();
         $data['purposes']  = Purpose::all();
+        $data['payees']  = Payee::all();
         $data['single'] = $this->service->getSingleData($id); 
         $data['files']  = $this->service->getFiles($id);
         return view('requisition::edit', $data);
@@ -100,7 +104,8 @@ class RequisitionController extends Controller
         $validated = $request->validate([
             'company_id'        => 'required',
             'purpose_id'        => 'required|integer',
-            'description'       => 'required',
+            'payee_id'          => 'nullable|integer',
+            'description'       => 'required|string',
             'amount'            => 'required',
             'requested_to'      => 'required'
         ]);
@@ -151,30 +156,12 @@ class RequisitionController extends Controller
         // if( ! in_array(Auth::user()->id, [1])) {
         //     abort(404);
         // }
-
-        DB::beginTransaction();
-
-        try {
-            $requisition = Requisition::findOrFail($requisition_id);
-            //dd($request->input('status'));
-            $requisition->status = $request->input('status');
-            $requisition->save();
-
-            $approval                   = new Approval();
-            $approval->requisition_id   = $requisition_id;
-            //$approval->status           = $request->status;
-            $approval->remarks          = $request->input('remarks');
-            $approval->user_id          = Auth::id();
-            $approval->save();
-
-            DB::commit();
-
-        } catch (\Exception $e) {                 
-            DB::rollBack();
-            Log::error($e->getMessage());
+        $result = $this->service->storeAapproval($requisition_id, $request);
+        
+        if ($result) {
+            return redirect()->route('requisition.index')->with('success', 'Requisition Approved Successfully');
+        } else {
+            return back()->with('error', 'Requisition Update Failed');
         }
-
-        return redirect()->route('requisition.show', $requisition_id)
-                        ->with('Requisition update successfully!');
     }
 }

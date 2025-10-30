@@ -45,6 +45,20 @@
                     @enderror
                 </div>
                 <div class="mb-3">
+                    <label for="payee_id" class="form-label">Payee Name</label>
+                    <select class="form-control" id="payee_id" name="payee_id" tabindex="2" autofocus>
+                        <option value="">Select Payee</option>
+                        @foreach($payees as $row)
+                            <option value="{{ $row->id }}" {{ old('payee_id', $single->payee_id) == $row->id ? 'selected' : '' }}>{{ $row->payee_name }}</option>
+                        @endforeach
+                    </select>
+                    @error('payee_id') 
+                    <div class="text-danger">
+                        {{ $message }}
+                    </div> 
+                    @enderror
+                </div>
+                <div class="mb-3">
                     <label for="description" class="form-label">Description</label>
                     <textarea class="form-control" id="description" name="description" required placeholder="Description" tabindex="5" rows="6" maxlength="1000">{{ old('description', $single->description )  }}</textarea>
                     @error('description') <div class="text-danger">{{ $message }}</div> @enderror

@@ -68,48 +68,19 @@
                     <td>{{ ucwords($requisition->amount) }}</td>
                     <td>{{ ucwords($requisition->status) }}</td>
                     <td>
-                        <div class="btn-group" role="group" aria-label="Basic example">
-<!--                          @if(auth()->user()->id=='1')                  
-                    @if($requisition->status!='approved') 
+                        <div class="btn-group" role="group" aria-label="Basic example"> 
                             <a href="{{ route('requisition.show', $requisition->id) }}" class="btn btn-sm btn-info"> View
                             </a>
+                            @if($requisition->status!='approved') 
                             <a href="{{ route('requisition.edit', $requisition->id) }}" class="btn btn-sm btn-primary">
                                 Edit
                             </a>
-                            @endif 
-                          @endif -->  
-                            <a href="{{ route('requisition.show', $requisition->id) }}" class="btn btn-sm btn-info"> View
-                            </a>
-                            <a href="{{ route('requisition.edit', $requisition->id) }}" class="btn btn-sm btn-primary">
-                                Edit
-                            </a>
-
-                          @if($requisition->status!='approved')                
-                              <a href="{{ route('requisition.approval', $requisition->id) }}" class="btn btn-sm btn-secondary">
-                                Approval
-                              </a> 
-                          @endif        
-<!--                           @if(auth()->user()->id=='1' and $requisition->status!='approved')                
-                              <a href="{{ route('requisition.approval', $requisition->id) }}" class="btn btn-sm btn-secondary">
-                                Approval
-                              </a> 
-                          @endif   -->                 
+                            @endif                
                         </div>    
                     </td>
                 </tr>
                 @endforeach
             </tbody>
-            <tfoot>
-                <tr class="table-primary text-white">
-                    <th style="width: 60px;">#</th>
-                    <th >Title</th>
-                    <th style="width: 130px;">Amount (TK)</th>
-                    <th style="width: 135px;">Requested To</th>
-                    <th style="width: 130px;">Trans. Mode</th>
-                    <th style="width: 100px;">Status</th>
-                    <th style="width: 120px;">Action</th>                
-                </tr>
-            </tfoot>
         </table>        
     </div>
 @endsection

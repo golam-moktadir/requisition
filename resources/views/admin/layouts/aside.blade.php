@@ -64,6 +64,13 @@
                 <div data-i18n="Purpose">Purpose</div>
             </a>
         </li> 
+
+        <li class="menu-item">
+            <a href="{{ route('payee.index') }}" class="menu-link">
+                <i class="bx bx-dollar bx-sm align-middle"></i>
+                <div data-i18n="Purpose">Payee</div>
+            </a>
+        </li> 
     </ul>
 </aside>
 <!-- / Menu -->

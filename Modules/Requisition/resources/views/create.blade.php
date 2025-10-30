@@ -43,19 +43,23 @@
                     </div> 
                     @enderror
                 </div>
-<!--                 <div class="mb-3">
-                    <label for="title" class="form-label">Title</label>
-                    <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}" required placeholder="Title" tabindex="3" autofocus>
-                    @error('title') 
+                <div class="mb-3">
+                    <label for="payee_id" class="form-label">Payee Name</label>
+                    <select class="form-control" id="payee_id" name="payee_id" tabindex="2" autofocus>
+                        <option value="">Select Payee</option>
+                        @foreach($payees as $row)
+                            <option value="{{ $row->id }}" {{ old('payee_id') == $row->id ? 'selected' : '' }}>{{ $row->payee_name }}</option>
+                        @endforeach
+                    </select>
+                    @error('payee_id') 
                     <div class="text-danger">
                         {{ $message }}
                     </div> 
                     @enderror
-                </div> -->
-
+                </div>
                 <div class="mb-3">
                     <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" id="description" name="description" required placeholder="Description" tabindex="4" rows="6" maxlength="1000">{{ old('description') }}</textarea>
+                    <textarea class="form-control" id="description" name="description" placeholder="Description" tabindex="4" rows="6" maxlength="1000">{{ old('description') }}</textarea>
                     @error('description') 
                     <div class="text-danger">
                         {{ $message }}

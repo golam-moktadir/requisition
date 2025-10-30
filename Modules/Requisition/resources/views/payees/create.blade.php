@@ -27,7 +27,7 @@
                 <div class="mb-3">
                     <label for="account_holder_name" class="form-label">Account Holder Name</label>
                     <input type="text" class="form-control" id="account_holder_name" name="account_holder_name" 
-                           value="{{ old('account_holder_name') }}" placeholder="Account Holder Name" tabindex="2" maxlength="11">
+                           value="{{ old('account_holder_name') }}" placeholder="Account Holder Name" tabindex="2">
                     @error('account_holder_name')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror
@@ -59,7 +59,7 @@
                 <div class="mb-3">
                     <label for="address" class="form-label">Address</label>
                     <input type="text" class="form-control" id="address" name="address" 
-                           value="{{ old('address') }}" placeholder="Company Address" tabindex="6">
+                           value="{{ old('address') }}" placeholder="Payee Address" tabindex="6">
                     @error('address')
                         <div class="text-danger">{{ $message }}</div>
                     @enderror

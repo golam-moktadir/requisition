@@ -49,7 +49,6 @@ class PayeeController extends Controller
         ]);
 
         $result = $this->service->saveData($validated);
-        dd($result);
 
         if ($result) {
             return redirect()->route('payee.index')->with('success', 'Save Successful');
@@ -71,7 +70,9 @@ class PayeeController extends Controller
      */
     public function edit($id)
     {
-        return view('requisition::edit');
+        $data['title'] = 'Payee Information';
+        $data['single'] = $this->service->getSingleData($id);
+        return view('requisition::payees.edit', $data);
     }
 
     /**
@@ -79,7 +80,22 @@ class PayeeController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $validated = $request->validate([
+            'payee_name' => 'required|string|max:255',
+            'account_holder_name' => 'nullable|string',
+            'account_number' => 'nullable|numeric',
+            'phone'        => 'required|string|max:11|digits_between:3,11',
+            'email'        => 'required|max:255|email|regex:/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/',            
+            'address'      => 'required|string|max:255',
+        ]);
+
+        $result = $this->service->updateData($validated, $id);
+        
+        if ($result) {
+            return back()->with('success', 'Updated Successfully');
+        } else {
+            return back()->withInput()->with('error', 'Save Failed. Please try again.');
+        }
     }
 
     /**
@@ -87,6 +103,12 @@ class PayeeController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $result = $this->service->deleteData($id);
+        
+        if ($result) {
+            return back()->with('success', 'Deleted Successfully');
+        } else {
+            return back()->with('error', 'Delete Failed. Please try again.');
+        }
     }
 }
