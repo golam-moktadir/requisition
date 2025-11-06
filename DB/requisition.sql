@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: Oct 16, 2025 at 09:08 AM
+-- Generation Time: Nov 06, 2025 at 10:16 AM
 -- Server version: 10.11.14-MariaDB-ubu2204
--- PHP Version: 8.4.13
+-- PHP Version: 8.4.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -39,26 +39,75 @@ CREATE TABLE `account_heads` (
   `deleted_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- --------------------------------------------------------
+
 --
--- Dumping data for table `account_heads`
+-- Table structure for table `banks`
 --
 
-INSERT INTO `account_heads` (`id`, `head_category`, `account_head_name`, `parent_id`, `status`, `created_by`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(1, '0', 'Mr. Sofia Heller', 0, 0, 179, '2025-10-14 09:33:03', '2025-10-14 09:33:03', NULL),
-(2, '0', 'Maida Osinski', 0, 0, 550, '2025-10-14 09:33:03', '2025-10-14 09:33:03', NULL),
-(3, '1', 'Mrs. Muriel Dibbert Sr.', 0, 0, 246, '2025-10-14 09:33:03', '2025-10-14 09:33:03', NULL),
-(4, '0', 'Derek Nitzsche', 0, 1, 239, '2025-10-14 09:33:03', '2025-10-14 09:33:03', NULL),
-(5, '1', 'Test Sub head', 14, 2, 718, '2025-10-14 09:33:03', '2025-10-14 09:50:39', NULL),
-(6, '0', 'Dr. Katlynn Cruickshank II', 2, 0, 149, '2025-10-14 09:33:03', '2025-10-14 09:33:03', NULL),
-(7, '1', 'Dr. Cameron Zboncak Sr.', 0, 1, 846, '2025-10-14 09:33:03', '2025-10-14 09:33:03', NULL),
-(8, '1', 'Paige Hartmann II', 0, 0, 929, '2025-10-14 09:33:03', '2025-10-14 09:33:03', NULL),
-(9, '1', 'Jerome Schneider', 0, 1, 435, '2025-10-14 09:33:03', '2025-10-14 09:33:03', NULL),
-(10, '1', 'Fleta Farrell', 3, 1, 987, '2025-10-14 09:33:03', '2025-10-14 09:33:03', NULL),
-(11, '1', 'Buford Franecki', 0, 0, 925, '2025-10-14 09:33:03', '2025-10-14 09:33:03', NULL),
-(12, '1', 'Audrey Wintheiser DDS', 0, 0, 486, '2025-10-14 09:33:03', '2025-10-14 09:33:03', NULL),
-(13, '1', 'Dr. Alexzander Jacobson', 0, 0, 374, '2025-10-14 09:33:03', '2025-10-14 09:33:03', NULL),
-(14, '1', 'Test Head', 0, 1, 2, '2025-10-14 09:48:42', '2025-10-14 09:49:02', NULL),
-(15, '1', 'Test Sub head x', 14, 1, 0, '2025-10-14 09:50:27', '2025-10-14 09:50:27', NULL);
+CREATE TABLE `banks` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `company_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Foreign Key - id:companies',
+  `bank_name` varchar(255) NOT NULL,
+  `account_holder_name` varchar(255) NOT NULL,
+  `account_no` varchar(255) NOT NULL,
+  `account_type` enum('current','savings','fdr','cc') DEFAULT NULL,
+  `branch_name` varchar(255) NOT NULL,
+  `branch_address` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cheques`
+--
+
+CREATE TABLE `cheques` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `bank_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Foreign Key - id : banks',
+  `requisition_id` bigint(20) NOT NULL DEFAULT 0 COMMENT 'Foreign Key - id : requisitions',
+  `cheque_no` varchar(255) NOT NULL,
+  `amount` decimal(12,2) NOT NULL DEFAULT 0.00,
+  `status` int(11) NOT NULL DEFAULT 1 COMMENT '1 - Active, 2 - Inactive, 3 - Used',
+  `remarks` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cheque_files`
+--
+
+CREATE TABLE `cheque_files` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `cheque_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Foreign Key : id - cheques',
+  `file_name` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `companies`
+--
+
+CREATE TABLE `companies` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `company_name` varchar(255) NOT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `website` varchar(255) DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `status` int(11) NOT NULL DEFAULT 1 COMMENT '1 - Active, 2 - Inactive',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -70,19 +119,11 @@ CREATE TABLE `daily_income_expense` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `account_head_id` int(11) NOT NULL DEFAULT 0,
   `amount` decimal(10,2) NOT NULL DEFAULT 0.00,
-  `debited_to` varchar(250) NOT NULL,
   `remarks` varchar(255) NOT NULL DEFAULT '',
   `created_by` bigint(20) NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `daily_income_expense`
---
-
-INSERT INTO `daily_income_expense` (`id`, `account_head_id`, `amount`, `debited_to`, `remarks`, `created_by`, `created_at`, `updated_at`) VALUES
-(1, 5, 100.00, 'Abdus Salam', 'Test', 2, '2025-10-14 09:52:33', '2025-10-14 09:52:33');
 
 -- --------------------------------------------------------
 
@@ -127,7 +168,23 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (8, '2024_11_14_161232_create_account_heads_table', 1),
 (9, '2024_12_05_124850_create_daily_income_expense_table', 1),
 (10, '2024_12_08_131231_create_requisitions_table', 1),
-(11, '2024_12_08_175702_create_requisition_approval_table', 1);
+(11, '2024_12_08_175702_create_requisition_approval_table', 1),
+(12, '2025_10_21_112235_create_companies_table', 1),
+(13, '2025_10_26_144152_add_company_id_to_requisitions_table', 1),
+(14, '2025_10_26_150917_add_nullable_to_transaction_mode_and_bank_check_in_requisitions_table', 1),
+(15, '2025_10_26_155937_create_requisition_files_table', 1),
+(16, '2025_10_27_124800_create_purposes_table', 1),
+(17, '2025_10_27_152729_add_purpose_id_to_requisitions_table', 1),
+(18, '2025_10_27_192205_add_title_nullable_to_requisitions_table', 1),
+(19, '2025_10_29_181344_add_remarks_nullable_to_requisition_approval_table', 1),
+(20, '2025_10_29_184120_create_payees_table', 1),
+(21, '2025_10_30_120508_add_payee_id_to_requisitions_table', 1),
+(22, '2025_10_30_144724_change_requisition_status_in_requisition_approval_table', 1),
+(23, '2025_11_02_122955_change_requisition_status_in_requisitions_table', 1),
+(24, '2025_11_02_125310_change_requisition_status_in_requisition_approval_table', 1),
+(25, '2025_11_02_155758_create_banks_table', 1),
+(26, '2025_11_03_130544_create_cheques_table', 1),
+(27, '2025_11_04_161453_create_cheque_files_table', 1);
 
 -- --------------------------------------------------------
 
@@ -156,6 +213,24 @@ CREATE TABLE `password_reset_tokens` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `payees`
+--
+
+CREATE TABLE `payees` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `payee_name` varchar(255) NOT NULL,
+  `account_holder_name` varchar(255) DEFAULT NULL,
+  `account_number` varchar(255) DEFAULT NULL,
+  `phone` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `address` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `personal_access_tokens`
 --
 
@@ -175,29 +250,39 @@ CREATE TABLE `personal_access_tokens` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `purposes`
+--
+
+CREATE TABLE `purposes` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `purpose_name` varchar(255) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `requisitions`
 --
 
 CREATE TABLE `requisitions` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `title` varchar(255) NOT NULL,
+  `company_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `purpose_id` bigint(20) UNSIGNED DEFAULT NULL,
+  `payee_id` bigint(20) UNSIGNED DEFAULT NULL COMMENT 'Foreign Key - payee_id:payees',
+  `others` varchar(255) DEFAULT NULL,
+  `title` varchar(255) DEFAULT NULL,
   `description` text NOT NULL,
   `requested_to` enum('managing_director','ceo','manager','accountant') NOT NULL DEFAULT 'accountant',
   `amount` decimal(11,3) NOT NULL DEFAULT 0.000,
-  `transaction_mode` enum('cash','bank','due') NOT NULL DEFAULT 'due',
-  `bank_check_info` varchar(255) NOT NULL DEFAULT '',
-  `status` enum('pending','approved','rejected') NOT NULL DEFAULT 'pending',
+  `transaction_mode` enum('cash','bank','due') DEFAULT NULL,
+  `bank_check_info` varchar(255) DEFAULT NULL,
+  `status` enum('approved','rejected','pending','returned') NOT NULL DEFAULT 'pending',
   `created_by` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `requisitions`
---
-
-INSERT INTO `requisitions` (`id`, `title`, `description`, `requested_to`, `amount`, `transaction_mode`, `bank_check_info`, `status`, `created_by`, `created_at`, `updated_at`) VALUES
-(1, 'PC build', 'New PC', 'ceo', 50000.000, 'cash', '', 'pending', 2, '2025-10-14 09:53:40', '2025-10-14 09:53:40');
 
 -- --------------------------------------------------------
 
@@ -207,10 +292,24 @@ INSERT INTO `requisitions` (`id`, `title`, `description`, `requested_to`, `amoun
 
 CREATE TABLE `requisition_approval` (
   `id` bigint(20) UNSIGNED NOT NULL,
-  `requisition_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
-  `status` enum('approved','rejected') NOT NULL DEFAULT 'rejected',
-  `remarks` varchar(255) NOT NULL,
+  `requisition_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Foreign Key - id: requisitions',
+  `status` enum('approved','rejected','pending','returned') DEFAULT NULL,
+  `remarks` varchar(255) DEFAULT NULL,
   `user_id` bigint(20) UNSIGNED NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `requisition_files`
+--
+
+CREATE TABLE `requisition_files` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `requisition_id` bigint(20) UNSIGNED NOT NULL COMMENT 'Foreign Key : id - requisitions',
+  `file_name` varchar(255) NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -235,7 +334,7 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('1ufaTR4T8jXQsGVcZl10t3xAd5nyNKJD65jt5RbJ', 2, '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:143.0) Gecko/20100101 Firefox/143.0', 'YTo3OntzOjY6Il90b2tlbiI7czo0MDoiSVlKOVBZT0VNSWVsWlZ2R1dHZ2VaNmJzWWVScVhmejNjMUdjbTdFYyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6NTQ6Imh0dHA6Ly9sb2NhbGhvc3Q6ODAwMC9pbmNvbWUtZXhwZW5zZS9kYWlseS10cmFuc2FjdGlvbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MzoidXJsIjthOjA6e31zOjUwOiJsb2dpbl93ZWJfNTliYTM2YWRkYzJiMmY5NDAxNTgwZjAxNGM3ZjU4ZWE0ZTMwOTg5ZCI7aToyO3M6NDoiYXV0aCI7YToxOntzOjIxOiJwYXNzd29yZF9jb25maXJtZWRfYXQiO2k6MTc2MDQzNDg1NTt9czoyMjoiUEhQREVCVUdCQVJfU1RBQ0tfREFUQSI7YTowOnt9fQ==', 1760438767);
+('RB4InxGA2XzcbNfCZ3QcA39PPUiG0sjIQoJiPIiH', NULL, '127.0.0.1', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:144.0) Gecko/20100101 Firefox/144.0', 'YTo0OntzOjY6Il90b2tlbiI7czo0MDoiNzc4N1VhNUNpbnRLcGtsUklUVWFmdFRNN1FvYVFzQnFGelc5dWRNMyI7czo5OiJfcHJldmlvdXMiO2E6MTp7czozOiJ1cmwiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9sb2dpbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MzoidXJsIjthOjE6e3M6ODoiaW50ZW5kZWQiO3M6Mjc6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbiI7fX0=', 1762423331);
 
 -- --------------------------------------------------------
 
@@ -297,8 +396,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-(1, 'John Doe', 'john@example.com', NULL, '$2y$12$VA1p3/7862anfoSBVrUIT.Ekz8ay/9UYlOL0OfVmBmRE0Z5rWmtve', NULL, '2025-10-14 09:39:06', '2025-10-14 09:39:06'),
-(2, 'Golam Moktadir', 'golam@example.com', NULL, '$2y$12$K02NHb9s9ujMb5sdYkcrhub5uQ/5X0QCwM0i3h5ir84sMJJ6mvcze', NULL, '2025-10-14 09:40:25', '2025-10-14 09:40:25');
+(1, 'Mohammad Amir Hossain', 'ceo@paribahan.com', '2025-11-06 10:14:46', '$2y$12$XAK0L/29vIIrsElEapO5JuIlwFWIDwDeIUK3uK7HpLOGx8uoxEwC.', 'tfzMLPPBnQ', '2025-11-06 10:14:47', '2025-11-06 10:14:47'),
+(2, 'Mohammad Monir Hossain', 'monir.ecraft@gmail.com', '2025-11-06 10:14:47', '$2y$12$VydiFricR0JWBnePtZkbKO41xKNneJXul941uca5vR/XRK6HkDB2G', 'MMiwWWuTjc', '2025-11-06 10:14:47', '2025-11-06 10:14:47'),
+(3, 'ECL Accounts', 'accounts@electrocraft.org', '2025-11-06 10:14:47', '$2y$12$RIbIrQ0FmCdUJhrL5VZYL.g..3Sf5fCjzGQCynORif60dGdHWDFly', 'B3Ev82Beyx', '2025-11-06 10:14:47', '2025-11-06 10:14:47'),
+(4, 'Mohammad Shohidul Islam', 'shohidulislam@electrocraft.org', '2025-11-06 10:14:47', '$2y$12$Lg018MEFjkXEIbAe5OmqDu6h4TxeMiByTne8Dsmwn6hXbE1GxTduy', 'c7mBP4mDER', '2025-11-06 10:14:47', '2025-11-06 10:14:47'),
+(5, 'Golam Muktadir', 'cse.limon.33@gmail.com', '2025-11-06 10:14:48', '$2y$12$41e.rz6PSEk3fdfgMlq5v.t4A8QOeRZUVeN9H7P9/4tPpvXEYT8vK', 'm7GVL7WgS0', '2025-11-06 10:14:48', '2025-11-06 10:14:48');
 
 --
 -- Indexes for dumped tables
@@ -310,6 +412,34 @@ INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `re
 ALTER TABLE `account_heads`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `account_heads_account_head_name_unique` (`account_head_name`);
+
+--
+-- Indexes for table `banks`
+--
+ALTER TABLE `banks`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `bank_account_unique` (`bank_name`,`account_no`),
+  ADD KEY `banks_company_id_foreign` (`company_id`);
+
+--
+-- Indexes for table `cheques`
+--
+ALTER TABLE `cheques`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `cheques_bank_id_foreign` (`bank_id`);
+
+--
+-- Indexes for table `cheque_files`
+--
+ALTER TABLE `cheque_files`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `cheque_files_cheque_id_foreign` (`cheque_id`);
+
+--
+-- Indexes for table `companies`
+--
+ALTER TABLE `companies`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `daily_income_expense`
@@ -343,6 +473,12 @@ ALTER TABLE `password_reset_tokens`
   ADD PRIMARY KEY (`email`);
 
 --
+-- Indexes for table `payees`
+--
+ALTER TABLE `payees`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `personal_access_tokens`
 --
 ALTER TABLE `personal_access_tokens`
@@ -351,16 +487,33 @@ ALTER TABLE `personal_access_tokens`
   ADD KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`);
 
 --
+-- Indexes for table `purposes`
+--
+ALTER TABLE `purposes`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `requisitions`
 --
 ALTER TABLE `requisitions`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `requisitions_company_id_foreign` (`company_id`),
+  ADD KEY `requisitions_purpose_id_foreign` (`purpose_id`),
+  ADD KEY `requisitions_payee_id_foreign` (`payee_id`);
 
 --
 -- Indexes for table `requisition_approval`
 --
 ALTER TABLE `requisition_approval`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `requisition_approval_requisition_id_foreign` (`requisition_id`);
+
+--
+-- Indexes for table `requisition_files`
+--
+ALTER TABLE `requisition_files`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `requisition_files_requisition_id_foreign` (`requisition_id`);
 
 --
 -- Indexes for table `sessions`
@@ -409,13 +562,37 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `account_heads`
 --
 ALTER TABLE `account_heads`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `banks`
+--
+ALTER TABLE `banks`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `cheques`
+--
+ALTER TABLE `cheques`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `cheque_files`
+--
+ALTER TABLE `cheque_files`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `companies`
+--
+ALTER TABLE `companies`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `daily_income_expense`
 --
 ALTER TABLE `daily_income_expense`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `failed_jobs`
@@ -427,7 +604,13 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+
+--
+-- AUTO_INCREMENT for table `payees`
+--
+ALTER TABLE `payees`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `personal_access_tokens`
@@ -436,15 +619,27 @@ ALTER TABLE `personal_access_tokens`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `purposes`
+--
+ALTER TABLE `purposes`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `requisitions`
 --
 ALTER TABLE `requisitions`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `requisition_approval`
 --
 ALTER TABLE `requisition_approval`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `requisition_files`
+--
+ALTER TABLE `requisition_files`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
@@ -457,11 +652,49 @@ ALTER TABLE `telescope_entries`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
 --
+
+--
+-- Constraints for table `banks`
+--
+ALTER TABLE `banks`
+  ADD CONSTRAINT `banks_company_id_foreign` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`);
+
+--
+-- Constraints for table `cheques`
+--
+ALTER TABLE `cheques`
+  ADD CONSTRAINT `cheques_bank_id_foreign` FOREIGN KEY (`bank_id`) REFERENCES `banks` (`id`);
+
+--
+-- Constraints for table `cheque_files`
+--
+ALTER TABLE `cheque_files`
+  ADD CONSTRAINT `cheque_files_cheque_id_foreign` FOREIGN KEY (`cheque_id`) REFERENCES `cheques` (`id`);
+
+--
+-- Constraints for table `requisitions`
+--
+ALTER TABLE `requisitions`
+  ADD CONSTRAINT `requisitions_company_id_foreign` FOREIGN KEY (`company_id`) REFERENCES `companies` (`id`),
+  ADD CONSTRAINT `requisitions_payee_id_foreign` FOREIGN KEY (`payee_id`) REFERENCES `payees` (`id`),
+  ADD CONSTRAINT `requisitions_purpose_id_foreign` FOREIGN KEY (`purpose_id`) REFERENCES `purposes` (`id`);
+
+--
+-- Constraints for table `requisition_approval`
+--
+ALTER TABLE `requisition_approval`
+  ADD CONSTRAINT `requisition_approval_requisition_id_foreign` FOREIGN KEY (`requisition_id`) REFERENCES `requisitions` (`id`);
+
+--
+-- Constraints for table `requisition_files`
+--
+ALTER TABLE `requisition_files`
+  ADD CONSTRAINT `requisition_files_requisition_id_foreign` FOREIGN KEY (`requisition_id`) REFERENCES `requisitions` (`id`);
 
 --
 -- Constraints for table `telescope_entries_tags`

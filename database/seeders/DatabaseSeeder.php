@@ -23,8 +23,8 @@ class DatabaseSeeder extends Seeder
         // ]);
 
 
-        AccountHeads::truncate(); 
-        AccountHeads::factory()->count(10)->create();
+        // AccountHeads::truncate(); 
+        // AccountHeads::factory()->count(10)->create();
 
     }
 }
