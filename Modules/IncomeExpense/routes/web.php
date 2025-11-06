@@ -15,7 +15,7 @@ use Modules\IncomeExpense\Http\Controllers\DailyIncomeExpenseController AS Daily
 |
 */
 
-Route::group(['prefix'=>'income-expense'], function () {
+Route::group(['prefix'=>'income-expense', 'middleware' => ['auth']], function () {
 
     // Route::resource('/', IncomeExpenseController::class)->names('income_expense');
     
