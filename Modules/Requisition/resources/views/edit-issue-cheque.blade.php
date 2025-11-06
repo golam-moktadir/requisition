@@ -46,6 +46,15 @@
                         @endforeach
                     </select>
                 </div>
+                <div id="file-inputs">                
+                    <div class="mb-1">
+                        <label for="files" class="form-label">Attach Files</label>
+                        <input type="file" class="form-control" id="files" name="files[]">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <button type="button" class="btn btn-sm btn-secondary" id="add-more">Add More</button>
+                </div>
                 <div class="btn-group mt-2" role="group">
                     <button type="submit" class="btn btn-primary">Save</button>
                     <button type="reset" class="btn btn-warning">Reset</button>
@@ -57,6 +66,11 @@
 @endsection
 @section('footerjs')
 <script type="text/javascript">
+    $('#add-more').on('click', function() {
+        let input = $('<div class="mb-1"><input type="file" name="files[]" class="form-control"></div>');
+        $('#file-inputs').append(input);
+    });
+
     $('#bank_id').on('change', function() {
         const bank_id = $(this).val();
         $.ajax({

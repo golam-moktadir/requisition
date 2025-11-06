@@ -187,12 +187,30 @@ class RequisitionController extends Controller
     }
 
     public function updateCheque(Request $request, int $requisition_id){
+        $validated = $request->validate([
+            'bank_id'   => 'required|integer',
+            'cheque_id' => 'required|integer',
+        ]);
         $model = Cheque::find($request->input('cheque_id'));
-
         $model->requisition_id = $requisition_id;
         $model->status         = 3;
         $model->save();
 
+        if($request->hasFile('files')){
+            $data = [];
+            foreach ($request->file('files') as $key => $file) {
+                $fileName = date('YmdHis') . rand() . '.' . $file->getClientOriginalExtension();
+                $file->storeAs('public/cheques', $fileName);
+
+                $data[$key] = [
+                    'cheque_id'  => $model->id,
+                    'file_name'  => $fileName,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+            }
+            DB::table('cheque_files')->insert($data);
+        }
         return redirect()->route('requisition.show', ['id' => $requisition_id]);
     }
 
@@ -206,9 +224,13 @@ class RequisitionController extends Controller
     }
 
     public function updateIssueCheque(Request $request, int $id){
+        $validated = $request->validate([
+            'bank_id'   => 'required|integer',
+            'cheque_id' => 'required|integer',
+        ]);
         $requisition_id = Cheque::where('id', $request->input('cheque_id'))->value('requisition_id');
 
-        if ($requisition_id == 0) {
+        if ($requisition_id == 0 || $requisition_id == $id) {
             Cheque::where('requisition_id', $id)
                     ->where('status', 3)
                     ->update(['status' => 1]);
@@ -218,13 +240,26 @@ class RequisitionController extends Controller
             $model->requisition_id = $id;
             $model->status = 3;
             $model->save();
+
+            if($request->hasFile('files')){
+                $data = [];
+                foreach ($request->file('files') as $key => $file) {
+                    $fileName = date('YmdHis') . rand() . '.' . $file->getClientOriginalExtension();
+                    $file->storeAs('public/cheques', $fileName);
+
+                    $data[$key] = [
+                        'cheque_id'  => $model->id,
+                        'file_name'  => $fileName,
+                        'created_at' => now(),
+                        'updated_at' => now()
+                    ];
+                }
+                DB::table('cheque_files')->insert($data);
+            }
             return redirect()->route('requisition.show', ['id' => $id])->with('success', 'Issued successfully.');
         }
         else if($requisition_id != $id){
             return redirect()->back()->with('error', 'This Cheque Already Issued.');
-        }
-        else{
-            return redirect()->route('requisition.show', ['id' => $id])->with('success', 'Issued successfully.');
         }
     }
 }
