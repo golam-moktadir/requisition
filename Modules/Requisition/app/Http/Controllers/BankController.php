@@ -6,24 +6,37 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Modules\Requisition\Models\Requisition;
-use Modules\Requisition\Models\Approval;
+use Illuminate\Validation\Rule;
+use Modules\Requisition\Models\Company;
+use Modules\Requisition\Models\Cheque;
+use Modules\Requisition\Services\BankService;
 
 class BankController extends Controller
 {
+    protected $service;
+
+    public function __construct(BankService $service)
+    {
+        $this->service = $service;
+    }
+
     /**
      * Display a listing of the resource.
      */
-
+    public function index()
+    {
+        $data['title'] = 'Bank Information';
+        $data['result'] = $this->service->getDataList();
+        return view('requisition::banks.index', $data);
+    }
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        //dd();
-        return view('requisition::banks.create', [
-            'title' => 'Create Bank Information',
-        ]);
+        $data['companies'] = Company::all();
+        $data['title'] = 'Bank Information'; 
+        return view('requisition::banks.create', $data);
     }
 
     /**
@@ -31,38 +44,30 @@ class BankController extends Controller
      */
     public function store(Request $request)
     {
-        if (strtolower($request->get('transaction_mode')) == 'bank') {
-            $request->validate([
-                'title' => 'required',
-                'description' => 'required',
-                'amount' => 'required',
-                'requested_to' => 'required',
-                'transaction_mode' => 'required',
-                'bank_check_info' => 'required',
-            ]);
-        } else {
-            $request->validate([
-                'title' => 'required',
-                'description' => 'required',
-                'amount' => 'required',
-                'requested_to' => 'required',
-                'transaction_mode' => 'required',
-            ]);
-        }
-
-        $requisition = new Requisition([
-            'title' => $request->title,
-            'description' => $request->description,
-            'amount' => $request->amount,
-            'requested_to' => $request->requested_to,
-            'transaction_mode' => $request->transaction_mode,
-            'bank_check_info' => ($request->bank_check_info ?? ''),
-            'created_by' => auth()->id(),
+        $validated = $request->validate([
+            'company_id'          => 'required|integer',
+            'bank_name'           => 'required|string|max:255',
+            'account_holder_name' => 'required|string|max:255',
+            'account_no'          => [
+                                    'required',
+                                    'string',
+                                    'max:50',
+                                    Rule::unique('banks')->where(function ($query) use ($request) {
+                                        return $query->where('bank_name', $request->bank_name);
+                                    }),
+                                ],
+            'account_type'        => 'nullable|string|max:100',
+            'branch_name'         => 'required|string|max:255',
+            'branch_address'      => 'nullable|string|max:255',
         ]);
 
-        $requisition->save();
+        $result = $this->service->saveData($validated);
 
-        return back()->with('success', 'Requisition created succefully!');
+        if ($result) {
+            return redirect()->route('bank.index')->with('success', 'Save Successful');
+        } else {
+            return back()->withInput()->with('error', 'Save Failed. Please try again.');
+        }
     }
 
     /**
@@ -70,11 +75,7 @@ class BankController extends Controller
      */
     public function show(int $requisition_id)
     {
-        return view('requisition::show', [
-            'title' => 'Show Requisition',
-            'requisition' => Requisition::findOrFail($requisition_id),
-            'approvals' => Approval::where('requisition_id', $requisition_id)->with('user')->get(),
-        ]);
+
     }
 
     /**
@@ -82,10 +83,10 @@ class BankController extends Controller
      */
     public function edit($id)
     {
-        return view('requisition::edit', [
-            'title' => 'Edit requisition',
-            'requisition' => Requisition::whereIn('status', ['pending', 'rejected'])->findOrFail($id),
-        ]);
+        $data['title']      = 'Bank Information'; 
+        $data['companies']  = Company::all();
+        $data['single']     = $this->service->getSingleData($id);
+        return view('requisition::banks.edit', $data);
     }
 
     /**
@@ -93,39 +94,30 @@ class BankController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $requisition = Requisition::whereIn('status', ['pending', 'rejected'])
-            ->where('id', $id)
-            ->firstOrFail();
+        $validated = $request->validate([
+            'company_id'          => 'required|integer',
+            'bank_name'           => 'required|string|max:255',
+            'account_holder_name' => 'required|string|max:255',
+            'account_no'          => [
+                                    'required',
+                                    'string',
+                                    'max:50',
+                                    Rule::unique('banks')->ignore($id)->where(function ($query) use ($request) {
+                                        return $query->where('bank_name', $request->bank_name);
+                                    })
+                                ],
+            'account_type'        => 'nullable|string|max:100',
+            'branch_name'         => 'required|string|max:255',
+            'branch_address'      => 'nullable|string|max:255',
+        ]);
 
-        if (strtolower($request->get('transaction_mode')) == 'bank') {
-            $request->validate([
-                'title' => 'required',
-                'description' => 'required',
-                'amount' => 'required',
-                'requested_to' => 'required',
-                'transaction_mode' => 'required',
-                'bank_check_info' => 'required',
-            ]);
+        $result = $this->service->updateData($validated, $id);
+
+        if ($result) {
+            return redirect()->route('bank.index')->with('success', 'Save Successful');
         } else {
-            $request->validate([
-                'title' => 'required',
-                'description' => 'required',
-                'amount' => 'required',
-                'requested_to' => 'required',
-                'transaction_mode' => 'required',
-            ]);
+            return back()->withInput()->with('error', 'Save Failed. Please try again.');
         }
-
-        $requisition->title = $request->title;
-        $requisition->description = $request->description;
-        $requisition->amount = $request->amount;
-        $requisition->requested_to = $request->requested_to;
-        $requisition->transaction_mode = $request->transaction_mode;
-        $requisition->bank_check_info = ($request->bank_check_info ?? '');
-
-        $requisition->save();
-
-        return back()->with('success', 'Requisition update succefully?');
     }
 
     /**
@@ -139,59 +131,85 @@ class BankController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function approval(int $requisition_id)
+    public function chequeList(int $id)
     {
-        // if( ! in_array(Auth::user()->id, [1])){
-        //     abort(404);
-        // }
-
-        return view('requisition::approval', [
-            'title' => 'Approve Requisition',
-            'requisition' => Requisition::whereIn('status', ['pending', 'rejected'])->findOrFail($requisition_id),
-        ]);
+        $data['title']  = 'Cheque Information'; 
+        $data['single'] = $this->service->getSingleData($id);
+        $data['result'] = $this->service->getChequeList($id);
+        return view('requisition::banks.cheque-list', $data);
     }
 
+    public function createCheque(int $id)
+    {
+        $data['title']  = 'Cheque Information'; 
+        $data['single'] = $this->service->getSingleData($id);
+        return view('requisition::banks.create-cheque', $data);
+    }
     /**
      * Show the form for editing the specified resource.
      */
-    public function storeAapproval(int $requisition_id, Request $request)
+    public function saveCheques(Request $request, $id)
     {
-        // if( ! in_array(Auth::user()->id, [1])) {
-        //     abort(404);
-        // }
+        $validated = $request->validate([
+            'start_no' => 'required|numeric',
+            'end_no'   => 'required|numeric|gte:start_no'
+        ]);
 
-        $requisition = Requisition::whereIn('status', ['pending', 'rejected'])->findOrFail($requisition_id);
-
-        if ($request->has('status') && in_array($request->status, ['rejected', 'approved'])) {
-
-            DB::beginTransaction();
-
-            try {
-                $approval = new Approval();
-                $approval->requisition_id = $requisition_id;
-                $approval->status = $request->status;
-                $approval->remarks = $request->remarks;
-                $approval->user_id = Auth::id();
-                $approval->save();
-
-                if ($approval->id > 0) {
-                    $requisition->status = $approval->status;
-                    $requisition->save();
-                } else {
-                    throw new Exception("Approval update failed.", 500);
-                }
-
-                DB::commit();
-
-            } catch (\Exception $e) {
-                DB::rollBack();
-                about(500);
-            }
-
-            return redirect()->route('requisition.show', $requisition_id)
-                ->with('Requisition update successfully!');
+        $result = $this->service->saveCheques($validated, $id);
+        
+        if ($result) {
+            return back()->with('success', 'Save Successful');
         } else {
-            abort(404);
+            return back()->withInput()->with('error', 'Save Failed. Please try again.');
         }
+    }
+
+    public function editCheque($id)
+    {
+        $data['title']  = 'Cheque Information'; 
+        $data['single'] = Cheque::with('bank.company')->findOrFail($id);
+        return view('requisition::banks.edit-cheque', $data);
+    }
+
+    public function activityChequeStatus(Request $request, $id){
+        //dd($request->all());
+        $model = Cheque::find($id);
+        
+        $model->status  = $request->input('status');            
+        $model->remarks = $request->input('remarks');            
+        $model->save();
+
+        if($request->hasFile('files')){
+            $data = [];
+            foreach ($request->file('files') as $key => $file) {
+                $fileName = date('YmdHis') . rand() . '.' . $file->getClientOriginalExtension();
+                $file->storeAs('public/cheques', $fileName);
+
+                $data[$key] = [
+                    'cheque_id'  => $model->id,
+                    'file_name'  => $fileName,
+                    'created_at' => now(),
+                    'updated_at' => now()
+                ];
+            }
+            DB::table('cheque_files')->insert($data);
+        }
+        return back()->with('success', 'Save Successful');
+    }
+
+    public function activeToggle($id)
+    {
+        $model = Cheque::findOrFail($id);
+        $model->status = $model->status == 1 ? 2 : 1; // toggle between 1=Active, 2=Inactive
+        $model->save();
+        return back()->with('success', 'status updated');
+    }
+
+    public function usedToggle($id)
+    {
+        $model = Cheque::findOrFail($id);
+        $model->status = $model->status == 1 ? 3 : 1; // toggle between 1=Active, 3=Used
+        $model->save();
+        return back()->with('success', 'status updated');
     }
 }

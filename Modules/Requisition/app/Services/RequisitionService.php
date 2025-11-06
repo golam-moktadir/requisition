@@ -46,7 +46,7 @@ class RequisitionService
         $model->payee_id      = $validated['payee_id'];
         $model->description   = $validated['description'];
         $model->amount        = $validated['amount'];
-        $model->requested_to  = $validated['requested_to'];
+        //$model->requested_to  = $validated['requested_to'];
         $model->created_by    = auth()->id();
         
         $model->save();
@@ -79,7 +79,8 @@ class RequisitionService
                         'p.purpose_name', 
                         'ps.payee_name', 
                         'ps.account_holder_name',
-                        DB::raw("DATE_FORMAT(r.created_at, '%d/%m/%Y') as created_at")
+                        DB::raw("DATE_FORMAT(r.created_at, '%d/%m/%Y') as created_at"),
+                        DB::raw("(SELECT COUNT(*) FROM cheques WHERE cheques.requisition_id = r.id) as cheque_count")
                     ])
                 ->where('r.id', $id)
                 ->first();
@@ -97,7 +98,7 @@ class RequisitionService
         $model->payee_id      = $validated['payee_id'];
         $model->description   = $validated['description'];
         $model->amount        = $validated['amount'];
-        $model->requested_to  = $validated['requested_to'];
+        //$model->requested_to  = $validated['requested_to'];
         $model->status        = 'pending';
                 
         $model->save();

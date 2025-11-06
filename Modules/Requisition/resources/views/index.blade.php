@@ -21,23 +21,24 @@
             <div class="row mt-1 p-1 align-items-end">
                 <div class="col-md-2 mb-2">
                     <label for="requisition_no" class="form-label">Requisition No.</label>
-                    <input type="text" class="form-control" id="requisition_no" name="requisition_no" value="{{ old('requisition_no') }}" tabindex="1" autocomplete="off">
+                    <input type="text" class="form-control" id="requisition_no" name="requisition_no" value="{{ request('requisition_no') }}" tabindex="1" autocomplete="off">
                 </div>
                 <div class="col-md-2 mb-2">
                     <label for="from_date" class="form-label">From Date</label>
-                    <input type="text" class="form-control" id="from_date" name="from_date" value="{{ old('from_date') }}" tabindex="2" autocomplete="off">
+                    <input type="text" class="form-control" id="from_date" name="from_date" value="{{ request('from_date') }}" tabindex="2" autocomplete="off">
                 </div>
                 <div class="col-md-2 mb-2">
                     <label for="to_date" class="form-label">To Date</label>
-                    <input type="text" class="form-control" id="to_date" name="to_date" value="{{ old('to_date') }}" tabindex="3" autocomplete="off">
+                    <input type="text" class="form-control" id="to_date" name="to_date" value="{{ request('to_date') }}" tabindex="3" autocomplete="off">
                 </div>
                 <div class="col-md-2 mb-2">
                     <label for="status" class="form-label">Status</label>
                     <select class="form-control" id="status" name="status" tabindex="4">
-                        <option value="">All Status</option>
-                        <option value="pending" selected>Pending</option>
-                        <option value="approved">Approved</option>
-                        <option value="rejected">Rejected</option>
+                        <option value="" {{ request('status') === null || request('status') === '' ? 'selected' : '' }}>All Status</option>
+                        <option value="pending" {{ request()->has('status') ? (request('status') == 'pending' ? 'selected' : '') : 'selected' }}>Pending</option>
+                        <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
+                        <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                        <option value="returned" {{ request('status') == 'returned' ? 'selected' : '' }}>Returned</option>
                     </select>
                 </div>
                 <div class="col-md-2 mb-2">
@@ -51,7 +52,7 @@
                     <th style="width: 60px;">#</th>
                     <th >Company Name</th>
                     <th >Purpose Name</th>
-                    <th style="width: 135px;">Requested To</th>
+                    <!-- <th style="width: 135px;">Requested To</th> -->
                     <th style="width: 130px;">Amount (TK)</th>
                     <th style="width: 100px;">Status</th>
                     <th style="width: 140px;">Action</th>                
@@ -63,7 +64,7 @@
                     <td>{{ $loop->iteration }}</td>
                     <td>{{ $requisition->company_name }}</td>
                     <td>{{ $requisition->purpose_name }}</td>
-                    <td>{{ ucwords($requisition->requested_to) }}</td>
+                    <!-- <td>{{ ucwords($requisition->requested_to) }}</td> -->
                     
                     <td>{{ ucwords($requisition->amount) }}</td>
                     <td>{{ ucwords($requisition->status) }}</td>

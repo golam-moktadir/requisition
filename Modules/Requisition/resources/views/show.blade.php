@@ -12,12 +12,12 @@
         @include('admin.layouts.message')   
         <div class="p-2" id="print-body">
         <div class="row">
-            <h3 class="text-center">REQUISITION - {{ $single->id }}</h3>                    
-            <h3 class="text-center">{{ $single->payee_name }}</h3>                    
+            <h3 class="text-center text-dark">REQUISITION - {{ $single->id }}</h3>                    
+            <h3 class="text-center text-dark">{{ $single->payee_name }}</h3>                    
 
             <div class="text-center text-dark">A/C Name - {{ $single->account_holder_name }}</div>
         </div>
-        <div class="row mt-3">
+        <div class="row mt-3 text-dark">
             <div class="col-4">
                 Date: {{ $single->created_at }}
             </div>
@@ -28,12 +28,12 @@
                 Status: {{ $single->status }}
             </div>
         </div>
-        <div class="row mt-3">
+        <div class="row mt-3 text-dark">
             <div class="col-4">
-                Cheque no: 
+                Cheque no: {{ $cheque->cheque_no ?? '' }}
             </div>
             <div class="col-4 text-center">
-                Cheque Amount:
+                &nbsp;
             </div>
             <div class="col-4">
                 Received:
@@ -44,52 +44,52 @@
                 <table class="table table-sm table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th colspan="5" class="text-center">Office Expense</th>
+                            <th colspan="5" class="text-center text-dark">Office Expense</th>
                         </tr>
-                        <tr>
-                            <th class="text-center">SL No.</th>
-                            <th class="text-center">Date</th>
-                            <th class="text-center">Purpose</th>
-                            <th class="text-center">Details</th>
-                            <th class="text-center">Amount</th>
+                        <tr class="text-center">
+                            <th class="text-dark">SL No.</th>
+                            <th class="text-dark">Date</th>
+                            <th class="text-dark">Purpose</th>
+                            <th class="text-dark">Details</th>
+                            <th class="text-dark">Amount</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td class="text-center">1</td>
-                            <td class="text-center">{{ $single->created_at }}</td>
-                            <td class="">{{ $single->purpose_name }}</td>
-                            <td class="">{{ $single->description }}</td>
-                            <td class="text-end">{{ $single->amount }}</td>
+                            <td class="text-center text-dark">1</td>
+                            <td class="text-center text-dark">{{ $single->created_at }}</td>
+                            <td class="text-dark">{{ $single->purpose_name }}</td>
+                            <td class="text-dark">{{ $single->description }}</td>
+                            <td class="text-end text-dark">{{ $single->amount }}</td>
                         </tr>
                         <tr>
                             <td class="text-center">&nbsp;</td>
                             <td class="text-center">&nbsp;</td>
                             <td class="text-center">&nbsp;</td>
-                            <td class="text-end">Total=</td>
-                            <td class="text-end">{{ $single->amount }}</td>
+                            <td class="text-end text-dark">Total=</td>
+                            <td class="text-end text-dark">{{ $single->amount }}</td>
                         </tr>
                     </tbody>
                 </table>
-                <div>
-                    {{ \App\Helpers\CommonHelper::get_NumberInWord($single->amount) }} Taka Only
+                <div class="text-dark">
+                    In Word: {{ \App\Helpers\CommonHelper::get_NumberInWord($single->amount) }} Taka Only
                 </div>
             </div>
         </div>
-        <div class="row mt-5">
+        <div class="row mt-5 text-dark">
             <div class="col-6">Prepared By</div>
             <div class="col-6 text-center">Approved By</div>
         </div>
-        <div class="row mt-5">
+        <div class="row mt-5 text-dark">
             <div class="col-6">Verified By</div>
         </div>
         </div>
-        @if(in_array($single->status, ['pending', 'rejected']))
+        @if(in_array($single->status, ['pending', 'rejected']) && Auth::user()->role == 'admin')
         <form action="{{ route('requisition.store_approval', ['id' => $single->id]) }}" method="POST">
             @csrf
             <div class="row mt-3">
                 <div class="col-3">
-                    <label for="remarks" class="form-label">Remarks</label>
+                    <label for="remarks" class="form-label text-dark">Remarks</label>
                     <input type="text" class="form-control" id="remarks" name="remarks" value="{{ old('remarks') }}" placeholder="Remarks">
                     @error('remarks') 
                         <div class="text-danger">
@@ -103,44 +103,51 @@
                     <div class="btn-group" role="group">
                         <button type="submit" class="btn btn-primary" name="status" value="approved">Approve</button>
                         <button type="submit" class="btn btn-warning" name="status" value="rejected">Reject</button>
-                        <button type="submit" class="btn btn-info" name="status" value="pending">Return</button>
+                        <button type="submit" class="btn btn-info" name="status" value="returned">Return</button>
                     </div> 
                 </div>
             </div>
         </form>
+        @endif
+        @if($single->status == 'approved')
+        <div class="row mt-3">
+            <div class="col-3">
+                <button type="button" class="btn btn-secondary" id="printButton">Print</button>
+                @if($single->cheque_count == 0)
+                    <a href="{{ route('requisition.issue-cheque', ['id' => $single->id]) }}" class="btn btn-info">Cheque</a>
+                @else
+                    <a href="{{ route('requisition.edit-issue-cheque', ['id' => $single->id]) }}" class="btn btn-success">Edit Cheque</a>
+                @endif
+            </div>
+        </div>
         @endif
         <div class="row mt-3">
             <div class="col-9">
                 <table class="table table-bordered table-hover table-sm">
                     <thead>
                         <tr>
-                            <th colspan="5" class="text-center">Status History</th>
+                            <th colspan="5" class="text-center text-dark">Status History</th>
                         </tr>
                         <tr class="text-center">
-                            <th>#</th>
-                            <th>Status</th>
-                            <th>Remarks</th>
-                            <th>Updated By</th>
-                            <th>Action Time</th>
+                            <th class="text-dark">#</th>
+                            <th class="text-dark">Status</th>
+                            <th class="text-dark">Remarks</th>
+                            <th class="text-dark">Updated By</th>
+                            <th class="text-dark">Action Time</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($approvals AS $approval)
                         <tr>
-                            <td class="text-center">{{ $loop->iteration }}</td>
-                            <td class="text-center">{{ $approval->status }}</td>
-                            <td>{{ $approval->remarks }}</td>
-                            <td>{{ $approval->user->name }}</td>
-                            <td class="text-center">{{ $approval->created_at }}</td>
+                            <td class="text-center text-dark">{{ $loop->iteration }}</td>
+                            <td class="text-center text-dark">{{ $approval->status }}</td>
+                            <td class="text-dark">{{ $approval->remarks }}</td>
+                            <td class="text-dark">{{ $approval->user->name }}</td>
+                            <td class="text-center text-dark">{{ $approval->created_at }}</td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
-            </div>
-        </div>
-        <div class="row mt-3">
-            <div class="col-3">
-                <button type="button" class="btn btn-secondary" id="printButton">Print</button>
             </div>
         </div>
     </div>

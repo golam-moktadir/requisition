@@ -68,7 +68,14 @@
         <li class="menu-item">
             <a href="{{ route('payee.index') }}" class="menu-link">
                 <i class="bx bx-dollar bx-sm align-middle"></i>
-                <div data-i18n="Purpose">Payee</div>
+                <div data-i18n="Payee">Payee</div>
+            </a>
+        </li> 
+
+        <li class="menu-item">
+            <a href="{{ route('bank.index') }}" class="menu-link">
+                <i class="bx bx-credit-card bx-sm align-middle"></i>
+                <div data-i18n="Bank">Bank</div>
             </a>
         </li> 
     </ul>

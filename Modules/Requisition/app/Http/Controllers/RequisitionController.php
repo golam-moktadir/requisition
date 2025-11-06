@@ -12,6 +12,8 @@ use Modules\Requisition\Models\Approval;
 use Modules\Requisition\Models\Company;
 use Modules\Requisition\Models\Purpose;
 use Modules\Requisition\Models\Payee;
+use Modules\Requisition\Models\Bank;
+use Modules\Requisition\Models\Cheque;
 use Modules\Requisition\Services\RequisitionService;
 use Illuminate\Support\Facades\Storage;
 
@@ -29,6 +31,7 @@ class RequisitionController extends Controller
      */
     public function index(Request $request)
     {
+        //dd();
         $data['title'] = 'Requisitions';
         $data['requisitions'] = $this->service->getDataList($request);
         return view('requisition::index', $data);
@@ -57,7 +60,7 @@ class RequisitionController extends Controller
             'payee_id'          => 'nullable|integer',
             'description'       => 'required|string',
             'amount'            => 'required',
-            'requested_to'      => 'required'
+            //'requested_to'      => 'required'
         ]);
 
         $result = $this->service->saveData($validated, $request);
@@ -77,8 +80,9 @@ class RequisitionController extends Controller
         $data['title']      = 'Requisitions';
         $data['single']     = $this->service->getSingleData($requisition_id); 
         $data['files']      = $this->service->getFiles($requisition_id);
+        $data['cheque']     = Cheque::where('requisition_id', $requisition_id)->where('status', 3)->orderBy('id', 'asc')->first();
         $data['approvals']  = Approval::where('requisition_id', $requisition_id)->with('user')->get();
-        //dd($data['approvals']);
+        //dd($data);
         return view('requisition::show', $data);        
     }
 
@@ -107,7 +111,7 @@ class RequisitionController extends Controller
             'payee_id'          => 'nullable|integer',
             'description'       => 'required|string',
             'amount'            => 'required',
-            'requested_to'      => 'required'
+            //'requested_to'      => 'required'
         ]);
 
         $result = $this->service->updateData($validated, $request, $id);
@@ -162,6 +166,65 @@ class RequisitionController extends Controller
             return redirect()->route('requisition.index')->with('success', 'Requisition Approved Successfully');
         } else {
             return back()->with('error', 'Requisition Update Failed');
+        }
+    }
+
+    public function issueCheque($id){
+        $data['title'] = 'Requisitions';
+        $data['single'] = $this->service->getSingleData($id); 
+        $data['banks'] = Bank::all();
+        return view('requisition::issue-cheque', $data);
+    }
+
+    public function getValidChequeList(Request $request){
+        $cheques = Cheque::where('bank_id', $request->input('bank_id'))->where('status', 1)->orderBy('id', 'asc')->get();
+
+        $options = "<option value=''>-- Select Cheque Number --</option>";
+        foreach ($cheques as $cheque) {
+            $options .= "<option value='{$cheque->id}'>{$cheque->cheque_no}</option>";
+        }
+        return response()->json(['options' => $options]);
+    }
+
+    public function updateCheque(Request $request, int $requisition_id){
+        $model = Cheque::find($request->input('cheque_id'));
+
+        $model->requisition_id = $requisition_id;
+        $model->status         = 3;
+        $model->save();
+
+        return redirect()->route('requisition.show', ['id' => $requisition_id]);
+    }
+
+    public function editIssueCheque($requisition_id){
+        $data['title']   = 'Requisitions';
+        $data['banks']   = Bank::all();
+        $data['single']  = $this->service->getSingleData($requisition_id); 
+        $data['cheques'] = Cheque::whereIn('status', [1,3])->get();
+        $data['cheque']  = Cheque::where('requisition_id', $requisition_id)->where('status', 3)->first();
+        return view('requisition::edit-issue-cheque', $data);
+    }
+
+    public function updateIssueCheque(Request $request, int $id){
+        $requisition_id = Cheque::where('id', $request->input('cheque_id'))->value('requisition_id');
+
+        if ($requisition_id == 0) {
+            Cheque::where('requisition_id', $id)
+                    ->where('status', 3)
+                    ->update(['status' => 1]);
+
+            $model = Cheque::find($request->input('cheque_id'));
+
+            $model->requisition_id = $id;
+            $model->status = 3;
+            $model->save();
+            return redirect()->route('requisition.show', ['id' => $id])->with('success', 'Issued successfully.');
+        }
+        else if($requisition_id != $id){
+            return redirect()->back()->with('error', 'This Cheque Already Issued.');
+        }
+        else{
+            return redirect()->route('requisition.show', ['id' => $id])->with('success', 'Issued successfully.');
         }
     }
 }
