@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Modules\Requisition\Models\Requisition;
+use Modules\Requisition\Models\RequisitionPayment;
 use Modules\Requisition\Models\Approval;
 use Modules\Requisition\Models\Company;
 use Modules\Requisition\Models\Purpose;
@@ -80,7 +81,7 @@ class RequisitionController extends Controller
         $data['title']      = 'Requisitions';
         $data['single']     = $this->service->getSingleData($requisition_id); 
         $data['files']      = $this->service->getFiles($requisition_id);
-        $data['cheque']     = Cheque::where('requisition_id', $requisition_id)->where('status', 3)->orderBy('id', 'asc')->first();
+        $data['payment']     = RequisitionPayment::with('cheque')->where('requisition_id', $requisition_id)->orderBy('id', 'asc')->first();
         $data['approvals']  = Approval::where('requisition_id', $requisition_id)->with('user')->get();
         //dd($data);
         return view('requisition::show', $data);        
@@ -169,11 +170,11 @@ class RequisitionController extends Controller
         }
     }
 
-    public function issueCheque($id){
+    public function addPayment($id){
         $data['title'] = 'Requisitions';
         $data['single'] = $this->service->getSingleData($id); 
         $data['banks'] = Bank::all();
-        return view('requisition::issue-cheque', $data);
+        return view('requisition::add-payment', $data);
     }
 
     public function getValidChequeList(Request $request){
@@ -186,80 +187,88 @@ class RequisitionController extends Controller
         return response()->json(['options' => $options]);
     }
 
-    public function updateCheque(Request $request, int $requisition_id){
-        $validated = $request->validate([
-            'bank_id'   => 'required|integer',
-            'cheque_id' => 'required|integer',
-        ]);
-        $model = Cheque::find($request->input('cheque_id'));
-        $model->requisition_id = $requisition_id;
-        $model->status         = 3;
-        $model->save();
+    public function savePayment(Request $request){
 
-        if($request->hasFile('files')){
-            $data = [];
-            foreach ($request->file('files') as $key => $file) {
-                $fileName = date('YmdHis') . rand() . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('public/cheques', $fileName);
+        $rules = [
+            'payment_type' => ['required', 'in:1,2'],
+        ];
 
-                $data[$key] = [
-                    'cheque_id'  => $model->id,
-                    'file_name'  => $fileName,
-                    'created_at' => now(),
-                    'updated_at' => now()
-                ];
-            }
-            DB::table('cheque_files')->insert($data);
+        if ($request->payment_type == 1) { 
+            $rules['bank_id'] = ['required', 'integer'];
+            $rules['cheque_id'] = ['required', 'integer'];
         }
+
+        if ($request->payment_type == 2) { 
+            $rules['cash_amount'] = ['required', 'numeric', 'min:1'];
+            $rules['cash_description'] = ['nullable', 'string', 'max:255'];
+        }
+
+        $rules['files.*'] = ['nullable', 'file', 'mimes:pdf,jpg,png,docx', 'max:2048'];
+
+        $validated = $request->validate($rules);
+
+        $files = [];
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $path = $file->store('payments', 'public');
+                $files[] = basename($path);
+            }
+        }
+
+        $payment = new RequisitionPayment();
+        $payment->requisition_id   = $request->requisition_id;
+        $payment->payment_type     = $request->payment_type;
+        $payment->cheque_id        = $request->payment_type == 1 ? $request->cheque_id : null;
+        $payment->cash_amount      = $request->payment_type == 2 ? $request->cash_amount : null;
+        $payment->cash_description = $request->payment_type == 2 ? $request->cash_description : null;
+        $payment->files            = empty($files) ? null : json_encode($files);
+        $payment->save();
         return redirect()->route('requisition.show', ['id' => $requisition_id]);
     }
 
-    public function editIssueCheque($requisition_id){
+    public function editPayment($requisition_id){
         $data['title']   = 'Requisitions';
         $data['banks']   = Bank::all();
-        $data['single']  = $this->service->getSingleData($requisition_id); 
-        $data['cheques'] = Cheque::whereIn('status', [1,3])->get();
-        $data['cheque']  = Cheque::where('requisition_id', $requisition_id)->where('status', 3)->first();
-        return view('requisition::edit-issue-cheque', $data);
+        $data['cheques'] = Cheque::where('status', 1)->get();
+        $data['payment'] = RequisitionPayment::with(['requisition.company','cheque'])->where('requisition_id', $requisition_id)->first();
+        return view('requisition::edit-payment', $data);
     }
 
-    public function updateIssueCheque(Request $request, int $id){
-        $validated = $request->validate([
-            'bank_id'   => 'required|integer',
-            'cheque_id' => 'required|integer',
-        ]);
-        $requisition_id = Cheque::where('id', $request->input('cheque_id'))->value('requisition_id');
+    public function updatePayment(Request $request, int $id){
+        //dd($request->requisition_id);
+        $rules = [
+            'payment_type' => ['required', 'in:1,2'],
+        ];
 
-        if ($requisition_id == 0 || $requisition_id == $id) {
-            Cheque::where('requisition_id', $id)
-                    ->where('status', 3)
-                    ->update(['status' => 1]);
+        if ($request->payment_type == 1) { 
+            $rules['bank_id'] = ['required', 'integer'];
+            $rules['cheque_id'] = ['required', 'integer'];
+        }
 
-            $model = Cheque::find($request->input('cheque_id'));
+        if ($request->payment_type == 2) { 
+            $rules['cash_amount'] = ['required', 'numeric', 'min:1'];
+            $rules['cash_description'] = ['nullable', 'string', 'max:255'];
+        }
 
-            $model->requisition_id = $id;
-            $model->status = 3;
-            $model->save();
+        $rules['files.*'] = ['nullable', 'file', 'mimes:pdf,jpg,png,docx', 'max:2048'];
 
-            if($request->hasFile('files')){
-                $data = [];
-                foreach ($request->file('files') as $key => $file) {
-                    $fileName = date('YmdHis') . rand() . '.' . $file->getClientOriginalExtension();
-                    $file->storeAs('public/cheques', $fileName);
+        $validated = $request->validate($rules);
 
-                    $data[$key] = [
-                        'cheque_id'  => $model->id,
-                        'file_name'  => $fileName,
-                        'created_at' => now(),
-                        'updated_at' => now()
-                    ];
-                }
-                DB::table('cheque_files')->insert($data);
+        $files = [];
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $path = $file->store('payments', 'public');
+                $files[] = basename($path);
             }
-            return redirect()->route('requisition.show', ['id' => $id])->with('success', 'Issued successfully.');
         }
-        else if($requisition_id != $id){
-            return redirect()->back()->with('error', 'This Cheque Already Issued.');
-        }
+
+        $payment = RequisitionPayment::find($id);
+        $payment->payment_type     = $request->payment_type;
+        $payment->cheque_id        = $request->payment_type == 1 ? $request->cheque_id : null;
+        $payment->cash_amount      = $request->payment_type == 2 ? $request->cash_amount : null;
+        $payment->cash_description = $request->payment_type == 2 ? $request->cash_description : null;
+        $payment->files            = empty($files) ? null : json_encode($files);
+        $payment->save();
+        return redirect()->route('requisition.show', ['id' => $request->requisition_id])->with('success', 'Issued successfully.');
     }
 }

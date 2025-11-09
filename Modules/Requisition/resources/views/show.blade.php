@@ -30,7 +30,7 @@
         </div>
         <div class="row mt-3 text-dark">
             <div class="col-4">
-                Cheque no: {{ $cheque->cheque_no ?? '' }}
+                Cheque no: {{ $payment->cheque->cheque_no ?? '' }}
             </div>
             <div class="col-4 text-center">
                 &nbsp;
@@ -113,10 +113,10 @@
         <div class="row mt-3">
             <div class="col-3">
                 <button type="button" class="btn btn-secondary" id="printButton">Print</button>
-                @if($single->cheque_count == 0)
-                    <a href="{{ route('requisition.issue-cheque', ['id' => $single->id]) }}" class="btn btn-info">Cheque</a>
+                @if($single->payment_count == 0)
+                    <a href="{{ route('requisition.add-payment', ['id' => $single->id]) }}" class="btn btn-info">Add Payment</a>
                 @else
-                    <a href="{{ route('requisition.edit-issue-cheque', ['id' => $single->id]) }}" class="btn btn-success">Edit Cheque</a>
+                    <a href="{{ route('requisition.edit-payment', ['id' => $single->id]) }}" class="btn btn-success">Edit Payment</a>
                 @endif
             </div>
         </div>

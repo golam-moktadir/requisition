@@ -68,9 +68,9 @@ Route::group(['middleware' => ['auth']], function () {
 
      Route::get('requisition/{id}/approval', [RequisitionController::class, 'approval'])->name('requisition.approval');
      Route::post('requisition/{id}/store_approval', [RequisitionController::class, 'storeAapproval'])->name('requisition.store_approval');
-     Route::get('requisition/issue-cheque/{id}', [RequisitionController::class, 'issueCheque'])->name('requisition.issue-cheque');
-     Route::put('requisition/issue-cheque/{id}', [RequisitionController::class, 'updateCheque'])->name('requisition.update-cheque');
-     Route::get('requisition/edit-issue-cheque/{id}', [RequisitionController::class, 'editIssueCheque'])->name('requisition.edit-issue-cheque');
-     Route::put('requisition/edit-issue-cheque/{id}', [RequisitionController::class, 'updateIssueCheque'])->name('requisition.update-issue-cheque');
+     Route::get('requisition/add-payment/{id}', [RequisitionController::class, 'addPayment'])->name('requisition.add-payment');
+     Route::put('requisition/save-payment', [RequisitionController::class, 'savePayment'])->name('requisition.save-payment');
+     Route::get('requisition/edit-payment/{id}', [RequisitionController::class, 'editPayment'])->name('requisition.edit-payment');
+     Route::put('requisition/edit-payment/{id}', [RequisitionController::class, 'updatePayment'])->name('requisition.update-payment');
      Route::post('requisition/get-valid-cheque-list/', [RequisitionController::class, 'getValidChequeList'])->name('requisition.get-valid-cheque-list');
 });

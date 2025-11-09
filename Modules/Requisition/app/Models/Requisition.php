@@ -26,6 +26,11 @@ class Requisition extends Model
         'created_by',
     ];
 
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
+    }
+
     public function createRequisition(array $data)
     {
         

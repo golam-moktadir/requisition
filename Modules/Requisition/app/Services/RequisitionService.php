@@ -80,7 +80,7 @@ class RequisitionService
                         'ps.payee_name', 
                         'ps.account_holder_name',
                         DB::raw("DATE_FORMAT(r.created_at, '%d/%m/%Y') as created_at"),
-                        DB::raw("(SELECT COUNT(*) FROM cheques WHERE cheques.requisition_id = r.id) as cheque_count")
+                        DB::raw("(SELECT COUNT(*) FROM requisition_payments WHERE requisition_id = r.id) as payment_count")
                     ])
                 ->where('r.id', $id)
                 ->first();
