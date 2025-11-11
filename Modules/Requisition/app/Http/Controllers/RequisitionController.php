@@ -65,7 +65,7 @@ class RequisitionController extends Controller
         ]);
 
         $result = $this->service->saveData($validated, $request);
-
+        //dd($result);
         if ($result) {
             return redirect()->route('requisition.index')->with('success', 'Created Successfully');
         } else {
@@ -80,9 +80,9 @@ class RequisitionController extends Controller
     {
         $data['title']      = 'Requisitions';
         $data['single']     = $this->service->getSingleData($requisition_id); 
-        $data['files']      = $this->service->getFiles($requisition_id);
-        $data['payment']     = RequisitionPayment::with('cheque')->where('requisition_id', $requisition_id)->orderBy('id', 'asc')->first();
+        $data['payment']    = RequisitionPayment::with('cheque')->where('requisition_id', $requisition_id)->orderBy('id', 'asc')->first();
         $data['approvals']  = Approval::where('requisition_id', $requisition_id)->with('user')->get();
+        $data['approved']  = Approval::with('user')->where('requisition_id', $requisition_id)->where('status', 'approved')->first();
         //dd($data);
         return view('requisition::show', $data);        
     }
@@ -223,7 +223,18 @@ class RequisitionController extends Controller
         $payment->cash_description = $request->payment_type == 2 ? $request->cash_description : null;
         $payment->files            = empty($files) ? null : json_encode($files);
         $payment->save();
-        return redirect()->route('requisition.show', ['id' => $requisition_id]);
+
+        $requisition = Requisition::findOrFail($request->requisition_id);
+        $requisition->status = 'issued';
+        $requisition->save();
+
+        $approval                   = new Approval();
+        $approval->requisition_id   = $request->requisition_id;
+        $approval->status           = 'issued';
+        $approval->user_id          = Auth::id();
+        $approval->save();
+
+        return redirect()->route('requisition.show', ['id' => $request->requisition_id]);
     }
 
     public function editPayment($requisition_id){
@@ -269,6 +280,16 @@ class RequisitionController extends Controller
         $payment->cash_description = $request->payment_type == 2 ? $request->cash_description : null;
         $payment->files            = empty($files) ? null : json_encode($files);
         $payment->save();
+
+        $requisition = Requisition::findOrFail($request->requisition_id);
+        $requisition->status = 'issued';
+        $requisition->save();
+
+        $approval                   = new Approval();
+        $approval->requisition_id   = $request->requisition_id;
+        $approval->status           = 'issued';
+        $approval->user_id          = Auth::id();
+        $approval->save();
         return redirect()->route('requisition.show', ['id' => $request->requisition_id])->with('success', 'Issued successfully.');
     }
 }

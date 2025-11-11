@@ -39,6 +39,7 @@
                         <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
                         <option value="rejected" {{ request('status') == 'rejected' ? 'selected' : '' }}>Rejected</option>
                         <option value="returned" {{ request('status') == 'returned' ? 'selected' : '' }}>Returned</option>
+                        <option value="issued" {{ request('status') == 'issued' ? 'selected' : '' }}>Issued</option>
                     </select>
                 </div>
                 <div class="col-md-2 mb-2">
@@ -49,10 +50,10 @@
         <table class="table table-sm table-bordered table-hover mt-2">
             <thead>
                 <tr class="table-primary text-white">
-                    <th style="width: 60px;">#</th>
-                    <th >Company Name</th>
-                    <th >Purpose Name</th>
-                    <!-- <th style="width: 135px;">Requested To</th> -->
+                    <th class="text-center">#</th>
+                    <th class="text-center">Requision No.</th>
+                    <th>Company Name</th>
+                    <th>Purpose Name</th>
                     <th style="width: 130px;">Amount (TK)</th>
                     <th style="width: 100px;">Status</th>
                     <th style="width: 140px;">Action</th>                
@@ -61,7 +62,8 @@
             <tbody>
                 @foreach($requisitions AS $requisition)
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
+                    <td class="text-center">{{ $loop->iteration }}</td>
+                    <td>{{ $requisition->req_no }}</td>
                     <td>{{ $requisition->company_name }}</td>
                     <td>{{ $requisition->purpose_name }}</td>
                     <!-- <td>{{ ucwords($requisition->requested_to) }}</td> -->

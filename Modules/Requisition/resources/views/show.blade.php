@@ -25,15 +25,17 @@
                 {{ $single->company_name }}
             </div>
             <div class="col-4">
-                Status: {{ $single->status }}
+                Status: {{ ucfirst($single->status) }}
             </div>
         </div>
         <div class="row mt-3 text-dark">
             <div class="col-4">
-                Cheque no: {{ $payment->cheque->cheque_no ?? '' }}
+                Payment Mode: {{ $payment->payment_type_text ?? '' }}
             </div>
             <div class="col-4 text-center">
-                &nbsp;
+                @if($payment?->payment_type == 1)
+                    Cheque No.: {{ $payment->cheque->cheque_no ?? '' }}
+                @endif
             </div>
             <div class="col-4">
                 Received:
@@ -77,8 +79,10 @@
             </div>
         </div>
         <div class="row mt-5 text-dark">
-            <div class="col-6">Prepared By</div>
-            <div class="col-6 text-center">Approved By</div>
+            <div class="col-6">Prepared By : {{ $single->prepared_by }} </div>
+            <div class="col-6 text-center">
+                Approved By : {{ $approved?->user?->name }}
+            </div>
         </div>
         <div class="row mt-5 text-dark">
             <div class="col-6">Verified By</div>
@@ -140,7 +144,7 @@
                         @foreach($approvals AS $approval)
                         <tr>
                             <td class="text-center text-dark">{{ $loop->iteration }}</td>
-                            <td class="text-center text-dark">{{ $approval->status }}</td>
+                            <td class="text-center text-dark">{{ ucfirst($approval->status) }}</td>
                             <td class="text-dark">{{ $approval->remarks }}</td>
                             <td class="text-dark">{{ $approval->user->name }}</td>
                             <td class="text-center text-dark">{{ $approval->created_at }}</td>

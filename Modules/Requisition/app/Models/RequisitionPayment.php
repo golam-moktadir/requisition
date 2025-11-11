@@ -37,6 +37,11 @@ class RequisitionPayment extends Model
         return $this->belongsTo(Cheque::class);
     }
 
+    public function getPaymentTypeTextAttribute()
+    {
+        return $this->payment_type == 1 ? 'Cheque' : 'Cash';
+    }
+
     // protected static function newFactory(): RequisitionPaymentFactory
     // {
     //     // return RequisitionPaymentFactory::new();

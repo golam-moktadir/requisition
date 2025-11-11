@@ -3,6 +3,7 @@ namespace Modules\Requisition\Services;
 
 use Modules\Requisition\Models\Requisition; 
 use Modules\Requisition\Models\Approval; 
+use Modules\Requisition\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -17,10 +18,10 @@ class RequisitionService
         return DB::table('requisitions as r')
                 ->leftJoin('companies as c', 'c.id', '=', 'r.company_id')
                 ->leftJoin('purposes as p', 'p.id', '=', 'r.purpose_id')
-                ->select(['r.id', 'r.description', 'r.requested_to', 'r.amount', 'r.status', 'c.company_name', 'p.purpose_name'])
+                ->select(['r.id', 'r.req_no', 'r.description', 'r.requested_to', 'r.amount', 'r.status', 'c.company_name', 'p.purpose_name'])
                 ->when($request->filled('requisition_no'), function ($query) use ($request) {
-                    $query->where('r.id', $request->input('requisition_no'));
-                })                
+                    $query->where('r.req_no', 'like', '%' . $request->input('requisition_no') . '%');
+                })              
                 ->when($request->filled('from_date') && $request->filled('to_date'), function ($query) use ($request) {
                     $query->whereBetween(DB::raw('DATE(r.created_at)'), [$request->input('from_date'), $request->input('to_date')]);
                 })
@@ -39,14 +40,24 @@ class RequisitionService
     public function saveData($validated, Request $request)
     {
 
-        $model = new Requisition;
+        $company_name   = Company::where('id', $validated['company_id'])->value('company_name');
+        $requisition_no = Requisition::where('company_id', $validated['company_id'])->orderBy('id', 'desc')->value('req_no');
+        $prefix         = strtoupper(substr($company_name, 0, 3)).date('my');
+        
+        if($requisition_no){
+            $number = (int) substr($requisition_no, 7);
+            $req_no = $prefix.str_pad($number + 1, 3, '0', STR_PAD_LEFT);
+        }else{
+            $req_no = $prefix.'001';
+        }
 
+        $model = new Requisition;
+        $model->req_no        = $req_no;
         $model->company_id    = $validated['company_id'];
         $model->purpose_id    = $validated['purpose_id'];
         $model->payee_id      = $validated['payee_id'];
         $model->description   = $validated['description'];
         $model->amount        = $validated['amount'];
-        //$model->requested_to  = $validated['requested_to'];
         $model->created_by    = auth()->id();
         
         $model->save();
@@ -74,11 +85,13 @@ class RequisitionService
                 ->leftJoin('companies as c', 'c.id', '=', 'r.company_id')
                 ->leftJoin('purposes as p', 'p.id', '=', 'r.purpose_id')
                 ->leftJoin('payees as ps', 'ps.id', '=', 'r.payee_id')
+                ->leftJoin('users as u', 'u.id', '=', 'r.created_by')
                 ->select(['r.*', 
                         'c.company_name', 
                         'p.purpose_name', 
                         'ps.payee_name', 
                         'ps.account_holder_name',
+                        'u.name as prepared_by',
                         DB::raw("DATE_FORMAT(r.created_at, '%d/%m/%Y') as created_at"),
                         DB::raw("(SELECT COUNT(*) FROM requisition_payments WHERE requisition_id = r.id) as payment_count")
                     ])
@@ -98,8 +111,7 @@ class RequisitionService
         $model->payee_id      = $validated['payee_id'];
         $model->description   = $validated['description'];
         $model->amount        = $validated['amount'];
-        //$model->requested_to  = $validated['requested_to'];
-        $model->status        = 'pending';
+        //$model->status        = 'pending';
                 
         $model->save();
 
