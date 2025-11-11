@@ -12,7 +12,7 @@
         @include('admin.layouts.message')   
         <div class="p-2" id="print-body">
         <div class="row">
-            <h3 class="text-center text-dark">REQUISITION - {{ $single->id }}</h3>                    
+            <h3 class="text-center text-dark">REQUISITION - {{ $single->req_no }}</h3>                    
             <h3 class="text-center text-dark">{{ $single->payee_name }}</h3>                    
 
             <div class="text-center text-dark">A/C Name - {{ $single->account_holder_name }}</div>
@@ -113,18 +113,18 @@
             </div>
         </form>
         @endif
-        @if($single->status == 'approved')
         <div class="row mt-3">
             <div class="col-3">
                 <button type="button" class="btn btn-secondary" id="printButton">Print</button>
-                @if($single->payment_count == 0)
-                    <a href="{{ route('requisition.add-payment', ['id' => $single->id]) }}" class="btn btn-info">Add Payment</a>
-                @else
-                    <a href="{{ route('requisition.edit-payment', ['id' => $single->id]) }}" class="btn btn-success">Edit Payment</a>
+                @if(in_array($single->status, ['approved', 'issued']))
+                    @if($single->payment_count == 0)
+                        <a href="{{ route('requisition.add-payment', ['id' => $single->id]) }}" class="btn btn-info">Add Payment</a>
+                    @else
+                        <a href="{{ route('requisition.edit-payment', ['id' => $single->id]) }}" class="btn btn-success">Edit Payment</a>
+                    @endif
                 @endif
             </div>
         </div>
-        @endif
         <div class="row mt-3">
             <div class="col-9">
                 <table class="table table-bordered table-hover table-sm">

@@ -5,7 +5,7 @@
     <a href="{{ route('requisition.index') }}">{{ $title }}</a>
 </li>
 <li class="breadcrumb-item">
-    Issue Cheque
+    Edit Issue Payment
 </li>
 @endsection
 
@@ -18,7 +18,7 @@
                 @method('PUT')
                 <div class="mb-3">
                     <label for="requisition_no" class="form-label">Requisition No.</label>
-                    <input class="form-control" id="requisition_no" value="{{ $payment->requisition_id }}" tabindex="1" disabled>
+                    <input class="form-control" id="requisition_no" value="{{ $payment->req_no }}" tabindex="1" disabled>
                     <input type="hidden" id="requisition_id" name="requisition_id" value="{{ $payment->requisition_id }}">
                 </div>
                 <div class="mb-3">
@@ -31,6 +31,7 @@
                         <option value="">-- Select Payment Type --</option>
                         <option value="1" {{ $payment->payment_type == 1 ? 'selected' : '' }}>Cheque</option>
                         <option value="2" {{ $payment->payment_type == 2 ? 'selected' : '' }}>Cash</option>
+                        <option value="3" {{ $payment->payment_type == 3 ? 'selected' : '' }}>Bank Transfer</option>
                     </select>
                 </div>
                 <!-- Cheque Section -->
@@ -40,7 +41,8 @@
                         <select class="form-select" id="bank_id" name="bank_id" tabindex="3">
                             <option value="">-- Select Bank --</option>
                             @foreach ($banks as $bank)
-                                <option value="{{ $bank->id }}" {{ $payment->cheque->bank_id == $bank->id ? 'selected' : '' }}>
+                                <option value="{{ $bank->id }}" 
+                                    {{ optional($payment->cheque)->bank_id == $bank->id ? 'selected' : '' }}>
                                     {{ $bank->bank_name }} ({{ $bank->account_no }})
                                 </option>
                             @endforeach
@@ -50,7 +52,7 @@
                         <label for="cheque_id" class="form-label">Select Cheque Number</label>
                         <select class="form-select" id="cheque_id" name="cheque_id" tabindex="4">
                         @foreach($cheques as $row)
-                            @if($row->bank_id == $payment->cheque->bank_id)
+                            @if(optional($payment->cheque)->bank_id == $row->bank_id)
                                 <option value="{{ $row->id }}" {{ $row->id == $payment->cheque_id ? 'selected' : '' }}>
                                     {{ $row->cheque_no }}
                                 </option>
@@ -62,10 +64,10 @@
 
                 <!-- Cash Section -->
                 <div id="cash-section" style="display:none;">
-                    <div class="mb-3">
+<!--                     <div class="mb-3">
                         <label for="cash_amount" class="form-label">Cash Amount</label>
                         <input type="number" class="form-control" id="cash_amount" name="cash_amount" placeholder="Enter amount" value="{{ $payment->cash_amount ?? '' }}">
-                    </div>
+                    </div> -->
                     <div class="mb-3">
                         <label for="cash_description" class="form-label">Description</label>
                         <textarea class="form-control" id="cash_description" name="cash_description" rows="2" placeholder="Enter description">{{ $payment->cash_description ?? '' }}</textarea>
@@ -93,7 +95,7 @@
                 <div class="btn-group mt-2" role="group">
                     <button type="submit" class="btn btn-primary">Save</button>
                     <button type="reset" class="btn btn-warning">Reset</button>
-                    <a href="#" class="btn btn-info">Back to List</a>
+                    <a href="{{ route('requisition.show', ['id' => $payment->requisition_id]) }}" class="btn btn-info">Back</a>
                 </div>
             </form> 
         </div>
@@ -114,7 +116,7 @@
             $('#cheque-section').show();
             $('#cash-section').hide();
         } 
-        else if (paymentType == '2') {
+        else if (paymentType == '2' || paymentType == '3' ) { // Cash or Bank Transfer
             $('#cash-section').show();
             $('#cheque-section').hide();
         } 

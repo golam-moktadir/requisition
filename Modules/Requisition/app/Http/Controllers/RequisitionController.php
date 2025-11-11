@@ -198,8 +198,7 @@ class RequisitionController extends Controller
             $rules['cheque_id'] = ['required', 'integer'];
         }
 
-        if ($request->payment_type == 2) { 
-            $rules['cash_amount'] = ['required', 'numeric', 'min:1'];
+        if (in_array($request->payment_type, [2, 3])) {
             $rules['cash_description'] = ['nullable', 'string', 'max:255'];
         }
 
@@ -218,10 +217,16 @@ class RequisitionController extends Controller
         $payment = new RequisitionPayment();
         $payment->requisition_id   = $request->requisition_id;
         $payment->payment_type     = $request->payment_type;
-        $payment->cheque_id        = $request->payment_type == 1 ? $request->cheque_id : null;
-        $payment->cash_amount      = $request->payment_type == 2 ? $request->cash_amount : null;
-        $payment->cash_description = $request->payment_type == 2 ? $request->cash_description : null;
-        $payment->files            = empty($files) ? null : json_encode($files);
+
+        if ($request->payment_type == 1) { 
+            $payment->cheque_id        = $request->cheque_id;
+            $payment->cash_description = null;
+        } else { 
+            $payment->cheque_id        = null;
+            $payment->cash_description = $request->cash_description;
+        }
+
+        $payment->files = empty($files) ? null : json_encode($files);
         $payment->save();
 
         $requisition = Requisition::findOrFail($request->requisition_id);
@@ -256,8 +261,7 @@ class RequisitionController extends Controller
             $rules['cheque_id'] = ['required', 'integer'];
         }
 
-        if ($request->payment_type == 2) { 
-            $rules['cash_amount'] = ['required', 'numeric', 'min:1'];
+        if (in_array($request->payment_type, [2, 3])) {
             $rules['cash_description'] = ['nullable', 'string', 'max:255'];
         }
 
@@ -274,11 +278,16 @@ class RequisitionController extends Controller
         }
 
         $payment = RequisitionPayment::find($id);
-        $payment->payment_type     = $request->payment_type;
-        $payment->cheque_id        = $request->payment_type == 1 ? $request->cheque_id : null;
-        $payment->cash_amount      = $request->payment_type == 2 ? $request->cash_amount : null;
-        $payment->cash_description = $request->payment_type == 2 ? $request->cash_description : null;
-        $payment->files            = empty($files) ? null : json_encode($files);
+        $payment->payment_type = $request->payment_type;
+        if ($request->payment_type == 1) { 
+            $payment->cheque_id        = $request->cheque_id;
+            $payment->cash_description = null;
+        } else { 
+            $payment->cheque_id        = null;
+            $payment->cash_description = $request->cash_description;
+        }
+
+        $payment->files = empty($files) ? null : json_encode($files);
         $payment->save();
 
         $requisition = Requisition::findOrFail($request->requisition_id);

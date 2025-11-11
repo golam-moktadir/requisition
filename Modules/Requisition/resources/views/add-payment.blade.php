@@ -5,7 +5,7 @@
     <a href="{{ route('requisition.index') }}">{{ $title }}</a>
 </li>
 <li class="breadcrumb-item">
-    Issue Cheque
+    Issue Payment
 </li>
 @endsection
 
@@ -18,7 +18,7 @@
                 @method('PUT')
                 <div class="mb-3">
                     <label for="requisition_no" class="form-label">Requisition No.</label>
-                    <input class="form-control" id="requisition_no" value="{{ $single->id }}" tabindex="1" disabled>
+                    <input class="form-control" id="requisition_no" value="{{ $single->req_no }}" tabindex="1" disabled>
                     <input type="hidden" id="requisition_id" name="requisition_id" value="{{ $single->id }}">
                 </div>
                 <div class="mb-3">
@@ -31,6 +31,7 @@
                         <option value="">-- Select Payment Type --</option>
                         <option value="1">Cheque</option>
                         <option value="2">Cash</option>
+                        <option value="3">Bank Transfer</option>
                     </select>
                 </div>
 
@@ -55,10 +56,10 @@
 
                 <!-- Cash Section -->
                 <div id="cash-section" style="display:none;">
-                    <div class="mb-3">
+<!--                     <div class="mb-3">
                         <label for="cash_amount" class="form-label">Cash Amount</label>
                         <input type="number" class="form-control" id="cash_amount" name="cash_amount" placeholder="Enter amount">
-                    </div>
+                    </div> -->
                     <div class="mb-3">
                         <label for="cash_description" class="form-label">Description</label>
                         <textarea class="form-control" id="cash_description" name="cash_description" rows="2" placeholder="Enter description"></textarea>
@@ -79,7 +80,7 @@
                 <div class="btn-group mt-2" role="group">
                     <button type="submit" class="btn btn-primary">Save</button>
                     <button type="reset" class="btn btn-warning">Reset</button>
-                    <a href="#" class="btn btn-info">Back to List</a>
+                    <a href="{{ route('requisition.show', ['id' => $single->id]) }}" class="btn btn-info">Back</a>
                 </div>
             </form> 
         </div>
@@ -94,7 +95,7 @@
             $('#cheque-section').show();
             $('#cash-section').hide();
         } 
-        else if (paymentType == '2') { // Cash
+        else if (paymentType == '2' || paymentType == '3' ) { // Cash or Bank Transfer
             $('#cash-section').show();
             $('#cheque-section').hide();
         } 
