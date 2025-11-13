@@ -4,7 +4,6 @@ namespace Modules\Requisition\Services;
 use Modules\Requisition\Models\Requisition; 
 use Modules\Requisition\Models\Approval; 
 use Modules\Requisition\Models\Company;
-use Modules\Requisition\Models\RequisitionDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
@@ -57,19 +56,11 @@ class RequisitionService
         $model->company_id    = $validated['company_id'];
         $model->purpose_id    = $validated['purpose_id'];
         $model->payee_id      = $validated['payee_id'];
-        $model->description   = 'n/a';//$validated['description'];
-        // $model->amount        = $validated['amount'];
+        $model->description   = $validated['description'];
+        $model->amount        = $validated['amount'];
         $model->created_by    = auth()->id();
         
         $model->save();
-
-        foreach ($validated['description'] as $index => $desc) {
-            RequisitionDetail::create([
-                'requisition_id' => $model->id,
-                'description'    => $desc,
-                'amount'         => $validated['amount'][$index],
-            ]);
-        }
 
         if($request->hasFile('files')){
             $data = [];

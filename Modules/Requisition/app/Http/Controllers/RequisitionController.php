@@ -59,9 +59,8 @@ class RequisitionController extends Controller
             'company_id'        => 'required',
             'purpose_id'        => 'required|integer',
             'payee_id'          => 'nullable|integer',
-            'description'       => 'required|string',
-            'amount'            => 'required',
-            //'requested_to'      => 'required'
+            'description.*'       => 'required|string',
+            'amount.*'            => 'required',
         ]);
 
         $result = $this->service->saveData($validated, $request);
