@@ -108,6 +108,10 @@ class RequisitionService
                 ->first();
     }
 
+    public function getMultipleData($id){
+        return RequisitionDetail::where('requisition_id', $id)->get();
+    }
+
     public function getFiles($id){
         return DB::table('requisition_files')->where('requisition_id', $id)->get();
     }
@@ -118,11 +122,20 @@ class RequisitionService
         $model->company_id    = $validated['company_id'];
         $model->purpose_id    = $validated['purpose_id'];
         $model->payee_id      = $validated['payee_id'];
-        $model->description   = $validated['description'];
-        $model->amount        = $validated['amount'];
-        //$model->status        = 'pending';
-                
+        // $model->description   = $validated['description'];
+        // $model->amount        = $validated['amount'];
+        //$model->status        = 'pending';  
         $model->save();
+
+        RequisitionDetail::where('requisition_id', $id)->delete();
+
+        foreach ($validated['description'] as $index => $desc) {
+            RequisitionDetail::create([
+                'requisition_id' => $model->id,
+                'description'    => $desc,
+                'amount'         => $validated['amount'][$index],
+            ]);
+        }
 
         if($request->hasFile('files')){
             $data = [];

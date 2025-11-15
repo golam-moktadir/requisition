@@ -12,11 +12,11 @@
 @section('content-body')
     <div class="mt-1 p-2 card">
         @include('admin.layouts.message')   
-        <div class="col-8">
-            <form action="{{ route('requisition.update', $single->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('requisition.update', $single->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                <div class="mb-3">
+            <div class="row my-1">
+                <div class="col-sm-6">
                     <label for="company_id" class="form-label">Company Name</label>
                     <select class="form-control" id="company_id" name="company_id" required tabindex="1" autofocus>
                         <option value="">Select Company</option>
@@ -30,7 +30,7 @@
                     </div> 
                     @enderror
                 </div>
-                <div class="mb-3">
+                <div class="col-sm-6">
                     <label for="purpose_id" class="form-label">Purpose Name</label>
                     <select class="form-control" id="purpose_id" name="purpose_id" required tabindex="2" autofocus>
                         <option value="">Select Purpose</option>
@@ -44,7 +44,9 @@
                     </div> 
                     @enderror
                 </div>
-                <div class="mb-3">
+            </div>
+            <div class="row my-1">
+                <div class="col-sm-6">
                     <label for="payee_id" class="form-label">Payee Name</label>
                     <select class="form-control" id="payee_id" name="payee_id" tabindex="2" autofocus>
                         <option value="">Select Payee</option>
@@ -58,70 +60,103 @@
                     </div> 
                     @enderror
                 </div>
-                <div class="mb-3">
-                    <label for="description" class="form-label">Description</label>
-                    <textarea class="form-control" id="description" name="description" required placeholder="Description" tabindex="5" rows="6" maxlength="1000">{{ old('description', $single->description )  }}</textarea>
-                    @error('description') <div class="text-danger">{{ $message }}</div> @enderror
+            </div>
+            <div class="row my-2">
+                <div class="col-sm-6">
+                    <button type="button" class="btn btn-sm btn-info" id="add-btn">Add Item</button>
                 </div>
-
-                <div class="mb-3">
-                    <label for="amount" class="form-label">Amount</label>
-                    <input type="number" class="form-control" id="amount" name="amount" value="{{ old('amount', $single->amount) }}" required placeholder="Amount" tabindex="6" step="0.01">
-                    <p><strong>In Words:</strong> <span id="inWords" class="text-danger"></span></p>
-                    @error('amount') <div class="text-danger">{{ $message }}</div> @enderror
+            </div>
+            <div class="row my-2">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-sm align-middle" id="item-table">
+                        <thead class="table-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Description</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($details as $row)
+                            <tr>
+                                <td class='text-center'>{{ $loop->iteration }}</td>
+                                <td class='editable description'>{{ $row->description }}
+                                    <input type='hidden' name='description[]' value='{{ $row->description }}'>
+                                </td>
+                                <td class='text-end editable amount'>{{ $row->amount }}
+                                    <input type='hidden' name='amount[]' value='{{ $row->amount }}'>
+                                </td>
+                                <td class='text-center'><a href='javascript:void(0)' class='btn btn-sm btn-danger delete-btn'>Remove</a></td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
-
-<!--                 <div class="mb-3">
-                    <label for="requested_to" class="form-label">Requested To</label>
-                    <select class="form-control" id="requested_to" name="requested_to" required tabindex="6">
-                        <option value="">Select Requested To</option>
-                        <option value="ceo" {{ old('requested_to', $single->requested_to) == 'ceo' ? 'selected' : '' }}>CEO</option>
-                        <option value="managing_director" {{ old('requested_to', $single->requested_to) == 'managing_director' ? 'selected' : '' }}>Managing Director</option>
-                        <option value="manager" {{ old('requested_to', $single->requested_to) == 'manager' ? 'selected' : '' }}>Manager</option>
-                        <option value="accountant" {{ old('requested_to', $single->requested_to) == 'accountant' ? 'selected' : '' }}>Accountant</option>
-                    </select>
-                    @error('requested_to') 
-                        <div class="text-danger">
-                            {{ $message }}
-                        </div> 
-                    @enderror
-                </div> -->
-                <div id="file-inputs">                
-                    <div class="mb-1">
+            </div>
+            <div id="file-inputs">                
+                <div class="row my-1">
+                    <div class="col-sm-6">
                         <label for="files" class="form-label">Attach Files</label>
                         <input type="file" class="form-control" id="files" name="files[]">
                     </div>
                 </div>
-                <div class="mb-3">
-                    <button type="button" class="btn btn-sm btn-secondary" id="add-more">Add More</button>
-                </div>
-                @if($files->count() > 0)
-                <div class="mb-3">
-                    <label class="form-label">Existing Files</label>
-                    <ul class="list-group">
-                        @foreach($files as $file)
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <a href="{{ asset('storage/requisitions/'.$file->file_name) }}" target="_blank">
-                                    {{ $file->file_name }}
-                                </a>
-                                <button type="button" class="btn btn-sm btn-danger remove-file" data-file-id="{{ $file->file_name }}">
-                                    Delete
-                                </button>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
-                <div class="btn-group" role="group" aria-label="Basic example">
-                    <button type="submit" class="btn btn-primary">Save</button>
-                    <button type="reset" class="btn btn-warning">Reset</button>
-                    <a href="{{route('requisition.index')}}" class="btn btn-info">Return back</a>
-                </div> 
-            </form>   
-        </div>
-
+            </div>
+            <div class="mb-3">
+                <button type="button" class="btn btn-sm btn-secondary" id="add-more">Add More</button>
+            </div>
+            @if($files->count() > 0)
+            <div class="mb-3">
+                <label class="form-label">Existing Files</label>
+                <ul class="list-group">
+                    @foreach($files as $file)
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <a href="{{ asset('storage/requisitions/'.$file->file_name) }}" target="_blank">
+                                {{ $file->file_name }}
+                            </a>
+                            <button type="button" class="btn btn-sm btn-danger remove-file" data-file-id="{{ $file->file_name }}">
+                                Delete
+                            </button>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+            <div class="btn-group" role="group" aria-label="Basic example">
+                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="reset" class="btn btn-warning">Reset</button>
+                <a href="{{route('requisition.index')}}" class="btn btn-info">Return back</a>
+            </div> 
+        </form>   
     </div>
-
+    <!-- Add Item Modal -->
+    <div class="modal fade" id="item-modal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="addItemModalLabel">Add Item</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="item-form">
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <textarea class="form-control" id="description" name="description" placeholder="Description" rows="6" maxlength="1000"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="amount" class="form-label">Amount</label>
+                            <input type="number" class="form-control" id="amount" name="amount" required placeholder="Amount" step="0.01">
+                            <p><strong>In Words:</strong> <span id="inWords" class="text-danger"></span></p>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" id="item-btn">Add</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('footerjs')
@@ -131,6 +166,36 @@
             let input = $('<div class="mb-1"><input type="file" name="files[]" class="form-control"></div>');
             $('#file-inputs').append(input);
         });
+
+        $('#add-btn').on('click', function() {
+            $('#item-modal').modal('show');
+            $('#item-form')[0].reset();
+            $("#inWords").text('');
+        });
+
+        $("#item-btn").on('click', function(){
+            let description = $("#description").val();
+            let amount = $("#amount").val();
+            if(amount){
+                let row = "";
+                row += "<tr>"
+                row += "<td class='text-center'></td>";
+                // row += "<td class='editable description'>"+description+"</td>";
+                   row += "<td class='editable description'>"+description+
+                                "<input type='hidden' name='description[]' value='"+description+"'></td>";
+                row += "<td class='text-end editable amount'>"+amount+
+                                "<input type='hidden' name='amount[]' value='" + amount + "'></td>";
+                row += "<td class='text-center'><a href='javascript:void(0)' class='btn btn-sm btn-danger delete-btn'>Remove</a></td>";
+                row += "</tr>";
+                $("#item-table tbody").append(row);
+                $('#item-modal').modal('hide');
+                updateSerialNumbers();
+                updateGrandTotal();
+                item_qty = 0;
+                item_price = 0;
+                total_price = 0;
+            }
+       });
 
         const deleteFileRoute = "{{ route('requisition.file.destroy', ':id') }}";
 

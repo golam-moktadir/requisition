@@ -62,13 +62,13 @@
             </div>
             <div class="row my-2">
                 <div class="col-sm-6">
-                    <button class="btn btn-sm btn-info" id="add-btn">Add Item</button>
+                    <button type="button" class="btn btn-sm btn-info" id="add-btn">Add Item</button>
                 </div>
             </div>
             <div class="row my-2">
                 <div class="table-responsive">
                     <table class="table table-bordered table-sm align-middle" id="item-table">
-                        <thead class="table-light">
+                        <thead class="table-light text-center">
                             <tr>
                                 <th>#</th>
                                 <th>Description</th>
@@ -79,6 +79,13 @@
                         <tbody>
                             <!-- Rows will be appended here -->
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2">Total : <span id="grand_total_in_word" class="text-danger"></span></td>
+                                <td id="grand_total_amount" align="right"></td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
@@ -111,6 +118,7 @@
                 <div class="modal-body">
                     <form id="item-form">
                         <div class="mb-3">
+                            <input type="hidden" id="index" value="">
                             <label for="description" class="form-label">Description</label>
                             <textarea class="form-control" id="description" name="description" placeholder="Description" rows="6" maxlength="1000"></textarea>
                         </div>
@@ -140,32 +148,74 @@
         $('#add-btn').on('click', function() {
             $('#item-modal').modal('show');
             $('#item-form')[0].reset();
+            $("#inWords").text('');
         });
 
         $("#item-btn").on('click', function(){
             let description = $("#description").val();
             let amount = $("#amount").val();
+            let index = $("#index").val();
             if(amount){
-                let row = "";
-                row += "<tr>"
-                row += "<td class='text-center'></td>";
-                // row += "<td class='editable description'>"+description+"</td>";
-                   row += "<td class='editable description'>"+description+
-                                "<input type='hidden' name='description[]' value='"+description+"'></td>";
-                row += "<td class='text-end editable amount'>"+amount+
-                                "<input type='hidden' name='amount[]' value='" + amount + "'></td>";
-                row += "<td class='text-center'><a href='javascript:void(0)' class='btn btn-sm btn-danger delete-btn'>Remove</a></td>";
-                row += "</tr>";
-                $("#item-table tbody").append(row);
+                if (index) {
+                    let row = $("#item-table tbody tr").eq(index);
+                    row.find('.description')
+                        .html(description + "<input type='hidden' name='description[]' value='"+description+"'>");
+                    row.find('.amount')
+                        .html(amount + "<input type='hidden' name='amount[]' value='"+amount+"'>");
+
+                    $('#index').val(""); // reset edit mode
+                }
+                else{
+                    let row = "";
+                    row += "<tr>"
+                    row += "<td class='text-center'></td>";
+                       row += "<td class='editable description'>"+description+
+                                    "<input type='hidden' name='description[]' value='"+description+"'></td>";
+                    row += "<td class='text-end editable amount'>"+amount+
+                                    "<input type='hidden' name='amount[]' value='" + amount + "'></td>";
+                    row += "<td class='text-center'>"+
+                                "<a href='javascript:void(0)' class='btn btn-sm btn-warning edit-btn'>Edit</a> "+
+                                "<a href='javascript:void(0)' class='btn btn-sm btn-danger delete-btn'>Remove</a>"+
+                            "</td>";
+                    row += "</tr>";
+                    $("#item-table tbody").append(row);
+                }
                 $('#item-modal').modal('hide');
                 updateSerialNumbers();
                 updateGrandTotal();
-                item_qty = 0;
-                item_price = 0;
-                total_price = 0;
             }
-       });
+        });
+
+        $(document).on('click', '.edit-btn', function() {
+            var row = $(this).closest('tr'); // get the clicked row
+            var index = row.index();          // row index
+            var description = row.find('td').eq(1).text(); // description column
+            var amount = row.find('td').eq(2).text();      // amount column
+
+            $("#index").val(index);
+            $('#description').val(description);
+            $('#amount').val(amount);
+
+            $('#item-modal').modal('show');
+            $("#inWords").text(numberToWords(amount));
+        });
     });
+
+    function updateSerialNumbers(){
+        $("#item-table tbody tr").each(function (index) {
+            $(this).find("td:first").text(index + 1);
+        });
+    }
+
+    function updateGrandTotal() {
+        let grand_total_amount = 0;
+        $(".amount").each(function () {
+            grand_total_amount += parseFloat($(this).text());
+        });
+
+        $("#grand_total_amount").text(grand_total_amount);
+        $("#grand_total_in_word").text(numberToWords(grand_total_amount));
+    }
 
     function numberToWords(num) {
         const a = [

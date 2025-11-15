@@ -13,7 +13,12 @@ class RequisitionDetail extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = [
+        'requisition_id',
+        'description',
+        'amount',
+        // add other columns if needed
+    ];
 
     // protected static function newFactory(): RequisitionDetailFactory
     // {

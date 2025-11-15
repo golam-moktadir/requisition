@@ -96,6 +96,7 @@ class RequisitionController extends Controller
         $data['purposes']  = Purpose::all();
         $data['payees']  = Payee::all();
         $data['single'] = $this->service->getSingleData($id); 
+        $data['details'] = $this->service->getMultipleData($id);
         $data['files']  = $this->service->getFiles($id);
         return view('requisition::edit', $data);
     }

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('requisiton_details', function (Blueprint $table) {
+        Schema::create('requisition_details', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('requisition_id')->comment('Foreign Key - id : requisitions');
             $table->string('description')->nullable();
@@ -26,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('requisiton_details');
+        Schema::dropIfExists('requisition_details');
     }
 };
