@@ -46,36 +46,36 @@
                 <table class="table table-sm table-bordered table-hover">
                     <thead>
                         <tr>
-                            <th colspan="5" class="text-center text-dark">Office Expense</th>
+                            <th colspan="3" class="text-center text-dark">{{ $single->purpose_name }}</th>
                         </tr>
                         <tr class="text-center">
                             <th class="text-dark">SL No.</th>
-                            <th class="text-dark">Date</th>
-                            <th class="text-dark">Purpose</th>
                             <th class="text-dark">Details</th>
                             <th class="text-dark">Amount</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @php
+                            $grand_total_amount = 0;
+                        @endphp
+                        @foreach($details as $row)
+                        @php
+                            $grand_total_amount += $row->amount;
+                        @endphp
                         <tr>
-                            <td class="text-center text-dark">1</td>
-                            <td class="text-center text-dark">{{ $single->created_at }}</td>
-                            <td class="text-dark">{{ $single->purpose_name }}</td>
-                            <td class="text-dark">{{ $single->description }}</td>
-                            <td class="text-end text-dark">{{ $single->amount }}</td>
+                            <td class='text-center text-dark'>{{ $loop->iteration }}</td>
+                            <td class='text-dark'>{{ $row->description }}</td>
+                            <td class='text-end text-dark'>{{ $row->amount }}</td>
                         </tr>
-                        <tr>
-                            <td class="text-center">&nbsp;</td>
-                            <td class="text-center">&nbsp;</td>
-                            <td class="text-center">&nbsp;</td>
-                            <td class="text-end text-dark">Total=</td>
-                            <td class="text-end text-dark">{{ $single->amount }}</td>
-                        </tr>
+                        @endforeach
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="text-dark" colspan="2">Total : {{ \App\Helpers\CommonHelper::get_NumberInWord($grand_total_amount) }} Taka</td>
+                            <td class="text-end text-dark">{{ number_format($grand_total_amount, 2, '.', '') }}</td>
+                        </tr>
+                    </tfoot>
                 </table>
-                <div class="text-dark">
-                    In Word: {{ \App\Helpers\CommonHelper::get_NumberInWord($single->amount) }} Taka Only
-                </div>
             </div>
         </div>
         <div class="row mt-5 text-dark">

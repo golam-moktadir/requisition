@@ -19,7 +19,14 @@ class RequisitionService
         return DB::table('requisitions as r')
                 ->leftJoin('companies as c', 'c.id', '=', 'r.company_id')
                 ->leftJoin('purposes as p', 'p.id', '=', 'r.purpose_id')
-                ->select(['r.id', 'r.req_no', 'r.description', 'r.requested_to', 'r.amount', 'r.status', 'c.company_name', 'p.purpose_name'])
+                ->select(['r.id', 
+                    'r.req_no', 
+                    'r.status', 
+                    'c.company_name', 
+                    'p.purpose_name',
+                    DB::raw("DATE_FORMAT(r.created_at, '%d/%m/%Y') as created_at"),
+                    DB::raw('(SELECT SUM(amount) FROM requisition_details WHERE requisition_id = r.id) as total_amount')
+                ])
                 ->when($request->filled('requisition_no'), function ($query) use ($request) {
                     $query->where('r.req_no', 'like', '%' . $request->input('requisition_no') . '%');
                 })              

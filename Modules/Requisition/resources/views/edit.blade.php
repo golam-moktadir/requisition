@@ -62,14 +62,9 @@
                 </div>
             </div>
             <div class="row my-2">
-                <div class="col-sm-6">
-                    <button type="button" class="btn btn-sm btn-info" id="add-btn">Add Item</button>
-                </div>
-            </div>
-            <div class="row my-2">
                 <div class="table-responsive">
                     <table class="table table-bordered table-sm align-middle" id="item-table">
-                        <thead class="table-light">
+                        <thead class="table-light text-center">
                             <tr>
                                 <th>#</th>
                                 <th>Description</th>
@@ -78,7 +73,13 @@
                             </tr>
                         </thead>
                         <tbody>
+                            @php
+                                $grand_total_amount = 0;
+                            @endphp
                             @foreach($details as $row)
+                            @php
+                                $grand_total_amount += $row->amount;
+                            @endphp
                             <tr>
                                 <td class='text-center'>{{ $loop->iteration }}</td>
                                 <td class='editable description'>{{ $row->description }}
@@ -87,11 +88,26 @@
                                 <td class='text-end editable amount'>{{ $row->amount }}
                                     <input type='hidden' name='amount[]' value='{{ $row->amount }}'>
                                 </td>
-                                <td class='text-center'><a href='javascript:void(0)' class='btn btn-sm btn-danger delete-btn'>Remove</a></td>
+                                <td class='text-center'>
+                                    <a href='javascript:void(0)' class='btn btn-sm btn-warning edit-btn'>Edit</a>
+                                    <a href='javascript:void(0)' class='btn btn-sm btn-danger delete-btn'>Remove</a>
+                                </td>
                             </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2">Total : <span id="grand_total_in_word" class="text-danger">{{ \App\Helpers\CommonHelper::get_NumberInWord($grand_total_amount) }} Taka</span></td>
+                                <td id="grand_total_amount" align="right">{{ $grand_total_amount }}</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
                     </table>
+                </div>
+            </div>
+            <div class="row my-2">
+                <div class="col-sm-6">
+                    <button type="button" class="btn btn-sm btn-info" id="add-btn">Add Particular</button>
                 </div>
             </div>
             <div id="file-inputs">                
@@ -140,6 +156,7 @@
                 <div class="modal-body">
                     <form id="item-form">
                         <div class="mb-3">
+                            <input type="hidden" id="index" value="">
                             <label for="description" class="form-label">Description</label>
                             <textarea class="form-control" id="description" name="description" placeholder="Description" rows="6" maxlength="1000"></textarea>
                         </div>
@@ -174,29 +191,64 @@
         });
 
         $("#item-btn").on('click', function(){
-            let description = $("#description").val();
-            let amount = $("#amount").val();
-            if(amount){
-                let row = "";
-                row += "<tr>"
-                row += "<td class='text-center'></td>";
-                // row += "<td class='editable description'>"+description+"</td>";
-                   row += "<td class='editable description'>"+description+
-                                "<input type='hidden' name='description[]' value='"+description+"'></td>";
-                row += "<td class='text-end editable amount'>"+amount+
-                                "<input type='hidden' name='amount[]' value='" + amount + "'></td>";
-                row += "<td class='text-center'><a href='javascript:void(0)' class='btn btn-sm btn-danger delete-btn'>Remove</a></td>";
-                row += "</tr>";
-                $("#item-table tbody").append(row);
+            let description = $("#description").val().trim();
+            let amount = parseFloat($("#amount").val());
+            let index = $("#index").val();
+
+            if (amount > 0 && description !== "") {
+                if (index) {
+                    let row = $("#item-table tbody tr").eq(index);
+                    row.find('.description')
+                        .html(description + "<input type='hidden' name='description[]' value='"+description+"'>");
+                    row.find('.amount')
+                        .html(amount + "<input type='hidden' name='amount[]' value='"+amount+"'>");
+                }
+                else{
+                    let row = "";
+                    row += "<tr>"
+                    row += "<td class='text-center'></td>";
+                       row += "<td class='editable description'>"+description+
+                                    "<input type='hidden' name='description[]' value='"+description+"'></td>";
+                    row += "<td class='text-end editable amount'>"+amount+
+                                    "<input type='hidden' name='amount[]' value='" + amount + "'></td>";
+                    row += "<td class='text-center'>"+
+                                "<a href='javascript:void(0)' class='btn btn-sm btn-warning edit-btn'>Edit</a> "+
+                                "<a href='javascript:void(0)' class='btn btn-sm btn-danger delete-btn'>Remove</a>"+
+                            "</td>";
+                    row += "</tr>";
+                    $("#item-table tbody").append(row);
+                }
                 $('#item-modal').modal('hide');
                 updateSerialNumbers();
                 updateGrandTotal();
-                item_qty = 0;
-                item_price = 0;
-                total_price = 0;
             }
-       });
+            else{
+                alert('Some Error ! Please Valid Input');
+            }
+            $('#index').val("");
+        });
 
+        $(document).on('click', '.edit-btn', function() {
+            var row = $(this).closest('tr'); // get the clicked row
+            var index = row.index();         // row index   
+            let description = row.find("input[name='description[]']").val();
+            let amount      = row.find("input[name='amount[]']").val(); 
+
+            $("#index").val(index);
+            $('#description').val(description);
+            $('#amount').val(amount);
+
+            $('#item-modal').modal('show');
+            $("#inWords").text(numberToWords(amount));
+        });
+
+        $('#item-table tbody').on('click', '.delete-btn', function (){ 
+            if(confirm("Press a button!")){
+                $(this).closest('tr').remove(); 
+                updateSerialNumbers();
+                updateGrandTotal();
+            }
+        });
         const deleteFileRoute = "{{ route('requisition.file.destroy', ':id') }}";
 
         $(".remove-file").on('click', function() {
@@ -217,6 +269,22 @@
             }
         });        
     });
+
+    function updateSerialNumbers(){
+        $("#item-table tbody tr").each(function (index) {
+            $(this).find("td:first").text(index + 1);
+        });
+    }
+
+    function updateGrandTotal() {
+        let grand_total_amount = 0;
+        $(".amount").each(function () {
+            grand_total_amount += parseFloat($(this).text());
+        });
+
+        $("#grand_total_amount").text(grand_total_amount);
+        $("#grand_total_in_word").text(numberToWords(grand_total_amount));
+    }
 
     function numberToWords(num) {
         const a = [

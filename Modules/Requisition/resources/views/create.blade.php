@@ -60,11 +60,11 @@
                     @enderror
                 </div>
             </div>
-            <div class="row my-2">
+<!--             <div class="row my-2">
                 <div class="col-sm-6">
                     <button type="button" class="btn btn-sm btn-info" id="add-btn">Add Item</button>
                 </div>
-            </div>
+            </div> -->
             <div class="row my-2">
                 <div class="table-responsive">
                     <table class="table table-bordered table-sm align-middle" id="item-table">
@@ -87,6 +87,11 @@
                             </tr>
                         </tfoot>
                     </table>
+                </div>
+            </div>
+            <div class="row my-2">
+                <div class="col-sm-6">
+                    <button type="button" class="btn btn-sm btn-info" id="add-btn">Add Particular</button>
                 </div>
             </div>
             <div id="file-inputs">                
@@ -152,18 +157,17 @@
         });
 
         $("#item-btn").on('click', function(){
-            let description = $("#description").val();
-            let amount = $("#amount").val();
+            let description = $("#description").val().trim();
+            let amount = parseFloat($("#amount").val());
             let index = $("#index").val();
-            if(amount){
-                if (index) {
+
+            if (amount > 0 && description !== "") {
+                if (index !== "") {
                     let row = $("#item-table tbody tr").eq(index);
                     row.find('.description')
                         .html(description + "<input type='hidden' name='description[]' value='"+description+"'>");
                     row.find('.amount')
                         .html(amount + "<input type='hidden' name='amount[]' value='"+amount+"'>");
-
-                    $('#index').val(""); // reset edit mode
                 }
                 else{
                     let row = "";
@@ -184,13 +188,17 @@
                 updateSerialNumbers();
                 updateGrandTotal();
             }
+            else{
+                alert('Some Error ! Please Valid Input');
+            }
+            $('#index').val(""); // reset edit mode
         });
 
         $(document).on('click', '.edit-btn', function() {
             var row = $(this).closest('tr'); // get the clicked row
             var index = row.index();          // row index
-            var description = row.find('td').eq(1).text(); // description column
-            var amount = row.find('td').eq(2).text();      // amount column
+            let description = row.find("input[name='description[]']").val();
+            let amount      = row.find("input[name='amount[]']").val(); 
 
             $("#index").val(index);
             $('#description').val(description);
@@ -198,6 +206,14 @@
 
             $('#item-modal').modal('show');
             $("#inWords").text(numberToWords(amount));
+        });
+
+        $('#item-table tbody').on('click', '.delete-btn', function (){ 
+            if(confirm("Press a button!")){
+                $(this).closest('tr').remove(); 
+                updateSerialNumbers();
+                updateGrandTotal();
+            }
         });
     });
 

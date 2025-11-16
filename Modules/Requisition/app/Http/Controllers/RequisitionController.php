@@ -79,9 +79,10 @@ class RequisitionController extends Controller
     {
         $data['title']      = 'Requisitions';
         $data['single']     = $this->service->getSingleData($requisition_id); 
+        $data['details']    = $this->service->getMultipleData($requisition_id);
         $data['payment']    = RequisitionPayment::with('cheque')->where('requisition_id', $requisition_id)->orderBy('id', 'asc')->first();
         $data['approvals']  = Approval::where('requisition_id', $requisition_id)->with('user')->get();
-        $data['approved']  = Approval::with('user')->where('requisition_id', $requisition_id)->where('status', 'approved')->first();
+        $data['approved']   = Approval::with('user')->where('requisition_id', $requisition_id)->where('status', 'approved')->first();
         //dd($data);
         return view('requisition::show', $data);        
     }
@@ -110,9 +111,8 @@ class RequisitionController extends Controller
             'company_id'        => 'required',
             'purpose_id'        => 'required|integer',
             'payee_id'          => 'nullable|integer',
-            'description'       => 'required|string',
-            'amount'            => 'required',
-            //'requested_to'      => 'required'
+            'description.*'       => 'required|string',
+            'amount.*'            => 'required'
         ]);
 
         $result = $this->service->updateData($validated, $request, $id);

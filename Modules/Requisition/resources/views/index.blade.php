@@ -49,14 +49,15 @@
         </form>
         <table class="table table-sm table-bordered table-hover mt-2">
             <thead>
-                <tr class="table-primary text-white">
-                    <th class="text-center">#</th>
-                    <th class="text-center">Requision No.</th>
+                <tr class="table-primary text-white text-center">
+                    <th>#</th>
+                    <th>Requision No.</th>
+                    <th>Date</th>
                     <th>Company Name</th>
                     <th>Purpose Name</th>
-                    <th style="width: 130px;">Amount (TK)</th>
-                    <th style="width: 100px;">Status</th>
-                    <th style="width: 140px;">Action</th>                
+                    <th>Amount (TK)</th>
+                    <th>Status</th>
+                    <th>Action</th>                
                 </tr>
             </thead>
             <tbody>
@@ -64,13 +65,12 @@
                 <tr>
                     <td class="text-center">{{ $loop->iteration }}</td>
                     <td>{{ $requisition->req_no }}</td>
+                    <td class="text-center">{{ $requisition->created_at }}</td>
                     <td>{{ $requisition->company_name }}</td>
-                    <td>{{ $requisition->purpose_name }}</td>
-                    <!-- <td>{{ ucwords($requisition->requested_to) }}</td> -->
-                    
-                    <td>{{ ucwords($requisition->amount) }}</td>
-                    <td>{{ ucwords($requisition->status) }}</td>
-                    <td>
+                    <td>{{ $requisition->purpose_name }}</td>                    
+                    <td class="text-end">{{ ucwords($requisition->total_amount) }}</td>
+                    <td class="text-center">{{ ucwords($requisition->status) }}</td>
+                    <td class="text-center">
                         <div class="btn-group" role="group" aria-label="Basic example"> 
                             <a href="{{ route('requisition.show', $requisition->id) }}" class="btn btn-sm btn-info"> View
                             </a>
