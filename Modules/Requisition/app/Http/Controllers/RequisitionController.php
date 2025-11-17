@@ -55,12 +55,15 @@ class RequisitionController extends Controller
      */
     public function store(Request $request)
     {
+        //dd($request->all());
         $validated = $request->validate([
             'company_id'        => 'required',
             'purpose_id'        => 'required|integer',
             'payee_id'          => 'nullable|integer',
-            'description.*'       => 'required|string',
-            'amount.*'            => 'required',
+            'description'       => 'required|array',
+            'description.*'     => 'required|string|max:255',
+            'amount'            => 'required|array',
+            'amount.*'          => 'required|numeric|min:1',
         ]);
 
         $result = $this->service->saveData($validated, $request);
@@ -107,12 +110,15 @@ class RequisitionController extends Controller
      */
     public function update(Request $request, $id)
     {
+        //dd($request->all());
         $validated = $request->validate([
             'company_id'        => 'required',
             'purpose_id'        => 'required|integer',
             'payee_id'          => 'nullable|integer',
-            'description.*'       => 'required|string',
-            'amount.*'            => 'required'
+            'description'       => 'required|array',
+            'description.*'     => 'required|string|max:255',
+            'amount'            => 'required|array',
+            'amount.*'          => 'required|numeric|min:1'
         ]);
 
         $result = $this->service->updateData($validated, $request, $id);
@@ -251,7 +257,6 @@ class RequisitionController extends Controller
     }
 
     public function updatePayment(Request $request, int $id){
-        //dd($request->requisition_id);
         $rules = [
             'payment_type' => ['required', 'in:1,2'],
         ];
@@ -266,18 +271,21 @@ class RequisitionController extends Controller
         }
 
         $rules['files.*'] = ['nullable', 'file', 'mimes:pdf,jpg,png,docx', 'max:2048'];
-
         $validated = $request->validate($rules);
-
-        $files = [];
-        if ($request->hasFile('files')) {
+        
+        $newFiles = [];
+        if($request->hasFile('files')){
             foreach ($request->file('files') as $file) {
                 $path = $file->store('payments', 'public');
-                $files[] = basename($path);
+                $newFiles[] = basename($path);
             }
         }
-
         $payment = RequisitionPayment::find($id);
+
+        $existingFiles = json_decode($payment->files, true) ?? [];
+
+        $finalFiles = $newFiles ? array_merge($existingFiles, $newFiles) : $existingFiles;
+
         $payment->payment_type = $request->payment_type;
         if ($request->payment_type == 1) { 
             $payment->cheque_id        = $request->cheque_id;
@@ -286,8 +294,7 @@ class RequisitionController extends Controller
             $payment->cheque_id        = null;
             $payment->cash_description = $request->cash_description;
         }
-
-        $payment->files = empty($files) ? null : json_encode($files);
+        $payment->files = empty($finalFiles) ? null : json_encode($finalFiles);
         $payment->save();
 
         $requisition = Requisition::findOrFail($request->requisition_id);
@@ -300,5 +307,24 @@ class RequisitionController extends Controller
         $approval->user_id          = Auth::id();
         $approval->save();
         return redirect()->route('requisition.show', ['id' => $request->requisition_id])->with('success', 'Issued successfully.');
+    }
+
+    public function requisitionFileDestroy($id, $file){
+        //return response()->json($id);
+
+        $payment = RequisitionPayment::findOrFail($id);
+        $existingFiles = json_decode($payment->files, true) ?? [];
+
+        $updatedFiles = array_filter($existingFiles, function ($item) use ($file) {
+            return $item !== $file;
+        });
+
+        if (Storage::disk('public')->exists('payments/'.$file)) {
+            Storage::disk('public')->delete('payments/'.$file);
+        }
+
+        $payment->files = empty($updatedFiles) ? null : json_encode(array_values($updatedFiles));
+        $payment->save();
+        return response()->json(['success' => true]);
     }
 }

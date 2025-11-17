@@ -73,4 +73,6 @@ Route::group(['middleware' => ['auth']], function () {
      Route::get('requisition/edit-payment/{id}', [RequisitionController::class, 'editPayment'])->name('requisition.edit-payment');
      Route::put('requisition/edit-payment/{id}', [RequisitionController::class, 'updatePayment'])->name('requisition.update-payment');
      Route::post('requisition/get-valid-cheque-list/', [RequisitionController::class, 'getValidChequeList'])->name('requisition.get-valid-cheque-list');
+     Route::delete('/requisition/payment/file/destroy/{id}/{file}', [RequisitionController::class, 'requisitionFileDestroy'])
+     ->name('requisition.payment.file.delete');
 });

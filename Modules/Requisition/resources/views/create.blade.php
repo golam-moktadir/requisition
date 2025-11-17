@@ -112,12 +112,12 @@
             </div>   
         </form>   
     </div>
-    <!-- Add Item Modal -->
+    <!-- Particular Modal -->
     <div class="modal fade" id="item-modal" tabindex="-1" aria-labelledby="addItemModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-md">
             <div class="modal-content">
                 <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="addItemModalLabel">Add Item</h5>
+                    <h5 class="modal-title" id="addItemModalLabel">Add Particular</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -189,7 +189,7 @@
                 updateGrandTotal();
             }
             else{
-                alert('Some Error ! Please Valid Input');
+                alert("Please provide a valid description and an amount greater than 0.");
             }
             $('#index').val(""); // reset edit mode
         });

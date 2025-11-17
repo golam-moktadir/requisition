@@ -75,15 +75,6 @@
                 </div>
                 <!-- File Upload (always visible) -->
                 <div id="file-inputs">
-                    @if($payment->files)
-                        @foreach(json_decode($payment->files) as $file)
-                            <div class="mb-1">
-                                <a href="{{ asset('storage/payments/'.$file) }}" target="_blank">{{ $file }}</a>
-                                <!-- Optional: delete checkbox -->
-                                <input type="checkbox" name="delete_files[]" value="{{ $file }}"> Delete
-                            </div>
-                        @endforeach
-                    @endif
                     <div class="mb-1">
                         <label for="files" class="form-label">Attach Files</label>
                         <input type="file" class="form-control" id="files" name="files[]">
@@ -92,6 +83,23 @@
                 <div class="mb-3">
                     <button type="button" class="btn btn-sm btn-secondary" id="add-more">Add More</button>
                 </div>
+                @if($payment->files)
+                <div class="mb-3">
+                    <label class="form-label">Existing Files</label>
+                    <ul class="list-group">
+                        @foreach(json_decode($payment->files) as $file)
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="{{ asset('storage/payments/'.$file) }}" target="_blank">
+                                    {{ $file }}
+                                </a>
+                                <button type="button" class="btn btn-sm btn-danger remove-file" data-file-id="{{ $file }}">
+                                    Delete
+                                </button>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
                 <div class="btn-group mt-2" role="group">
                     <button type="submit" class="btn btn-primary">Save</button>
                     <button type="reset" class="btn btn-warning">Reset</button>
@@ -143,5 +151,26 @@
             }
         });
     });
+
+    const deleteFileRoute = "{{ route('requisition.payment.file.delete', ['id' => ':id', 'file' => ':file']) }}";
+
+    $(".remove-file").on('click', function() {
+        const file = $(this).data('file-id');
+        const id   = "{{ $payment->id }}";
+        const button  = $(this);
+        const url     = deleteFileRoute.replace(':id', id).replace(':file', file);
+
+        if (confirm('Are you sure you want to delete this file?')) {
+            $.ajax({
+                url: url,
+                type: 'DELETE',
+                success:function(response) {
+                    if(response){
+                        button.closest('li').remove();
+                    }
+                }
+            });
+        }
+    });  
 </script>
 @endsection

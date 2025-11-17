@@ -12,6 +12,7 @@
         @include('admin.layouts.message')   
         <div class="p-2" id="print-body">
         <div class="row">
+            <h3 class="text-center text-dark">{{ $single->company_name }}</h3>                    
             <h3 class="text-center text-dark">REQUISITION - {{ $single->req_no }}</h3>                    
             <h3 class="text-center text-dark">{{ $single->payee_name }}</h3>                    
 
@@ -22,7 +23,7 @@
                 Date: {{ $single->created_at }}
             </div>
             <div class="col-4 text-center">
-                {{ $single->company_name }}
+                &nbsp;
             </div>
             <div class="col-4">
                 Status: {{ ucfirst($single->status) }}
@@ -124,6 +125,30 @@
                     @endif
                 @endif
             </div>
+            @if(isset($payment->files))
+            <div class="col-6">
+                <table class="table table-bordered table-hover table-sm">
+                    <thead>
+                        <tr class="text-center">
+                            <th class="text-dark">#</th>
+                            <th class="text-dark">Payment Attached Files</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach(json_decode($payment->files) as $file)
+                        <tr>
+                            <td class="text-center text-dark">{{ $loop->iteration }}</td>
+                            <td class="text-dark">
+                                <a href="{{ asset('storage/payments/'.$file) }}" target="_blank">
+                                    {{ $file }}
+                                </a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+            @endif
         </div>
         <div class="row mt-3">
             <div class="col-9">
