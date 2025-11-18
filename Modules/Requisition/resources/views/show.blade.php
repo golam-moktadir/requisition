@@ -168,7 +168,7 @@
                             <td class="text-center text-dark">{{ $loop->iteration }}</td>
                             <td class="text-dark">
                                 <a href="{{ asset('storage/requisitions/'.$file->file_name) }}" target="_blank">
-                                    {{ $file->title }}
+                                    {{ $file->title ?? $file->file_name }}
                                 </a>
                             </td>
                         </tr>

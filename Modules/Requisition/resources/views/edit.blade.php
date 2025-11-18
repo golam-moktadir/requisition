@@ -116,26 +116,32 @@
                         <label for="files" class="form-label">Attach Files</label>
                         <input type="file" class="form-control" id="files" name="files[]">
                     </div>
+                    <div class="col-sm-6">
+                        <label for="title" class="form-label">Titles</label>
+                        <input type="text" class="form-control" id="title" name="title[]" placeholder="Set Title">
+                    </div>
                 </div>
             </div>
             <div class="mb-3">
                 <button type="button" class="btn btn-sm btn-secondary" id="add-more">Add More</button>
             </div>
             @if($files->count() > 0)
-            <div class="mb-3">
-                <label class="form-label">Existing Files</label>
-                <ul class="list-group">
-                    @foreach($files as $file)
-                        <li class="list-group-item d-flex justify-content-between align-items-center">
-                            <a href="{{ asset('storage/requisitions/'.$file->file_name) }}" target="_blank">
-                                {{ $file->file_name }}
-                            </a>
-                            <button type="button" class="btn btn-sm btn-danger remove-file" data-file-id="{{ $file->file_name }}">
-                                Delete
-                            </button>
-                        </li>
-                    @endforeach
-                </ul>
+            <div class="row mb-3">
+                <div class="col-sm-6">
+                    <label class="form-label">Existing Files</label>
+                    <ul class="list-group">
+                        @foreach($files as $file)
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <a href="{{ asset('storage/requisitions/'.$file->file_name) }}" target="_blank">
+                                    {{ $file->title ?? $file->file_name }}
+                                </a>
+                                <button type="button" class="btn btn-sm btn-danger remove-file" data-file-id="{{ $file->file_name }}">
+                                    Delete
+                                </button>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
             </div>
             @endif
             <div class="btn-group" role="group" aria-label="Basic example">
@@ -180,7 +186,15 @@
     <script type="text/javascript">
     $(document).ready(function() {
         $('#add-more').on('click', function() {
-            let input = $('<div class="mb-1"><input type="file" name="files[]" class="form-control"></div>');
+            let input = $('<div class="row mb-1">'+
+                                '<div class="col-sm-6">'+
+                                    '<input type="file" name="files[]" class="form-control">'+
+                                '</div>'+
+                                '<div class="col-sm-6">'+
+                                    '<input type="text" class="form-control" id="title" name="title[]" placeholder="Set Title">'+
+                                '</div>'+
+                            '</div>'
+                        );
             $('#file-inputs').append(input);
         });
 
