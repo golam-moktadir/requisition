@@ -83,6 +83,7 @@ class RequisitionController extends Controller
         $data['title']      = 'Requisitions';
         $data['single']     = $this->service->getSingleData($requisition_id); 
         $data['details']    = $this->service->getMultipleData($requisition_id);
+        $data['files']  = $this->service->getFiles($requisition_id);
         $data['payment']    = RequisitionPayment::with('cheque')->where('requisition_id', $requisition_id)->orderBy('id', 'asc')->first();
         $data['approvals']  = Approval::where('requisition_id', $requisition_id)->with('user')->get();
         $data['approved']   = Approval::with('user')->where('requisition_id', $requisition_id)->where('status', 'approved')->first();
@@ -214,9 +215,15 @@ class RequisitionController extends Controller
 
         $files = [];
         if ($request->hasFile('files')) {
-            foreach ($request->file('files') as $file) {
+            foreach ($request->file('files') as $index => $file) {
                 $path = $file->store('payments', 'public');
-                $files[] = basename($path);
+                // $files[] = basename($path);
+                $filename = basename($path);
+                $title = $request->title[$index] ?? null;
+                $files[] = [
+                    'name'  => $filename,
+                    'title' => $title
+                ];
             }
         }
 

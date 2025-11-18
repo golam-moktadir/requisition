@@ -12,65 +12,77 @@
 @section('content-body')
     <div class="mt-1 p-2 card">
         @include('admin.layouts.message')   
-        <div class="col-6">
             <form action="{{ route('requisition.save-payment') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                <div class="mb-3">
-                    <label for="requisition_no" class="form-label">Requisition No.</label>
-                    <input class="form-control" id="requisition_no" value="{{ $single->req_no }}" tabindex="1" disabled>
-                    <input type="hidden" id="requisition_id" name="requisition_id" value="{{ $single->id }}">
+                <div class="row my-1">
+                    <div class="col-6">
+                        <label for="requisition_no" class="form-label">Requisition No.</label>
+                        <input class="form-control" id="requisition_no" value="{{ $single->req_no }}" tabindex="1" disabled>
+                        <input type="hidden" id="requisition_id" name="requisition_id" value="{{ $single->id }}">
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="company_name" class="form-label">Company Name</label>
-                    <input class="form-control" id="company_name" value="{{ $single->company_name }}" tabindex="2" disabled>
+                <div class="row my-1">
+                    <div class="col-6">
+                        <label for="company_name" class="form-label">Company Name</label>
+                        <input class="form-control" id="company_name" value="{{ $single->company_name }}" tabindex="2" disabled>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="payment_type" class="form-label">Payment Type</label>
-                    <select class="form-select" id="payment_type" name="payment_type" tabindex="3">
-                        <option value="">-- Select Payment Type --</option>
-                        <option value="1">Cheque</option>
-                        <option value="2">Cash</option>
-                        <option value="3">Bank Transfer</option>
-                    </select>
+                <div class="row my-1">
+                    <div class="col-6">
+                        <label for="payment_type" class="form-label">Payment Type</label>
+                        <select class="form-select" id="payment_type" name="payment_type" tabindex="3">
+                            <option value="">-- Select Payment Type --</option>
+                            <option value="1">Cheque</option>
+                            <option value="2">Cash</option>
+                            <option value="3">Bank Transfer</option>
+                        </select>
+                    </div>
                 </div>
 
                 <!-- Cheque Section -->
                 <div id="cheque-section" style="display:none;">
-                    <div class="mb-3">
-                        <label for="bank_id" class="form-label">Select Bank</label>
-                        <select class="form-select" id="bank_id" name="bank_id" tabindex="3">
-                            <option value="">-- Select Bank --</option>
-                            @foreach ($banks as $bank)
-                                <option value="{{ $bank->id }}">{{ $bank->bank_name }} ({{ $bank->account_no }})</option>
-                            @endforeach
-                        </select>
+                    <div class="row my-1">
+                        <div class="col-6">
+                            <label for="bank_id" class="form-label">Select Bank</label>
+                            <select class="form-select" id="bank_id" name="bank_id" tabindex="3">
+                                <option value="">-- Select Bank --</option>
+                                @foreach ($banks as $bank)
+                                    <option value="{{ $bank->id }}">{{ $bank->bank_name }} ({{ $bank->account_no }})</option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="cheque_id" class="form-label">Select Cheque Number</label>
-                        <select class="form-select" id="cheque_id" name="cheque_id" tabindex="4">
-                            <option value="">-- Select Cheque Number --</option>
-                        </select>
+                    <div class="row my-1">
+                        <div class="col-6">
+                            <label for="cheque_id" class="form-label">Select Cheque Number</label>
+                            <select class="form-select" id="cheque_id" name="cheque_id" tabindex="4">
+                                <option value="">-- Select Cheque Number --</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Cash Section -->
                 <div id="cash-section" style="display:none;">
-<!--                     <div class="mb-3">
-                        <label for="cash_amount" class="form-label">Cash Amount</label>
-                        <input type="number" class="form-control" id="cash_amount" name="cash_amount" placeholder="Enter amount">
-                    </div> -->
-                    <div class="mb-3">
-                        <label for="cash_description" class="form-label">Description</label>
-                        <textarea class="form-control" id="cash_description" name="cash_description" rows="2" placeholder="Enter description"></textarea>
+                    <div class="row my-1">
+                        <div class="col-6">
+                            <label for="cash_description" class="form-label">Description</label>
+                            <textarea class="form-control" id="cash_description" name="cash_description" rows="2" placeholder="Enter description"></textarea>
+                        </div>
                     </div>
                 </div>
 
-                <!-- File Upload (always visible) -->
-                <div id="file-inputs">
-                    <div class="mb-1">
-                        <label for="files" class="form-label">Attach Files</label>
-                        <input type="file" class="form-control" id="files" name="files[]">
+                <div id="file-inputs">                
+                    <div class="row my-1">
+                        <div class="col-sm-6">
+                            <label for="files" class="form-label">Attach Files</label>
+                            <input type="file" class="form-control" id="files" name="files[]">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="title" class="form-label">Titles</label>
+                            <input type="text" class="form-control" id="title" name="title[]" placeholder="Set Title">
+                        </div>
                     </div>
                 </div>
 

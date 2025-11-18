@@ -59,13 +59,25 @@ class RequisitionService
             $req_no = $prefix.'001';
         }
 
+        // $files = [];
+        // if($request->hasFile('files')){
+        //     foreach ($request->file('files') as $index => $file) {
+        //         $path = $file->store('requisitions', 'public');
+        //         $filename = basename($path);
+        //         $title = $request->title[$index] ?? null;
+        //         $files[] = [
+        //             'name'  => $filename,
+        //             'title' => $title
+        //         ];
+        //     }
+        // }
+
         $model = new Requisition;
         $model->req_no        = $req_no;
         $model->company_id    = $validated['company_id'];
         $model->purpose_id    = $validated['purpose_id'];
         $model->payee_id      = $validated['payee_id'];
-        $model->description   = 'n/a';//$validated['description'];
-        // $model->amount        = $validated['amount'];
+       // $model->files         = empty($files) ? null : json_encode($files);
         $model->created_by    = auth()->id();
         
         $model->save();
@@ -81,12 +93,17 @@ class RequisitionService
         if($request->hasFile('files')){
             $data = [];
             foreach ($request->file('files') as $key => $file) {
-                $fileName = date('YmdHis') . rand() . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('public/requisitions', $fileName);
+                // $fileName = date('YmdHis') . rand() . '.' . $file->getClientOriginalExtension();
+                // $file->storeAs('public/requisitions', $fileName);
+
+                $path = $file->store('requisitions', 'public');
+                $file_name = basename($path);
+                $title = $request->title[$key] ?? null;
 
                 $data[$key] = [
                     'requisition_id' => $model->id,
-                    'file_name' => $fileName,
+                    'title'      => $title,
+                    'file_name'  => $file_name,
                     'created_at' => now(),
                     'updated_at' => now()
                 ];
@@ -147,12 +164,17 @@ class RequisitionService
         if($request->hasFile('files')){
             $data = [];
             foreach ($request->file('files') as $key => $file) {
-                $fileName = date('YmdHis') . rand() . '.' . $file->getClientOriginalExtension();
-                $file->storeAs('public/requisitions', $fileName);
+                // $fileName = date('YmdHis') . rand() . '.' . $file->getClientOriginalExtension();
+                // $file->storeAs('public/requisitions', $fileName);
+
+                $path = $file->store('requisitions', 'public');
+                $file_name = basename($path);
+                $title = $request->title[$key] ?? null;
 
                 $data[$key] = [
                     'requisition_id' => $model->id,
-                    'file_name' => $fileName,
+                    'title'      => $title,
+                    'file_name'  => $file_name,
                     'created_at' => now(),
                     'updated_at' => now()
                 ];

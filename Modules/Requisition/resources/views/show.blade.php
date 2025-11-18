@@ -125,8 +125,10 @@
                     @endif
                 @endif
             </div>
-            @if(isset($payment->files))
-            <div class="col-6">
+        </div>
+        @if(isset($payment->files))
+        <div class="row mt-3">
+            <div class="col-9">
                 <table class="table table-bordered table-hover table-sm">
                     <thead>
                         <tr class="text-center">
@@ -139,8 +141,8 @@
                         <tr>
                             <td class="text-center text-dark">{{ $loop->iteration }}</td>
                             <td class="text-dark">
-                                <a href="{{ asset('storage/payments/'.$file) }}" target="_blank">
-                                    {{ $file }}
+                                <a href="{{ asset('storage/payments/'.$file->name) }}" target="_blank">
+                                    {{ $file->title }}
                                 </a>
                             </td>
                         </tr>
@@ -148,8 +150,35 @@
                     </tbody>
                 </table>
             </div>
-            @endif
         </div>
+        @endif
+        @if(count($files) > 0)
+        <div class="row mt-3">
+            <div class="col-9">
+                <table class="table table-bordered table-hover table-sm">
+                    <thead>
+                        <tr class="text-center">
+                            <th class="text-dark">#</th>
+                            <th class="text-dark">Requisition Attached Files</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($files as $file)
+                        <tr>
+                            <td class="text-center text-dark">{{ $loop->iteration }}</td>
+                            <td class="text-dark">
+                                <a href="{{ asset('storage/requisitions/'.$file->file_name) }}" target="_blank">
+                                    {{ $file->title }}
+                                </a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        @endif
+        @if(count($approvals) > 0)
         <div class="row mt-3">
             <div class="col-9">
                 <table class="table table-bordered table-hover table-sm">
@@ -179,6 +208,7 @@
                 </table>
             </div>
         </div>
+        @endif
     </div>
 @endsection
 @section('footerjs')

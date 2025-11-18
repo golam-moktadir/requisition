@@ -100,6 +100,10 @@
                         <label for="files" class="form-label">Attach Files</label>
                         <input type="file" class="form-control" id="files" name="files[]">
                     </div>
+                    <div class="col-sm-6">
+                        <label for="title" class="form-label">Titles</label>
+                        <input type="text" class="form-control" id="title" name="title[]" placeholder="Set Title">
+                    </div>
                 </div>
             </div>
             <div class="mb-3">
@@ -146,7 +150,15 @@
     <script type="text/javascript">
     $(document).ready(function() {
         $('#add-more').on('click', function() {
-            let input = $('<div class="mb-1"><input type="file" name="files[]" class="form-control"></div>');
+            let input = $('<div class="row mb-1">'+
+                                '<div class="col-sm-6">'+
+                                    '<input type="file" name="files[]" class="form-control">'+
+                                '</div>'+
+                                '<div class="col-sm-6">'+
+                                    '<input type="text" class="form-control" id="title" name="title[]" placeholder="Set Title">'+
+                                '</div>'+
+                            '</div>'
+                        );
             $('#file-inputs').append(input);
         });
 
