@@ -12,92 +12,107 @@
 @section('content-body')
     <div class="mt-1 p-2 card">
         @include('admin.layouts.message')   
-        <div class="col-6">
             <form action="{{ route('requisition.update-payment', ['id' => $payment->id]) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
-                <div class="mb-3">
-                    <label for="requisition_no" class="form-label">Requisition No.</label>
-                    <input class="form-control" id="requisition_no" value="{{ $payment->req_no }}" tabindex="1" disabled>
-                    <input type="hidden" id="requisition_id" name="requisition_id" value="{{ $payment->requisition_id }}">
+                <div class="row my-1">
+                    <div class="col-6">
+                        <label for="requisition_no" class="form-label">Requisition No.</label>
+                        <input class="form-control" id="requisition_no" value="{{ $payment->req_no }}" tabindex="1" disabled>
+                        <input type="hidden" id="requisition_id" name="requisition_id" value="{{ $payment->requisition_id }}">
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="company_name" class="form-label">Company Name</label>
-                    <input class="form-control" id="company_name" value="{{ $payment->requisition->company->company_name }}" tabindex="2" disabled>
+                <div class="row my-1">
+                    <div class="col-6">
+                        <label for="company_name" class="form-label">Company Name</label>
+                        <input class="form-control" id="company_name" value="{{ $payment->requisition->company->company_name }}" tabindex="2" disabled>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label for="payment_type" class="form-label">Payment Type</label>
-                    <select class="form-select" id="payment_type" name="payment_type" tabindex="3">
-                        <option value="">-- Select Payment Type --</option>
-                        <option value="1" {{ $payment->payment_type == 1 ? 'selected' : '' }}>Cheque</option>
-                        <option value="2" {{ $payment->payment_type == 2 ? 'selected' : '' }}>Cash</option>
-                        <option value="3" {{ $payment->payment_type == 3 ? 'selected' : '' }}>Bank Transfer</option>
-                    </select>
+                <div class="row my-1">
+                    <div class="col-6">
+                        <label for="payment_type" class="form-label">Payment Type</label>
+                        <select class="form-select" id="payment_type" name="payment_type" tabindex="3">
+                            <option value="">-- Select Payment Type --</option>
+                            <option value="1" {{ $payment->payment_type == 1 ? 'selected' : '' }}>Cheque</option>
+                            <option value="2" {{ $payment->payment_type == 2 ? 'selected' : '' }}>Cash</option>
+                            <option value="3" {{ $payment->payment_type == 3 ? 'selected' : '' }}>Bank Transfer</option>
+                        </select>
+                    </div>
                 </div>
                 <!-- Cheque Section -->
                 <div id="cheque-section" style="display:none;">
-                    <div class="mb-3">
-                        <label for="bank_id" class="form-label">Select Bank</label>
-                        <select class="form-select" id="bank_id" name="bank_id" tabindex="3">
-                            <option value="">-- Select Bank --</option>
-                            @foreach ($banks as $bank)
-                                <option value="{{ $bank->id }}" 
-                                    {{ optional($payment->cheque)->bank_id == $bank->id ? 'selected' : '' }}>
+                    <div class="row my-1">
+                        <div class="col-6">
+                            <label for="bank_id" class="form-label">Select Bank</label>
+                            <select class="form-select" id="bank_id" name="bank_id" tabindex="3">
+                                <option value="">-- Select Bank --</option>
+                                @foreach ($banks as $bank)
+                                    <option value="{{ $bank->id }}" 
+                                        {{ optional($payment->cheque)->bank_id == $bank->id ? 'selected' : '' }}>
                                     {{ $bank->bank_name }} ({{ $bank->account_no }})
-                                </option>
-                            @endforeach
-                        </select>
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="cheque_id" class="form-label">Select Cheque Number</label>
-                        <select class="form-select" id="cheque_id" name="cheque_id" tabindex="4">
-                        @foreach($cheques as $row)
-                            @if(optional($payment->cheque)->bank_id == $row->bank_id)
-                                <option value="{{ $row->id }}" {{ $row->id == $payment->cheque_id ? 'selected' : '' }}>
-                                    {{ $row->cheque_no }}
-                                </option>
-                            @endif
-                        @endforeach
-                        </select>
+                    <div class="row my-1">
+                        <div class="col-6">
+                            <label for="cheque_id" class="form-label">Select Cheque Number</label>
+                            <select class="form-select" id="cheque_id" name="cheque_id" tabindex="4">
+                            @foreach($cheques as $row)
+                                @if(optional($payment->cheque)->bank_id == $row->bank_id)
+                                    <option value="{{ $row->id }}" {{ $row->id == $payment->cheque_id ? 'selected' : '' }}>
+                                        {{ $row->cheque_no }}
+                                    </option>
+                                @endif
+                            @endforeach
+                            </select>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Cash Section -->
                 <div id="cash-section" style="display:none;">
-<!--                     <div class="mb-3">
-                        <label for="cash_amount" class="form-label">Cash Amount</label>
-                        <input type="number" class="form-control" id="cash_amount" name="cash_amount" placeholder="Enter amount" value="{{ $payment->cash_amount ?? '' }}">
-                    </div> -->
-                    <div class="mb-3">
-                        <label for="cash_description" class="form-label">Description</label>
-                        <textarea class="form-control" id="cash_description" name="cash_description" rows="2" placeholder="Enter description">{{ $payment->cash_description ?? '' }}</textarea>
+                    <div class="row my-1">
+                        <div class="col-6">
+                            <label for="cash_description" class="form-label">Description</label>
+                            <textarea class="form-control" id="cash_description" name="cash_description" rows="2" placeholder="Enter description">{{ $payment->cash_description ?? '' }}</textarea>
+                        </div>
                     </div>
                 </div>
                 <!-- File Upload (always visible) -->
-                <div id="file-inputs">
-                    <div class="mb-1">
-                        <label for="files" class="form-label">Attach Files</label>
-                        <input type="file" class="form-control" id="files" name="files[]">
+                <div id="file-inputs">                
+                    <div class="row my-1">
+                        <div class="col-sm-6">
+                            <label for="files" class="form-label">Attach Files</label>
+                            <input type="file" class="form-control" id="files" name="files[]">
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="title" class="form-label">Titles</label>
+                            <input type="text" class="form-control" id="title" name="title[]" placeholder="Set Title">
+                        </div>
                     </div>
                 </div>
                 <div class="mb-3">
                     <button type="button" class="btn btn-sm btn-secondary" id="add-more">Add More</button>
                 </div>
                 @if($payment->files)
-                <div class="mb-3">
-                    <label class="form-label">Existing Files</label>
-                    <ul class="list-group">
-                        @foreach(json_decode($payment->files) as $file)
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                <a href="{{ asset('storage/payments/'.$file) }}" target="_blank">
-                                    {{ $file }}
-                                </a>
-                                <button type="button" class="btn btn-sm btn-danger remove-file" data-file-id="{{ $file }}">
-                                    Delete
-                                </button>
-                            </li>
-                        @endforeach
-                    </ul>
+                <div class="row my-1">
+                    <div class="col-sm-6">
+                        <label class="form-label">Existing Files</label>
+                        <ul class="list-group">
+                            @foreach(json_decode($payment->files) as $file)
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{{ asset('storage/payments/'.$file->name) }}" target="_blank">
+                                        {{ $file->title ?? $file->name }}
+                                    </a>
+                                    <button type="button" class="btn btn-sm btn-danger remove-file" data-file-id="{{ $file->name }}">
+                                        Delete
+                                    </button>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 </div>
                 @endif
                 <div class="btn-group mt-2" role="group">
@@ -134,7 +149,15 @@
     }
 
     $('#add-more').on('click', function() {
-        let input = $('<div class="mb-1"><input type="file" name="files[]" class="form-control"></div>');
+        let input = $('<div class="row mb-1">'+
+                            '<div class="col-sm-6">'+
+                                '<input type="file" name="files[]" class="form-control">'+
+                            '</div>'+
+                            '<div class="col-sm-6">'+
+                                '<input type="text" class="form-control" id="title" name="title[]" placeholder="Set Title">'+
+                            '</div>'+
+                        '</div>'
+                    );
         $('#file-inputs').append(input);
     });
     
