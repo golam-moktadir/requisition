@@ -43,9 +43,9 @@ class PayeeController extends Controller
             'payee_name' => 'required|string|max:255',
             'account_holder_name' => 'nullable|string',
             'account_number' => 'nullable|numeric',
-            'phone'        => 'required|string|max:11|digits_between:3,11',
-            'email'        => 'required|max:255|email|regex:/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/',            
-            'address'      => 'required|string|max:255',
+            'phone'        => 'nullable|string|max:11|digits_between:3,11',
+            'email'        => 'nullable|max:255|email|regex:/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/',            
+            'address'      => 'nullable|string|max:255',
         ]);
 
         $result = $this->service->saveData($validated);
@@ -84,9 +84,9 @@ class PayeeController extends Controller
             'payee_name' => 'required|string|max:255',
             'account_holder_name' => 'nullable|string',
             'account_number' => 'nullable|numeric',
-            'phone'        => 'required|string|max:11|digits_between:3,11',
-            'email'        => 'required|max:255|email|regex:/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/',            
-            'address'      => 'required|string|max:255',
+            'phone'        => 'nullable|string|max:11|digits_between:3,11',
+            'email'        => 'nullable|max:255|email|regex:/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/',            
+            'address'      => 'nullable|string|max:255',
         ]);
 
         $result = $this->service->updateData($validated, $id);
