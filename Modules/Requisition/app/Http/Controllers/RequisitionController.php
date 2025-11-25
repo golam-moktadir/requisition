@@ -34,6 +34,7 @@ class RequisitionController extends Controller
     {
         //dd();
         $data['title'] = 'Requisitions';
+        $data['companies'] = Company::all();
         $data['requisitions'] = $this->service->getDataList($request);
         return view('requisition::index', $data);
     }
@@ -45,8 +46,8 @@ class RequisitionController extends Controller
     {
         $data['title'] = 'Requisitions';
         $data['companies'] = Company::all();
-        $data['purposes']  = Purpose::all();
-        $data['payees']  = Payee::all();
+        $data['purposes'] = Purpose::all();
+        $data['payees'] = Payee::all();
         return view('requisition::create', $data);
     }
 
@@ -57,13 +58,13 @@ class RequisitionController extends Controller
     {
         //dd($request->all());
         $validated = $request->validate([
-            'company_id'        => 'required',
-            'purpose_id'        => 'required|integer',
-            'payee_id'          => 'nullable|integer',
-            'description'       => 'required|array',
-            'description.*'     => 'required|string|max:255',
-            'amount'            => 'required|array',
-            'amount.*'          => 'required|numeric|min:1',
+            'company_id' => 'required',
+            'purpose_id' => 'required|integer',
+            'payee_id' => 'nullable|integer',
+            'description' => 'required|array',
+            'description.*' => 'required|string|max:255',
+            'amount' => 'required|array',
+            'amount.*' => 'required|numeric|min:1',
         ]);
 
         $result = $this->service->saveData($validated, $request);
@@ -80,29 +81,29 @@ class RequisitionController extends Controller
      */
     public function show(int $requisition_id)
     {
-        $data['title']      = 'Requisitions';
-        $data['single']     = $this->service->getSingleData($requisition_id); 
-        $data['details']    = $this->service->getMultipleData($requisition_id);
-        $data['files']  = $this->service->getFiles($requisition_id);
-        $data['payment']    = RequisitionPayment::with('cheque')->where('requisition_id', $requisition_id)->orderBy('id', 'asc')->first();
-        $data['approvals']  = Approval::where('requisition_id', $requisition_id)->with('user')->get();
-        $data['approved']   = Approval::with('user')->where('requisition_id', $requisition_id)->where('status', 'approved')->first();
+        $data['title'] = 'Requisitions';
+        $data['single'] = $this->service->getSingleData($requisition_id);
+        $data['details'] = $this->service->getMultipleData($requisition_id);
+        $data['files'] = $this->service->getFiles($requisition_id);
+        $data['payment'] = RequisitionPayment::with('cheque')->where('requisition_id', $requisition_id)->orderBy('id', 'asc')->first();
+        $data['approvals'] = Approval::where('requisition_id', $requisition_id)->with('user')->get();
+        $data['approved'] = Approval::with('user')->where('requisition_id', $requisition_id)->where('status', 'approved')->first();
         //dd($data);
-        return view('requisition::show', $data);        
+        return view('requisition::show', $data);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit($id)
-    { 
+    {
         $data['title'] = 'Requisitions';
         $data['companies'] = Company::all();
-        $data['purposes']  = Purpose::all();
-        $data['payees']  = Payee::all();
-        $data['single'] = $this->service->getSingleData($id); 
+        $data['purposes'] = Purpose::all();
+        $data['payees'] = Payee::all();
+        $data['single'] = $this->service->getSingleData($id);
         $data['details'] = $this->service->getMultipleData($id);
-        $data['files']  = $this->service->getFiles($id);
+        $data['files'] = $this->service->getFiles($id);
         return view('requisition::edit', $data);
     }
 
@@ -113,17 +114,17 @@ class RequisitionController extends Controller
     {
         //dd($request->all());
         $validated = $request->validate([
-            'company_id'        => 'required',
-            'purpose_id'        => 'required|integer',
-            'payee_id'          => 'nullable|integer',
-            'description'       => 'required|array',
-            'description.*'     => 'required|string|max:255',
-            'amount'            => 'required|array',
-            'amount.*'          => 'required|numeric|min:1'
+            'company_id' => 'required',
+            'purpose_id' => 'required|integer',
+            'payee_id' => 'nullable|integer',
+            'description' => 'required|array',
+            'description.*' => 'required|string|max:255',
+            'amount' => 'required|array',
+            'amount.*' => 'required|numeric|min:1'
         ]);
 
         $result = $this->service->updateData($validated, $request, $id);
-        
+
         if ($result) {
             return back()->with('success', 'Updated Successfully');
         } else {
@@ -131,7 +132,8 @@ class RequisitionController extends Controller
         }
     }
 
-    public function fileDestroy($file_name){
+    public function fileDestroy($file_name)
+    {
         DB::table('requisition_files')->where('file_name', $file_name)->delete();
         Storage::delete('public/requisitions/' . $file_name);
         return response()->json(['success' => true]);
@@ -149,13 +151,13 @@ class RequisitionController extends Controller
      * Show the form for editing the specified resource.
      */
     public function approval($requisition_id)
-    {  
+    {
         // if( ! in_array(Auth::user()->id, [1])){
         //     abort(404);
         // }
         return view('requisition::approval', [
             'title' => 'Approve Requisition',
-            'requisition' => Requisition::whereIn('status', ['pending','rejected'])->findOrFail($requisition_id),
+            'requisition' => Requisition::whereIn('status', ['pending', 'rejected'])->findOrFail($requisition_id),
         ]);
     }
 
@@ -163,13 +165,13 @@ class RequisitionController extends Controller
      * Show the form for editing the specified resource.
      */
     public function storeAapproval(int $requisition_id, Request $request)
-    {    
+    {
         // dd($request->all());
         // if( ! in_array(Auth::user()->id, [1])) {
         //     abort(404);
         // }
         $result = $this->service->storeAapproval($requisition_id, $request);
-        
+
         if ($result) {
             return redirect()->route('requisition.index')->with('success', 'Requisition Approved Successfully');
         } else {
@@ -177,14 +179,16 @@ class RequisitionController extends Controller
         }
     }
 
-    public function addPayment($id){
+    public function addPayment($id)
+    {
         $data['title'] = 'Requisitions';
-        $data['single'] = $this->service->getSingleData($id); 
+        $data['single'] = $this->service->getSingleData($id);
         $data['banks'] = Bank::all();
         return view('requisition::add-payment', $data);
     }
 
-    public function getValidChequeList(Request $request){
+    public function getValidChequeList(Request $request)
+    {
         $cheques = Cheque::where('bank_id', $request->input('bank_id'))->where('status', 1)->orderBy('id', 'asc')->get();
 
         $options = "<option value=''>-- Select Cheque Number --</option>";
@@ -194,13 +198,14 @@ class RequisitionController extends Controller
         return response()->json(['options' => $options]);
     }
 
-    public function savePayment(Request $request){
+    public function savePayment(Request $request)
+    {
 
         $rules = [
             'payment_type' => ['required', 'in:1,2'],
         ];
 
-        if ($request->payment_type == 1) { 
+        if ($request->payment_type == 1) {
             $rules['bank_id'] = ['required', 'integer'];
             $rules['cheque_id'] = ['required', 'integer'];
         }
@@ -221,21 +226,21 @@ class RequisitionController extends Controller
                 $filename = basename($path);
                 $title = $request->title[$index] ?? null;
                 $files[] = [
-                    'name'  => $filename,
+                    'name' => $filename,
                     'title' => $title
                 ];
             }
         }
 
         $payment = new RequisitionPayment();
-        $payment->requisition_id   = $request->requisition_id;
-        $payment->payment_type     = $request->payment_type;
+        $payment->requisition_id = $request->requisition_id;
+        $payment->payment_type = $request->payment_type;
 
-        if ($request->payment_type == 1) { 
-            $payment->cheque_id        = $request->cheque_id;
+        if ($request->payment_type == 1) {
+            $payment->cheque_id = $request->cheque_id;
             $payment->cash_description = null;
-        } else { 
-            $payment->cheque_id        = null;
+        } else {
+            $payment->cheque_id = null;
             $payment->cash_description = $request->cash_description;
         }
 
@@ -246,29 +251,31 @@ class RequisitionController extends Controller
         $requisition->status = 'issued';
         $requisition->save();
 
-        $approval                   = new Approval();
-        $approval->requisition_id   = $request->requisition_id;
-        $approval->status           = 'issued';
-        $approval->user_id          = Auth::id();
+        $approval = new Approval();
+        $approval->requisition_id = $request->requisition_id;
+        $approval->status = 'issued';
+        $approval->user_id = Auth::id();
         $approval->save();
 
         return redirect()->route('requisition.show', ['id' => $request->requisition_id]);
     }
 
-    public function editPayment($requisition_id){
-        $data['title']   = 'Requisitions';
-        $data['banks']   = Bank::all();
+    public function editPayment($requisition_id)
+    {
+        $data['title'] = 'Requisitions';
+        $data['banks'] = Bank::all();
         $data['cheques'] = Cheque::where('status', 1)->get();
-        $data['payment'] = RequisitionPayment::with(['requisition.company','cheque'])->where('requisition_id', $requisition_id)->first();
+        $data['payment'] = RequisitionPayment::with(['requisition.company', 'cheque'])->where('requisition_id', $requisition_id)->first();
         return view('requisition::edit-payment', $data);
     }
 
-    public function updatePayment(Request $request, int $id){
+    public function updatePayment(Request $request, int $id)
+    {
         $rules = [
             'payment_type' => ['required', 'in:1,2'],
         ];
 
-        if ($request->payment_type == 1) { 
+        if ($request->payment_type == 1) {
             $rules['bank_id'] = ['required', 'integer'];
             $rules['cheque_id'] = ['required', 'integer'];
         }
@@ -279,9 +286,9 @@ class RequisitionController extends Controller
 
         $rules['files.*'] = ['nullable', 'file', 'mimes:pdf,jpg,png,docx', 'max:2048'];
         $validated = $request->validate($rules);
-        
+
         $newFiles = [];
-        if($request->hasFile('files')){
+        if ($request->hasFile('files')) {
             foreach ($request->file('files') as $file) {
                 $path = $file->store('payments', 'public');
                 $newFiles[] = basename($path);
@@ -294,11 +301,11 @@ class RequisitionController extends Controller
         $finalFiles = $newFiles ? array_merge($existingFiles, $newFiles) : $existingFiles;
 
         $payment->payment_type = $request->payment_type;
-        if ($request->payment_type == 1) { 
-            $payment->cheque_id        = $request->cheque_id;
+        if ($request->payment_type == 1) {
+            $payment->cheque_id = $request->cheque_id;
             $payment->cash_description = null;
-        } else { 
-            $payment->cheque_id        = null;
+        } else {
+            $payment->cheque_id = null;
             $payment->cash_description = $request->cash_description;
         }
         $payment->files = empty($finalFiles) ? null : json_encode($finalFiles);
@@ -308,15 +315,16 @@ class RequisitionController extends Controller
         $requisition->status = 'issued';
         $requisition->save();
 
-        $approval                   = new Approval();
-        $approval->requisition_id   = $request->requisition_id;
-        $approval->status           = 'issued';
-        $approval->user_id          = Auth::id();
+        $approval = new Approval();
+        $approval->requisition_id = $request->requisition_id;
+        $approval->status = 'issued';
+        $approval->user_id = Auth::id();
         $approval->save();
         return redirect()->route('requisition.show', ['id' => $request->requisition_id])->with('success', 'Issued successfully.');
     }
 
-    public function requisitionFileDestroy($id, $file){
+    public function requisitionFileDestroy($id, $file)
+    {
         //return response()->json($id);
 
         $payment = RequisitionPayment::findOrFail($id);
@@ -326,8 +334,8 @@ class RequisitionController extends Controller
             return $item !== $file;
         });
 
-        if (Storage::disk('public')->exists('payments/'.$file)) {
-            Storage::disk('public')->delete('payments/'.$file);
+        if (Storage::disk('public')->exists('payments/' . $file)) {
+            Storage::disk('public')->delete('payments/' . $file);
         }
 
         $payment->files = empty($updatedFiles) ? null : json_encode(array_values($updatedFiles));

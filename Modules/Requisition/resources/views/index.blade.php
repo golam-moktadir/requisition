@@ -24,6 +24,15 @@
                     <input type="text" class="form-control" id="requisition_no" name="requisition_no" value="{{ request('requisition_no') }}" tabindex="1" autocomplete="off">
                 </div>
                 <div class="col-md-2 mb-2">
+                    <label for="company_id" class="form-label">Company Name</label>
+                    <select class="form-control" id="company_id" name="company_id" required tabindex="1" autofocus>
+                        <option value="">Select Company</option>
+                        @foreach($companies as $company)
+                            <option value="{{ $company->id }}" {{ request('company_id') == $company->id ? 'selected' : '' }}>{{ $company->company_name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-2 mb-2">
                     <label for="from_date" class="form-label">From Date</label>
                     <input type="text" class="form-control" id="from_date" name="from_date" value="{{ request('from_date') }}" tabindex="2" autocomplete="off">
                 </div>
