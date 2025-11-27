@@ -1,0 +1,262 @@
+/* Enhanced form grid layout for better responsiveness */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+/* Clear visual hierarchy for section titles */
+.section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Improved error message styling */
+.error-message {
+    background-color: #ffebee;
+    /* Light red background */
+    color: #d32f2f;
+    /* Dark red text */
+    padding: 1rem;
+    border-radius: 0.25rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #ef9a9a;
+}
+
+.error-message ul {
+    list-style: disc;
+    margin-left: 1.5rem;
+}
+
+/* Consistent styling for inline error text */
+.error-text {
+    color: #d32f2f;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Modern character counter styling */
+.char-counter {
+    font-size: 0.875rem;
+    color: #777;
+    margin-top: 0.25rem;
+    text-align: right;
+}
+
+/* Clear presentation of file information */
+.file-info {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 0.5rem;
+}
+
+.file-info p {
+    margin-bottom: 0.25rem;
+}
+
+.file-info a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.file-info a:hover {
+    text-decoration: underline;
+}
+
+/* Clean styling for driver details */
+.driver-details {
+    background-color: #e3f2fd;
+    /* Light blue background */
+    border: 1px solid #bbdefb;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    margin-top: 1rem;
+}
+
+.driver-details.hidden {
+    display: none;
+}
+
+.driver-details p {
+    margin-bottom: 0.25rem;
+    font-size: 0.95rem;
+    color: #333;
+}
+
+.driver-details strong {
+    font-weight: bold;
+}
+
+/* Refined attachment management styling */
+.attachment-group {
+    margin-bottom: 1.5rem;
+}
+
+.attachment-item {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    border: 1px solid #ddd;
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    background-color: #f9f9f9;
+}
+
+.attachment-input {
+    flex-grow: 1;
+}
+
+/* Hide remove button for the initial attachment if it's the only one */
+.attachment-item:first-child:last-child .remove-btn {
+    display: none;
+}
+
+/* Modern button styling */
+.action-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    color: #fff;
+    transition: background-color 0.2s;
+}
+
+.action-btn.edit-btn {
+    background-color: #3b82f6;
+}
+
+.action-btn.edit-btn:hover {
+    background-color: #2563eb;
+}
+
+.action-btn.back-btn {
+    background-color: #6b7280;
+}
+
+.action-btn.back-btn:hover {
+    background-color: #4b5563;
+}
+
+.remove-btn {
+    background-color: #dc3545;
+}
+
+.remove-btn:hover {
+    background-color: #c82333;
+}
+
+/* Standard form control styling */
+.form-control {
+    width: 100%;
+    font-size: 0.875rem;
+    color: #374151;
+    background-color: #f9fafb;
+    padding: 0.25rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.25rem;
+    min-height: 1.5rem;
+}
+
+.form-control:focus {
+    border-color: #007bff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+}
+
+/* Clear and bold form labels */
+.form-label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+/* Informative hint text */
+.form-hint {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.25rem;
+    display: block;
+}
+
+/* Clean display of current attachments */
+.current-attachments {
+    margin-top: 1rem;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    background-color: #f8f9fa;
+}
+
+.current-attachments h4 {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 0.75rem;
+    color: #555;
+}
+
+.current-attachment-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.current-attachment-item i {
+    color: #6c757d;
+}
+
+.current-attachment-item a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.current-attachment-item a:hover {
+    text-decoration: underline;
+}
+
+/* Style for the file preview area */
+.file-preview {
+    margin-top: 0.5rem;
+    max-width: 100px;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    overflow: hidden;
+}
+
+.file-preview img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.thumbnail {
+    width: 100px;
+    /* Adjust thumbnail size */
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+    transition: transform 0.3s ease;
+}
+
+.thumbnail:hover {
+    transform: scale(1.1);
+    /* Slight zoom effect on hover */
+}
+
+.current-attachment-item {
+    margin-bottom: 10px;
+}

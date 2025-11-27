@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\PdfController; // mPdf test controller
+use App\Http\Controllers\PermissionController; 
 
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
@@ -30,6 +31,11 @@ Route::get('/', function () {
 Route::group(['prefix' => 'mpdf-test'], function(){
     Route::get('/test1', [PdfController::class, 'viewPdf']);
     Route::get('/test2', [PdfController::class, 'test2']);
+});
+
+Route::middleware('auth')->prefix('permission')->name('permission.')->group(function () {
+    Route::get('/', [PermissionController::class, 'index'])->name('index');
+    Route::get('/create', [PermissionController::class, 'create'])->name('create');
 });
 
 // Auth::routes();

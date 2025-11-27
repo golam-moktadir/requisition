@@ -1,0 +1,353 @@
+   /* ==== Custom Background Colors ==== */
+   /* ==== CSS Variables for Consistent Styling ==== */
+   :root {
+       --color-custom-ocean: #006699;
+       --color-custom-light: #CCCCCC;
+       --color-custom-light-2: #efefef;
+       --color-custom-gray-md: #999999;
+       --color-custom-royal: #3366FF;
+   }
+
+   /* === Custom Background Utilities Using CSS Variables === */
+
+   .bg-custom-ocean {
+       background-color: var(--color-custom-ocean);
+   }
+
+   .bg-custom-light {
+       background-color: var(--color-custom-light);
+   }
+
+   .bg-custom-light-2 {
+       background-color: var(--color-custom-light-2);
+   }
+
+   .bg-custom-gray-md {
+       background-color: var(--color-custom-gray-md);
+   }
+
+   .bg-custom-royal {
+       background-color: var(--color-custom-royal);
+   }
+
+   /* Optional: Text Color Utilities */
+   .text-custom-ocean {
+       color: var(--color-custom-ocean);
+   }
+
+   .text-custom-light {
+       color: var(--color-custom-light);
+   }
+
+   .text-custom-gray-md {
+       color: var(--color-custom-gray-md);
+   }
+
+   .text-custom-royal {
+       color: var(--color-custom-royal);
+   }
+
+   /* Return Ticket Commission Setup Form */
+   .commission-input-table th,
+   .commission-input-table td {
+       padding: 4px 6px;
+   }
+
+   .commission-input-table tbody tr:first-child td {
+       background-color: var(--color-custom-light);
+   }
+
+   .commission-input-table tbody tr:first-child td:first-child {
+       border: 1px solid #fff;
+   }
+
+   /* Specific input width adjustments for better visual fit */
+   .custom-input-width {
+       width: 4.25rem;
+   }
+
+   .custom-select-width {
+       width: 4.5rem;
+   }
+
+   /* Custom radio button spacing */
+   .custom-radio-label {
+       margin-left: 1rem;
+       display: inline-flex;
+       align-items: center;
+       gap: 4px;
+       white-space: nowrap;
+   }
+
+   .custom-radio-label:first-of-type {
+       margin-left: 0;
+   }
+
+   /* Custom styles for precise visual matching where Tailwind alone might be tricky */
+   .route-settings-table th,
+   .route-settings-table td {
+       border: 1px solid white;
+       vertical-align: middle;
+       /* color: white; */
+   }
+
+   .route-settings-table th {
+       padding: .35rem;
+       font-size: 0.75rem;
+   }
+
+   .route-settings-table td {
+       padding: .10rem;
+       /* font-size: 0.75rem; */
+   }
+
+   .route-settings-table thead th {
+       color: white;
+       font-weight: bold;
+       line-height: 1;
+   }
+
+   /* Specific background for the data row (All Subroutes) */
+   .route-settings-table tbody tr {
+       background-color: #e9e6e6;
+   }
+
+   .route-settings-table input[type="checkbox"] {
+       transform: scale(0.9);
+       border-color: #666;
+       background-color: white;
+   }
+
+   .route-settings-table input[type="text"] {
+       /* width: 100%; */
+       /* max-width: 4rem; */
+       padding: 1px 3px;
+       border: 1px solid #999;
+       border-radius: 3px;
+       font-size: 0.75rem;
+       box-sizing: border-box;
+       text-align: center;
+   }
+
+   /* Specific width overrides for elements within cells */
+   .route-settings-table .time-input {
+       max-width: 45px;
+   }
+
+   .route-settings-table .time-select {
+       max-width: 60px;
+   }
+
+   .route-settings-table .amount-input {
+       max-width: 50px;
+   }
+
+   .route-settings-table .seat-select {
+       max-width: 50px;
+   }
+
+   .route-settings-table .last-time-input {
+       max-width: 45px;
+   }
+
+   .route-settings-table .radio-group {
+       display: flex;
+       justify-content: center;
+       align-items: center;
+       gap: 4px;
+   }
+
+   .route-settings-table .radio-group label {
+       white-space: nowrap;
+       font-size: 0.75rem;
+       line-height: 1;
+   }
+
+   /* Adjust button styling to match image */
+   .route-settings-table .delete-button {
+       background-color: #f0f0f0;
+       border: 1px solid #ccc;
+       padding: 1px 4px;
+       border-radius: 3px;
+       color: #555;
+       font-size: 0.75rem;
+       cursor: pointer;
+   }
+
+   .route-settings-table .delete-button:hover {
+       background-color: #e0e0e0;
+   }
+
+   .container {
+       max-width: 1200px;
+       margin: 0 auto;
+   }
+
+   .table-wrapper {
+       overflow-x: auto;
+       background: #fff;
+       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+       margin-bottom: 20px;
+       border-radius: 4px;
+   }
+
+   .route-settings-table,
+   .subroutes-table {
+       width: 100%;
+       border-collapse: collapse;
+       font-size: 12px;
+       /* text-align: center; */
+   }
+
+   .route-settings-table th {
+       color: #fff;
+       padding: 4px 6px;
+       font-weight: normal;
+   }
+
+   /* .route-settings-table th:nth-child(3n) {
+       background: #3366ff;
+   } */
+
+   .route-settings-table td,
+   .subroutes-table td {
+       padding: 2px;
+       border: 1px solid #ddd;
+   }
+
+   .all-subroutes {
+       font-weight: bold;
+       text-align: left;
+   }
+
+   .input-group {
+       display: flex;
+       gap: 4px;
+       align-items: center;
+   }
+
+   .small-input {
+       width: 60px;
+       text-align: center;
+       /* padding: 4px; */
+       border: 1px solid #ccc;
+       border-radius: 4px;
+       font-size: .8rem;
+   }
+
+   select.small-input {
+       width: 70px;
+       appearance: none;
+       background: #f9f9f9;
+   }
+
+   .main-route {
+       background: #e9e9e9;
+       font-weight: bold;
+   }
+
+   .subroute-row td {
+       font-size: 10px;
+       font-weight: 500;
+   }
+
+   .add-btn {
+       color: #CC3300;
+       font-weight: bold;
+       background: none;
+       border: none;
+       cursor: pointer;
+   }
+
+   .add-btn:hover {
+       text-decoration: underline;
+   }
+
+   .set-all {
+       display: flex;
+       align-items: center;
+       justify-content: center;
+       padding: 8px;
+       background: #e9e6e6;
+       border: 1px solid #ddd;
+       font-size: 0.8rem;
+   }
+
+   .serial {
+       width: 50px;
+   }
+
+   @media (max-width: 768px) {
+
+       .small-input,
+       select.small-input {
+           width: 50px;
+       }
+   }
+
+   .set-values td {
+       border: 2px solid white;
+       color: #333;
+       border-color: white;
+       font-size: .85rem;
+   }
+
+   /* route row  */
+
+   .route-row td {
+       border: 2px solid white;
+       color: white;
+   }
+
+   /* Enhanced styling for better UX */
+   .set-all-container {
+       transition: background-color 0.2s ease;
+       padding: 0.5rem 0;
+   }
+
+   .set-all-container:hover {
+       background-color: #f3f4f6;
+   }
+
+   .set-all-checkbox {
+       cursor: pointer;
+   }
+
+   .set-all-checkbox:focus {
+       outline: 2px solid #3b82f6;
+       outline-offset: 2px;
+   }
+
+   .commission-btn {
+       transition: all 0.2s ease;
+       padding: 0.25rem 0.5rem;
+       border-radius: 0.25rem;
+   }
+
+   .commission-btn:hover {
+       color: #2563eb;
+       background-color: #f0f4ff;
+       transform: scale(1.05);
+   }
+
+   /* Input field styling */
+   .custom-input {
+       transition: border-color 0.2s ease, box-shadow 0.2s ease;
+   }
+
+   .custom-input:focus {
+       border-color: #3b82f6;
+       box-shadow: 0 0 0 1px #3b82f6;
+   }
+
+   /* Submit button styling */
+   .submit-btn:hover {
+       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+   }
+
+   /* Disabled input styling */
+   [disabled],
+   [readonly] {
+       background-color: #f3f4f6;
+       cursor: not-allowed;
+   }

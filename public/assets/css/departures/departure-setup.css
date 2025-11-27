@@ -1,0 +1,256 @@
+ .departure-container {
+     overflow-x: auto;
+     border: 1px solid #d1d5db;
+     border-radius: 0.5rem;
+     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+     padding: 0.5rem;
+     background-color: #f9fafb;
+ }
+
+ .departure-table {
+     width: 100%;
+     border-collapse: collapse;
+     font-size: 0.85rem;
+ }
+
+ .departure-table th {
+     background-color: #005b88;
+     color: #ffffff;
+     text-align: center;
+     padding: 0.2rem;
+     font-weight: 600;
+ }
+
+ .departure-table td {
+     border: 1px solid #ffffff;
+     padding: 0.1rem 0.25rem;
+     font-weight: 500;
+     vertical-align: middle;
+ }
+
+ .departure-label-cell {
+     background-color: #888888;
+     color: #ffffff;
+     font-weight: 600;
+     text-align: right;
+     width: 200px;
+     padding-right: 0.25rem;
+ }
+
+ .departure-input-cell {
+     background-color: #d1d5db;
+     padding-left: 0.25rem;
+ }
+
+ .departure-input {
+     width: 100%;
+     padding: 0.2rem;
+     font-size: 0.85rem;
+     border: none;
+     background-color: transparent;
+     color: #000000;
+     outline: none;
+     border-radius: 0.125rem;
+     text-align: center;
+ }
+
+ .departure-checkbox-row {
+     display: flex;
+     align-items: center;
+     background-color: #d1d5db;
+     padding: 0.2rem 0.25rem;
+     font-size: 0.85rem;
+ }
+
+ .departure-grid-layout {
+     display: grid;
+     grid-template-columns: 200px 1fr 1fr;
+     gap: 0.2rem;
+     align-items: stretch;
+ }
+
+ .departure-title-bar {
+     background-color: #005b88;
+     color: #ffffff;
+     font-weight: 600;
+     text-align: center;
+     padding: 0.2rem;
+     font-size: 0.85rem;
+     margin-bottom: 0.1rem;
+ }
+
+ .departure-no-data {
+     text-align: center;
+     padding: 0.2rem;
+     font-size: 0.85rem;
+     background-color: #e5e7eb;
+     min-height: 3rem;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+ }
+
+ .departure-grid-header {
+     display: grid;
+     grid-template-columns: 200px 1fr;
+      font-size: 0.85rem;
+     font-weight: 600;
+     color: #ffffff;
+ }
+
+ .departure-header-cell {
+     padding: 0.2rem;
+     text-align: center;
+     border: 1px solid #ffffff;
+     background-color: #888888;
+ }
+
+ .ac-row {
+     display: grid;
+     grid-template-columns: 40px 1fr 60px;
+     align-items: center;
+     background-color: #d1d5db;
+     border-bottom: 1px solid #ffffff;
+     font-size: 0.75rem;
+ }
+
+ .ac-label-cell {
+     padding: 0.1rem 0.25rem;
+     border-right: 1px solid #ffffff;
+     font-weight: 500;
+     color: #000000;
+ }
+
+ .ac-value-input {
+     width: 100%;
+     padding: 0.1rem;
+     text-align: center;
+     font-size: 0.75rem;
+     border: 1px solid #ffffff;
+     background-color: #ffffff;
+     color: #000000;
+ }
+
+ .ac-value-input:disabled,
+ .booth-time-input:disabled,
+ select:disabled {
+     background-color: #e5e7eb;
+     cursor: not-allowed;
+ }
+
+ .weekday-grid {
+     /* display: grid; */
+     /* Fixed: Uncommented to restore grid layout */
+     grid-template-columns: repeat(8, 1fr);
+     gap: 0.1rem;
+     background-color: #d1d5db;
+     border-radius: 0.125rem;
+     min-height: 2rem;
+     margin-top: 0.2rem;
+ }
+
+ .weekday-header,
+ .weekday-cell {
+     display: flex;
+     justify-content: center;
+     align-items: center;
+     padding: 0.1rem;
+     border-right: 1px solid #ffffff;
+ }
+
+ .weekday-header:last-child,
+ .weekday-cell:last-child {
+     border-right: none;
+ }
+
+ .weekday-header {
+     font-size: 0.85rem;
+     color: #ffffff;
+     font-weight: 500;
+     border-bottom: 1px solid #ffffff;
+     background-color: #888888;
+ }
+
+ .weekday-cell {
+     background-color: #d1d5db;
+ }
+
+ .weekday-cell input[type="checkbox"],
+ .booth-cell input[type="checkbox"] {
+     height: 0.7rem;
+     width: 0.7rem;
+     border-radius: 0.125rem;
+ }
+
+ .booth-grid {
+     display: grid;
+     grid-template-columns: 200px 1fr 1fr 2fr 1fr 1fr 2fr;
+     gap: 0.1rem;
+     background-color: #d1d5db;
+     margin-top: 0.5rem;
+ }
+
+ .booth-header,
+ .booth-cell {
+     padding: 0.1rem 0.25rem;
+     text-align: center;
+     border-right: 1px solid #ffffff;
+     font-size: 0.85rem;
+ }
+
+ .booth-header:last-child,
+ .booth-cell:last-child {
+     border-right: none;
+ }
+
+ .booth-header {
+     background-color: #888888;
+     color: #ffffff;
+     font-weight: 500;
+ }
+
+ .booth-time-input {
+     width: 3rem;
+     padding: 0.1rem;
+     font-size: 0.8rem;
+     border: 1px solid #ffffff;
+     border-radius: 0.125rem;
+ }
+
+ .bus-section-container {
+     display: flex;
+     flex-direction: column;
+     height: 100%;
+ }
+
+ .bus-content {
+     flex-grow: 1;
+     display: flex;
+     flex-direction: column;
+ }
+
+ .weekday-container {
+     margin-top: auto;
+ }
+
+ @media (max-width: 768px) {
+
+     .departure-grid-layout,
+     .booth-grid {
+         grid-template-columns: 1fr;
+     }
+
+     .departure-label-cell,
+     .departure-header-cell:first-child {
+         text-align: left;
+         padding-left: 0.25rem;
+     }
+
+     .ac-row {
+         grid-template-columns: 40px 1fr;
+     }
+
+     .weekday-grid {
+         grid-template-columns: repeat(4, 1fr);
+     }
+ }
