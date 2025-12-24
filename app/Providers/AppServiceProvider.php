@@ -14,12 +14,15 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
-        
+        $this->app->bind(
+            UserRepositoryInterface::class,
+            UserRepository::class
+        );
+
         // Bind DatatableExporter as a singleton
         $this->app->singleton(DatatableExporter::class, function ($app) {
             return DatatableExporter::getInstance();
-        });        
+        });
     }
 
     /**

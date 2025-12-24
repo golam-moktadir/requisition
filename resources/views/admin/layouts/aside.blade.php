@@ -52,30 +52,36 @@
         </li> 
 
         <li class="menu-item">
-            <a href="{{ route('company.index') }}" class="menu-link">
+            <a href="{{ route('requisition.company.index') }}" class="menu-link">
                 <i class="bx bx-buildings bx-sm align-middle"></i>
                 <div data-i18n="Company">Company</div>
             </a>
         </li>
 
         <li class="menu-item">
-            <a href="{{ route('purpose.index') }}" class="menu-link">
+            <a href="{{ route('requisition.purpose.index') }}" class="menu-link">
                 <i class="bx bx-target-lock bx-sm align-middle"></i>
                 <div data-i18n="Purpose">Purpose</div>
             </a>
         </li> 
 
         <li class="menu-item">
-            <a href="{{ route('payee.index') }}" class="menu-link">
+            <a href="{{ route('requisition.payee.index') }}" class="menu-link">
                 <i class="bx bx-dollar bx-sm align-middle"></i>
                 <div data-i18n="Payee">Payee</div>
             </a>
         </li> 
 
         <li class="menu-item">
-            <a href="{{ route('bank.index') }}" class="menu-link">
+            <a href="{{ route('requisition.bank.index') }}" class="menu-link">
                 <i class="bx bx-credit-card bx-sm align-middle"></i>
                 <div data-i18n="Bank">Bank</div>
+            </a>
+        </li> 
+        <li class="menu-item">
+            <a href="{{ route('requisition.bank.account.index') }}" class="menu-link">
+                <i class="bx bx-book bx-sm align-middle"></i>
+                <div data-i18n="Bank">Bank Account</div>
             </a>
         </li> 
     </ul>

@@ -12,11 +12,8 @@
 @section('content-body')
     <div class="mt-1 p-2 card">
         @include('admin.layouts.message')
-        <p>
-            <a href="{{ route('requisition.create') }}" class="btn btn-sm btn-primary">
-                Add New
-            </a>
-        </p>
+        <form method="POST" action="{{ route('permission.store') }}" id="permission-form" class="">
+        @csrf
         <table class="table table-sm table-bordered table-hover mt-2">
             <thead class="table-primary text-center">
                 <tr class="">
@@ -59,24 +56,24 @@
                     @php $pid = (int) $feature->page_id; @endphp
                     <tr id="row-{{ $pid }}">
                         <td class="text-center">{{ $loop->iteration }}</td>
-                        <td class="">{{ $feature->page_title }}</td>
+                        <td>{{ $feature->page_title }}</td>
                         <td class="text-center">
-                            <input type="checkbox" name="view_ids[]" value="{{ $pid }}" class="" data-row="row-{{ $pid }}"
+                            <input type="checkbox" name="view_ids[]" value="1" class="" data-row="row-{{ $pid }}"
                                 data-type="view" @checked(in_array($pid, old('view_ids', [])))
                                 aria-label="View for {{ $feature->page_title }}">
                         </td>
                         <td class="text-center">
-                            <input type="checkbox" name="insert_ids[]" value="{{ $pid }}" class="" data-row="row-{{ $pid }}"
+                            <input type="checkbox" name="insert_ids[]" value="1" class="" data-row="row-{{ $pid }}"
                                 data-type="insert" @checked(in_array($pid, old('insert_ids', [])))
                                 aria-label="Insert for {{ $feature->page_title }}">
                         </td>
                         <td class="text-center">
-                            <input type="checkbox" name="update_ids[]" value="{{ $pid }}" class="" data-row="row-{{ $pid }}"
+                            <input type="checkbox" name="update_ids[]" value="1" class="" data-row="row-{{ $pid }}"
                                 data-type="update" @checked(in_array($pid, old('update_ids', [])))
                                 aria-label="Update for {{ $feature->page_title }}">
                         </td>
                         <td class="text-center">
-                            <input type="checkbox" name="delete_ids[]" value="{{ $pid }}" class="" data-row="row-{{ $pid }}"
+                            <input type="checkbox" name="delete_ids[]" value="1" class="" data-row="row-{{ $pid }}"
                                 data-type="delete" @checked(in_array($pid, old('delete_ids', [])))
                                 aria-label="Delete for {{ $feature->page_title }}">
                         </td>
@@ -88,6 +85,11 @@
                 @endforeach
             </tbody>
         </table>
+        <div class="my-1">
+            <button type="submit" class="btn btn-sm btn-info"> Save</button>
+            <a href="#" class="btn btn-sm btn-primary">Back</a>
+        </div>
+        </form>
     </div>
 @endsection
 

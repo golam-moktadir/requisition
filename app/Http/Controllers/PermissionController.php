@@ -70,9 +70,9 @@ class PermissionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePermissionRequest $request)
+    public function store(Request $request)
     {
-        $validated = $request->validated();
+        dd($request->all());
         $employeeId = (int) $validated['employee_id'];
         $savedBy = Auth::guard('member')->id();
 
@@ -193,7 +193,6 @@ class PermissionController extends Controller
             Log::error("[{$this->featureName}][Update] Failed", ['error' => $e->getMessage()]);
             return back()->with('error', "Failed to update {$this->featureName}.");
         }
-
     }
 
     /**

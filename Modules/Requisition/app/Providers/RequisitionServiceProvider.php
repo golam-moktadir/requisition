@@ -1,118 +1,130 @@
 <?php
 
 namespace Modules\Requisition\Providers;
+//namespace Modules\Requisition\app\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Nwidart\Modules\Traits\PathNamespace;
+use Modules\Requisition\Providers\EventServiceProvider;
+use Modules\Requisition\Providers\RouteServiceProvider;
+
+use Modules\Requisition\Repositories\BankRepositoryInterface;
+use Modules\Requisition\Repositories\BankRepository;
+use Modules\Requisition\Repositories\BankAccountRepositoryInterface;
+use Modules\Requisition\Repositories\BankAccountRepository;
 
 class RequisitionServiceProvider extends ServiceProvider
 {
-    use PathNamespace;
+	use PathNamespace;
 
-    protected string $name = 'Requisition';
+	protected string $name = 'Requisition';
 
-    protected string $nameLower = 'requisition';
+	protected string $nameLower = 'requisition';
 
-    /**
-     * Boot the application events.
-     */
-    public function boot(): void
-    {
-        $this->registerCommands();
-        $this->registerCommandSchedules();
-        $this->registerTranslations();
-        $this->registerConfig();
-        $this->registerViews();
-        $this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
-    }
+	/**
+	 * Boot the application events.
+	 */
+	public function boot(): void
+	{
+		//$this->registerCommands();
+		$this->registerCommandSchedules();
+		$this->registerTranslations();
+		$this->registerConfig();
+		$this->registerViews();
+		$this->loadMigrationsFrom(module_path($this->name, 'database/migrations'));
+	}
 
-    /**
-     * Register the service provider.
-     */
-    public function register(): void
-    {
-        $this->app->register(EventServiceProvider::class);
-        $this->app->register(RouteServiceProvider::class);
-    }
+	/**
+	 * Register the service provider.
+	 */
+	public function register(): void
+	{
+		$this->app->register(EventServiceProvider::class);
+		$this->app->register(RouteServiceProvider::class);
 
-    /**
-     * Register commands in the format of Command::class
-     */
-    protected function registerCommands(): void
-    {
-        // $this->commands([]);
-    }
+		// Repository bindings
+		$this->app->bind(BankRepositoryInterface::class, BankRepository::class);
+		$this->app->bind(BankAccountRepositoryInterface::class, BankAccountRepository::class);
+	}
 
-    /**
-     * Register command Schedules.
-     */
-    protected function registerCommandSchedules(): void
-    {
-        // $this->app->booted(function () {
-        //     $schedule = $this->app->make(Schedule::class);
-        //     $schedule->command('inspire')->hourly();
-        // });
-    }
+	/**
+	 * Register commands in the format of Command::class
+	 */
+	// protected function registerCommands(): void
+	// {
+	// 	// $this->commands([]);
+	// }
 
-    /**
-     * Register translations.
-     */
-    public function registerTranslations(): void
-    {
-        $langPath = resource_path('lang/modules/'.$this->nameLower);
+	/**
+	 * Register command Schedules.
+	 */
+	protected function registerCommandSchedules(): void
+	{
+		// $this->app->booted(function () {
+		//     $schedule = $this->app->make(Schedule::class);
+		//     $schedule->command('inspire')->hourly();
+		// });
+	}
 
-        if (is_dir($langPath)) {
-            $this->loadTranslationsFrom($langPath, $this->nameLower);
-            $this->loadJsonTranslationsFrom($langPath);
-        } else {
-            $this->loadTranslationsFrom(module_path($this->name, 'lang'), $this->nameLower);
-            $this->loadJsonTranslationsFrom(module_path($this->name, 'lang'));
-        }
-    }
+	/**
+	 * Register translations.
+	 */
+	public function registerTranslations(): void
+	{
+		$langPath = resource_path('lang/modules/' . $this->nameLower);
 
-    /**
-     * Register config.
-     */
-    protected function registerConfig(): void
-    {
-        $this->publishes([module_path($this->name, 'config/config.php') => config_path($this->nameLower.'.php')], 'config');
-        $this->mergeConfigFrom(module_path($this->name, 'config/config.php'), $this->nameLower);
-    }
+		if (is_dir($langPath)) {
+			$this->loadTranslationsFrom($langPath, $this->nameLower);
+			$this->loadJsonTranslationsFrom($langPath);
+		} else {
+			$this->loadTranslationsFrom(module_path($this->name, 'lang'), $this->nameLower);
+			$this->loadJsonTranslationsFrom(module_path($this->name, 'lang'));
+		}
+	}
 
-    /**
-     * Register views.
-     */
-    public function registerViews(): void
-    {
-        $viewPath = resource_path('views/modules/'.$this->nameLower);
-        $sourcePath = module_path($this->name, 'resources/views');
+	/**
+	 * Register config.
+	 */
+	protected function registerConfig(): void
+	{
+		$this->publishes([module_path($this->name, 'config/config.php') => config_path($this->nameLower . '.php')], 'config');
+		$this->mergeConfigFrom(module_path($this->name, 'config/config.php'), $this->nameLower);
+	}
 
-        $this->publishes([$sourcePath => $viewPath], ['views', $this->nameLower.'-module-views']);
+	/**
+	 * Register views.
+	 */
+	public function registerViews(): void
+	{
+		$viewPath = resource_path('views/modules/' . $this->nameLower);
+		$sourcePath = module_path($this->name, 'resources/views');
 
-        $this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->nameLower);
+		$this->publishes([$sourcePath => $viewPath], ['views', $this->nameLower . '-module-views']);
 
-        $componentNamespace = $this->module_namespace($this->name, $this->app_path(config('modules.paths.generator.component-class.path')));
-        Blade::componentNamespace($componentNamespace, $this->nameLower);
-    }
+		$this->loadViewsFrom(array_merge($this->getPublishableViewPaths(), [$sourcePath]), $this->nameLower);
 
-    /**
-     * Get the services provided by the provider.
-     */
-    public function provides(): array
-    {
-        return [];
-    }
+		$componentNamespace = $this->module_namespace($this->name, $this->app_path(config('modules.paths.generator.component-class.path')));
+		Blade::componentNamespace($componentNamespace, $this->nameLower);
+	}
 
-    private function getPublishableViewPaths(): array
-    {
-        $paths = [];
-        foreach (config('view.paths') as $path) {
-            if (is_dir($path.'/modules/'.$this->nameLower)) {
-                $paths[] = $path.'/modules/'.$this->nameLower;
-            }
-        }
+	/**
+	 * Get the services provided by the provider.
+	 */
+	public function provides(): array
+	{
+		return [];
+	}
 
-        return $paths;
-    }
+	private function getPublishableViewPaths(): array
+	{
+		$paths = [];
+		foreach (config('view.paths') as $path) {
+			if (is_dir($path . '/modules/' . $this->nameLower)) {
+				$paths[] = $path . '/modules/' . $this->nameLower;
+			}
+		}
+
+		return $paths;
+	}
 }

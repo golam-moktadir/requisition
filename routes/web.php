@@ -36,6 +36,7 @@ Route::group(['prefix' => 'mpdf-test'], function(){
 Route::middleware('auth')->prefix('permission')->name('permission.')->group(function () {
     Route::get('/', [PermissionController::class, 'index'])->name('index');
     Route::get('/create', [PermissionController::class, 'create'])->name('create');
+    Route::post('/create', [PermissionController::class, 'store'])->name('store');
 });
 
 // Auth::routes();

@@ -4,7 +4,7 @@ namespace Modules\Requisition\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-// use Modules\Requisition\Database\Factories\BankFactory;
+use Modules\Requisition\Database\Factories\BankFactory;
 
 class Bank extends Model
 {
@@ -13,16 +13,17 @@ class Bank extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
+    protected $fillable = ['bank_name'];
 
-    // protected static function newFactory(): BankFactory
-    // {
-    //     // return BankFactory::new();
-    // }
+
+    protected static function newFactory(): BankFactory
+    {
+        return BankFactory::new();
+    }
 
     public function company()
     {
-     //   return $this->belongsTo(Company::class, 'company_id', 'id');
+        //   return $this->belongsTo(Company::class, 'company_id', 'id');
         return $this->belongsTo(Company::class);
     }
 }

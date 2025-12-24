@@ -59,4 +59,6 @@
   ],
   // Extension: npm
   "npm.packageManager": "yarn",
+  "php.suggest.basic": false,
+  "intelephense.completion.parameters": false
 }
