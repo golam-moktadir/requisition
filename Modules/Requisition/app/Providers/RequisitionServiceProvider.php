@@ -1,7 +1,6 @@
 <?php
 
 namespace Modules\Requisition\Providers;
-//namespace Modules\Requisition\app\Providers;
 
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -13,6 +12,8 @@ use Modules\Requisition\Repositories\BankRepositoryInterface;
 use Modules\Requisition\Repositories\BankRepository;
 use Modules\Requisition\Repositories\BankAccountRepositoryInterface;
 use Modules\Requisition\Repositories\BankAccountRepository;
+use Modules\Requisition\Repositories\ChequeBookRepositoryInterface;
+use Modules\Requisition\Repositories\ChequeBookRepository;
 
 class RequisitionServiceProvider extends ServiceProvider
 {
@@ -46,6 +47,7 @@ class RequisitionServiceProvider extends ServiceProvider
 		// Repository bindings
 		$this->app->bind(BankRepositoryInterface::class, BankRepository::class);
 		$this->app->bind(BankAccountRepositoryInterface::class, BankAccountRepository::class);
+		$this->app->bind(ChequeBookRepositoryInterface::class, ChequeBookRepository::class);
 	}
 
 	/**

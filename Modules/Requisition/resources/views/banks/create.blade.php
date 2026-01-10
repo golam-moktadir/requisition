@@ -7,7 +7,7 @@
             @csrf
             <div class="row my-1">
                 <div class="col-sm-6">
-                    <label for="bank_name" class="form-label">Bank Name</label>
+                    <label for="bank_name" class="form-label">Bank Name <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="bank_name" name="bank_name" value="{{ old('bank_name') }}" placeholder="Bank Name" tabindex="1" autofocus>
                     @error('bank_name') 
                     <div class="text-danger">

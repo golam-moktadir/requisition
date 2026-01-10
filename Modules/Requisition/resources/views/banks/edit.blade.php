@@ -3,7 +3,7 @@
 @section('content-body')
     <div class="mt-1 p-2 card">
         @include('admin.layouts.message')   
-        <form action="{{ route($route.'update', ['id' => $single->id]) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route($route.'update', $single->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="row my-1">

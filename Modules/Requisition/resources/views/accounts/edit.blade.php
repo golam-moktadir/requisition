@@ -1,24 +1,15 @@
 @extends('admin.layouts.master')
 
-@section('breadcrumbs')
-<li class="breadcrumb-item">
-   <a href="{{ route('bank.index') }}">{{ $title }}</a>
-</li>
-<li class="breadcrumb-item">
-   Create
-</li>
-@endsection
-
 @section('content-body')
 <div class="mt-1 p-2 card">
    @include('admin.layouts.message')
-   <form action="{{ route('bank.account.update', ['id' => $single->id]) }}" method="POST">
+   <form action="{{ route($route.'update', $single->id) }}" method="POST">
       @csrf
       @method('PUT')
       <div class="row my-1">
          <div class="col-sm-6">
             <label for="bank_id" class="form-label">Bank Name <span class="text-danger">*</span></label>
-            <select class="form-select " id="bank_id" name="bank_id">
+            <select class="form-select" id="bank_id" name="bank_id">
                <option value="">-- Select Bank --</option>
                @foreach ($banks as $bank)
                <option value="{{ $bank->id }}" {{ old('bank_id', $single->bank_id) == $bank->id ? 'selected' : '' }}>
@@ -62,7 +53,7 @@
          <div class="col-sm-6">
             <div class="btn-group" role="group">
                <button type="submit" class="btn btn-primary">Save</button>
-               <a href="{{route('bank.account.index')}}" class="btn btn-info">Back</a>
+               <a href="{{route($route.'index')}}" class="btn btn-info">Back</a>
             </div>
          </div>
       </div>

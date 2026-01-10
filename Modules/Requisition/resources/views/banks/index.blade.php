@@ -27,8 +27,8 @@
       <thead>
          <tr class="table-primary text-white text-center">
             <th style="width: 10%;">#</th>
-            <th style="width: 80%;">Bank Name</th>
-            <th style="width: 10%;">Action</th>
+            <th style="width: 75%;">Bank Name</th>
+            <th style="width: 15%;">Action</th>
          </tr>
       </thead>
    </table>

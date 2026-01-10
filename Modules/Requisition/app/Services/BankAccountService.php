@@ -19,7 +19,7 @@ class BankAccountService
 
    public function getDataList($request)
    {
-      $param = $request->only(['start', 'length', 'draw', 'order', 'columns']);
+      $param = $request->only(['start', 'length', 'draw', 'order', 'columns', 'account_number', 'bank_id']);
       return $this->repository->getDataList($param);
    }
 

@@ -17,13 +17,13 @@
          <button type="button" id="btn-refresh" class="btn btn-sm btn-primary">
             <i class="bx bx-refresh bx-xs"></i> Refresh
          </button>
-         <input type="text" id="account_number" class="form-control form-control-sm" placeholder="Search Account Number" style="max-width: 200px;">
-         <select class="form-select form-select-sm" id="bank_id" style="max-width: 300px;">
-            <option value="">-- Select Bank --</option>
-            @foreach ($banks as $bank)
-            <option value="{{ $bank->id }}">{{ $bank->bank_name }}</option>
+         <select class="form-select form-select-sm" id="account_id" style="max-width: 300px;">
+            <option value="">-- Select Account Number --</option>
+            @foreach ($accounts as $account)
+            <option value="{{ $account->id }}">{{ $account->account_no }}</option>
             @endforeach
          </select>
+         <input type="text" id="book_number" class="form-control form-control-sm" placeholder="Search By Cheque Book Number" style="max-width: 200px;">
          <button type="button" id="btn-search" class="btn btn-sm btn-primary">
             <i class="bx bx-search bx-xs"></i> Search
          </button>
@@ -32,12 +32,12 @@
    <table class="table table-sm table-bordered table-hover my-1" id="data-table">
       <thead>
          <tr class="table-primary text-white text-center">
-            <th style="width: 10%;">#</th>
-            <th style="width: 20%;">Account Number</th>
-            <th style="width: 20%;">Bank Name</th>
-            <th style="width: 20%;">Account Holder Name</th>
-            <th style="width: 20%;">Branch Name</th>
-            <th style="width: 10%;">Action</th>
+            <th style="width: 8%;">#</th>
+            <th style="width: 30%;">Account Number</th>
+            <th style="width: 20%;">Book Number</th>
+            <th style="width: 15%;">Start Cheque No.</th>
+            <th style="width: 15%;">End Cheque No.</th>
+            <th style="width: 12%;">Action</th>
          </tr>
       </thead>
    </table>
@@ -49,6 +49,7 @@
    $(document).ready(function() {
       let csrf_token = '{{ csrf_token() }}';
       let edit_route = "{{ route($route.'edit', ':id') }}";
+      let preview_route = "{{ route($route.'show', ':id') }}";
       let delete_route = "{{ route($route.'destroy', ':id') }}";
 
       var table = $('#data-table').DataTable({
@@ -59,8 +60,8 @@
          ajax: {
             url: "{{ route($route.'get-data-list') }}",
             data: function(d) {
-               d.account_number = $("#account_number").val();
-               d.bank_id        = $("#bank_id").val();
+               d.account_id = $("#account_id").val();
+               d.book_number = $("#book_number").val();
             }
          },
          order: [
@@ -75,33 +76,40 @@
                }
             },
             {
-               data: 'account_number',
-               orderable: false
+               orderable: false,
+               data: 'account_no'
             },
             {
-               data: 'bank_name'
+               orderable: false,
+               data: 'book_number',
+               className: 'text-center'
             },
             {
-               data: 'account_holder_name'
+               orderable: false,
+               data: 'start_cheque_no',
+               className: 'text-center'
             },
             {
-               data: 'branch_name'
+               orderable: false,
+               data: 'end_cheque_no',
+               className: 'text-center'
             },
             {
                data: 'id',
                orderable: false,
                className: 'text-center',
                render: function(id) {
-                  let edit_url = edit_route.replace(':id', id);
-                  let delete_url = delete_route.replace(':id', id);
+                  let edit_url    = edit_route.replace(':id', id);
+                  let preview_url = preview_route.replace(':id', id);
+                  let delete_url  = delete_route.replace(':id', id);
 
                   return `
-                        <a href="${edit_url}" class="btn btn-sm btn-primary"><i class="bx bx-edit bx-xs"></i></a>
-
+                        <a href="${edit_url}" class="btn btn-sm btn-primary btn-icon"><i class="bx bx-edit bx-xs"></i></a>
+                        <a href="${preview_url}" class="btn btn-sm btn-info btn-icon" title="Preview"><i class="bx bx-show bx-xs"></i></a>
                         <form action='${delete_url}' method='POST' style='display:inline;'>
                            <input type='hidden' name='_token' value='${csrf_token}'>
                            <input type="hidden" name="_method" value="DELETE">
-                           <button type="submit" onclick="return confirm('Are you sure you want to delete this?')" class="btn btn-sm btn-danger" title="Delete"><i class="bx bx-trash bx-xs"></i>
+                           <button type="submit" onclick="return confirm('Are you sure you want to delete this?')" class="btn btn-sm btn-danger btn-icon" title="Delete"><i class="bx bx-trash bx-xs"></i>
                            </button>
                         </form>
                     `;
@@ -110,14 +118,14 @@
          ]
       });
 
-      $('#account_number').on('keyup', function(e) {
+      $('#account_id').on('change', function(e) {
+         table.draw();
+      });
+
+      $('#book_number').on('keyup', function(e) {
          if (e.which === 13) {
             table.draw();
          }
-      });
-
-      $('#bank_id').on('change', function(e) {
-         table.draw();
       });
 
       $('#btn-search').on('click', function() {
@@ -125,8 +133,8 @@
       });
 
       $('#btn-refresh').on('click', function() {
-         $("#account_number").val('');
-         $("#bank_id").val('');
+         $("#account_id").val('');
+         $("#book_number").val('');
          table.order([
             [0, 'desc']
          ]).draw();

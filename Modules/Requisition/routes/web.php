@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Modules\Requisition\Http\Controllers\RequisitionController;
 use Modules\Requisition\Http\Controllers\BankController;
 use Modules\Requisition\Http\Controllers\BankAccountController;
+use Modules\Requisition\Http\Controllers\ChequeBookController;
 use Modules\Requisition\Http\Controllers\CompanyController;
 use Modules\Requisition\Http\Controllers\PurposeController;
 use Modules\Requisition\Http\Controllers\PayeeController;
@@ -43,20 +44,14 @@ Route::middleware(['auth'])->prefix('requisition')->name('requisition.')->group(
      Route::put('payee/edit/{id}', [PayeeController::class, 'update'])->name('payee.update');
      Route::delete('payee/delete/{id}', [PayeeController::class, 'destroy'])->name('payee.destroy');
 
-     Route::get('bank', [BankController::class, 'index'])->name('bank.index');
      Route::get('bank/get-data-list', [BankController::class, 'getDataList'])->name('bank.get-data-list');
-     Route::get('bank/create', [BankController::class, 'create'])->name('bank.create');
-     Route::post('bank/create', [BankController::class, 'store'])->name('bank.store');
-     Route::get('bank/edit/{id}', [BankController::class, 'edit'])->name('bank.edit');
-     Route::put('bank/edit/{id}', [BankController::class, 'update'])->name('bank.update');
-     Route::delete('bank/delete/{id}', [BankController::class, 'destroy'])->name('bank.destroy');
+     Route::resource('bank', BankController::class)->except(['show']);
 
-     Route::get('bank/account', [BankAccountController::class, 'index'])->name('bank.account.index');
-     Route::get('bank/account/get-data-list', [BankAccountController::class, 'getDataList'])->name('bank.account.get-data-list');
-     Route::get('bank/account/create', [BankAccountController::class, 'create'])->name('bank.account.create');
-     Route::post('bank/account/create', [BankAccountController::class, 'store'])->name('bank.account.store');
-     Route::get('bank/account/edit/{id}', [BankAccountController::class, 'edit'])->name('bank.account.edit');
-     Route::put('bank/account/edit/{id}', [BankAccountController::class, 'update'])->name('bank.account.update');
+     Route::get('bank-account/get-data-list', [BankAccountController::class, 'getDataList'])->name('bank-account.get-data-list');
+     Route::resource('bank-account', BankAccountController::class);     
+
+     Route::get('cheque/get-data-list', [ChequeBookController::class, 'getDataList'])->name('cheque.get-data-list');
+     Route::resource('cheque', ChequeBookController::class);
 
      Route::get('/', [RequisitionController::class, 'index'])->name('index');
 

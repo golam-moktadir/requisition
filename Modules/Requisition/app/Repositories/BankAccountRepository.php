@@ -9,7 +9,7 @@ class BankAccountRepository implements BankAccountRepositoryInterface
 {
     public function getDataList($param)
     {
-        $columns = ['id'];
+        $columns = ['ba.id', 'ba.account_number', 'b.bank_name', 'ba.account_holder_name', 'ba.branch_name'];
         $sort    = $param['order'][0]['column'];
         $order   = $param['order'][0]['dir'];
 
@@ -17,9 +17,12 @@ class BankAccountRepository implements BankAccountRepositoryInterface
             ->join('banks as b', 'b.id', '=', 'ba.bank_id')
             ->select('ba.*', 'b.bank_name');
 
-        // if ($param['bank_name']) {
-        //     $query->where('bank_name', 'like', '%' . $param['bank_name'] . '%');
-        // }
+        if ($param['account_number']) {
+            $query->where('ba.account_number', '=', $param['account_number']);
+        }
+        if ($param['bank_id']) {
+            $query->where('ba.bank_id', '=', $param['bank_id']);
+        }
         $query->orderBy($columns[$sort], $order);
         $total = BankAccount::count();
         $filtered = $query->count();

@@ -19,9 +19,4 @@ class Cheque extends Model
     // {
     //     // return ChequeFactory::new();
     // }
-
-    public function bank()
-    {
-        return $this->belongsTo(Bank::class);
-    }
 }
