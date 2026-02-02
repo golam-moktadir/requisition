@@ -21,19 +21,12 @@ class ChequeBookRepository implements ChequeBookRepositoryInterface
             ->select(
                 'cb.*',
                 DB::raw("CONCAT_WS(' - ', ba.account_number, b.bank_name) AS account_no")
-            );
-
-        if ($param['account_id']) {
-            $query->where('cb.account_id', '=', $param['account_id']);
-        }
-        
-        if ($param['book_number']) {
-            $query->where('cb.book_number', '=', $param['book_number']);
-        }
-
-        $query->orderBy($columns[$sort], $order);
-        $total = ChequeBook::count();
+            )
+            ->when($param['account_id'] ?? null, fn($q, $v) => $q->where('cb.account_id', $v))
+            ->when($param['book_number'] ?? null, fn($q, $v) => $q->where('cb.book_number', $v))
+            ->orderBy($columns[$sort], $order);
         $filtered = $query->count();
+        $total = ChequeBook::count();
 
         $start = $param['start'] ?? 0;
         $length = $param['length'] ?? 10;

@@ -13,13 +13,11 @@ class BankRepository implements BankRepositoryInterface
         $order   = $param['order'][0]['dir'];
 
         $query = Bank::from('banks as b')
-            ->select('b.*');
-            if ($param['bank_name']) {
-                $query->where('bank_name', 'like', '%' . $param['bank_name'] . '%');
-            }
-        $query->orderBy($columns[$sort], $order);
-        $total = Bank::count();
+            ->select('b.*')
+            ->when($param['bank_name'] ?? null, fn($q, $v) => $q->where('b.bank_name', 'like', '%' . $v . '%'))
+            ->orderBy($columns[$sort], $order);
         $filtered = $query->count();
+        $total = Bank::count();
 
         $start = $param['start'] ?? 0;
         $length = $param['length'] ?? 10;

@@ -53,6 +53,7 @@ Route::middleware(['auth'])->prefix('requisition')->name('requisition.')->group(
      Route::get('cheque/get-data-list', [ChequeBookController::class, 'getDataList'])->name('cheque.get-data-list');
      Route::resource('cheque', ChequeBookController::class);
 
+     Route::get('/get-data-list', [RequisitionController::class, 'getDataList'])->name('get-data-list');
      Route::get('/', [RequisitionController::class, 'index'])->name('index');
 
      Route::get('create', [RequisitionController::class, 'create'])->name('create');
@@ -62,6 +63,7 @@ Route::middleware(['auth'])->prefix('requisition')->name('requisition.')->group(
 
      Route::get('{id}/edit', [RequisitionController::class, 'edit'])->name('edit');
      Route::put('{id}/edit', [RequisitionController::class, 'update'])->name('update');
+     Route::delete('delete/{id}', [RequisitionController::class, 'destroy'])->name('destroy');
      Route::delete('file/destroy/{id}', [RequisitionController::class, 'fileDestroy'])->name('file.destroy');
 
      Route::get('{id}/approval', [RequisitionController::class, 'approval'])->name('requisition.approval');

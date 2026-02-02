@@ -15,17 +15,13 @@ class BankAccountRepository implements BankAccountRepositoryInterface
 
         $query = BankAccount::from('bank_accounts as ba')
             ->join('banks as b', 'b.id', '=', 'ba.bank_id')
-            ->select('ba.*', 'b.bank_name');
-
-        if ($param['account_number']) {
-            $query->where('ba.account_number', '=', $param['account_number']);
-        }
-        if ($param['bank_id']) {
-            $query->where('ba.bank_id', '=', $param['bank_id']);
-        }
-        $query->orderBy($columns[$sort], $order);
-        $total = BankAccount::count();
+            ->select('ba.*', 'b.bank_name')
+            ->when($param['account_number'] ?? null, fn($q, $v) => $q->where('ba.account_id', $v))
+            ->when($param['bank_id'] ?? null, fn($q, $v) => $q->where('ba.bank_id', $v))
+            ->orderBy($columns[$sort], $order);
+        
         $filtered = $query->count();
+        $total = BankAccount::count();
 
         $start = $param['start'] ?? 0;
         $length = $param['length'] ?? 10;

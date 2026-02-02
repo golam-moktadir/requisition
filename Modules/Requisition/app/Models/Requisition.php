@@ -10,8 +10,6 @@ class Requisition extends Model
 {
     use HasFactory;
 
-    public $table = 'requisitions';
-
     /**
      * The attributes that are mass assignable.
      */

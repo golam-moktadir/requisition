@@ -1,4 +1,5 @@
 <?php
+
 namespace Modules\Requisition\Services;
 
 use Modules\Requisition\Models\Requisition;
@@ -11,42 +12,21 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Exception;
+use Modules\Requisition\Repositories\RequisitionRepositoryInterface;
 
 class RequisitionService
 {
-    public function getDataList(Request $request)
+    protected $repository;
+
+    public function __construct(RequisitionRepositoryInterface $repository)
     {
-        return DB::table('requisitions as r')
-            ->leftJoin('companies as c', 'c.id', '=', 'r.company_id')
-            ->leftJoin('purposes as p', 'p.id', '=', 'r.purpose_id')
-            ->select([
-                'r.id',
-                'r.req_no',
-                'r.status',
-                'c.company_name',
-                'p.purpose_name',
-                DB::raw("DATE_FORMAT(r.created_at, '%d/%m/%Y') as created_at"),
-                DB::raw('(SELECT SUM(amount) FROM requisition_details WHERE requisition_id = r.id) as total_amount')
-            ])
-            ->when($request->filled('requisition_no'), function ($query) use ($request) {
-                $query->where('r.req_no', 'like', '%' . $request->input('requisition_no') . '%');
-            })
-            ->when($request->has('company_id'), function ($query) use ($request) {
-                $query->where('r.company_id', $request->input('company_id'));
-            })
-            ->when($request->filled('from_date') && $request->filled('to_date'), function ($query) use ($request) {
-                $query->whereBetween(DB::raw('DATE(r.created_at)'), [$request->input('from_date'), $request->input('to_date')]);
-            })
-            ->when($request->has('status'), function ($query) use ($request) {
-                $status = $request->input('status');
-                if ($status) {
-                    $query->where('r.status', $status);
-                }
-            }, function ($query) {
-                $query->where('r.status', 'pending');
-            })
-            //->orderBy('id', 'desc')
-            ->get();
+        $this->repository = $repository;
+    }
+
+    public function getDataList($request)
+    {
+        $param = $request->only(['start', 'length', 'draw', 'order', 'columns', 'requisition_no', 'company_id', 'from_date', 'to_date']);
+        return $this->repository->getDataList($param);
     }
 
     public function saveData($validated, Request $request)

@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Modules\Requisition\Models\Requisition;
 use Modules\Requisition\Models\RequisitionPayment;
 use Modules\Requisition\Models\Approval;
@@ -20,23 +19,29 @@ use Illuminate\Support\Facades\Storage;
 
 class RequisitionController extends Controller
 {
+
     protected $service;
+    protected $route = 'requisition.';
 
     public function __construct(RequisitionService $service)
     {
         $this->service = $service;
     }
-
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        //dd();
         $data['title'] = 'Requisitions';
+        $data['route'] = $this->route;
         $data['companies'] = Company::all();
-        $data['requisitions'] = $this->service->getDataList($request);
         return view('requisition::index', $data);
+    }
+
+    public function getDataList(Request $request)
+    {
+        $result = $this->service->getDataList($request);
+        return response()->json($result);
     }
 
     /**

@@ -14,6 +14,8 @@ use Modules\Requisition\Repositories\BankAccountRepositoryInterface;
 use Modules\Requisition\Repositories\BankAccountRepository;
 use Modules\Requisition\Repositories\ChequeBookRepositoryInterface;
 use Modules\Requisition\Repositories\ChequeBookRepository;
+use Modules\Requisition\Repositories\RequisitionRepository;
+use Modules\Requisition\Repositories\RequisitionRepositoryInterface;
 
 class RequisitionServiceProvider extends ServiceProvider
 {
@@ -48,6 +50,7 @@ class RequisitionServiceProvider extends ServiceProvider
 		$this->app->bind(BankRepositoryInterface::class, BankRepository::class);
 		$this->app->bind(BankAccountRepositoryInterface::class, BankAccountRepository::class);
 		$this->app->bind(ChequeBookRepositoryInterface::class, ChequeBookRepository::class);
+		$this->app->bind(RequisitionRepositoryInterface::class, RequisitionRepository::class);
 	}
 
 	/**
